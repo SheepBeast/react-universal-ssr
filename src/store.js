@@ -16,10 +16,6 @@ import thunk from 'redux-thunk';
 // 	)
 // );
 
-const store = createStore(
-  reducers,
-  applyMiddleware(thunk)
-  // enhancer
-);
-
-export default store;
+export default function configureStore(initialState = {}) {
+  return createStore(reducers, initialState, applyMiddleware(thunk))
+}

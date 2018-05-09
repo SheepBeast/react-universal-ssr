@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { AboutMe } from '../../components/index.js';
 import { MoveArea } from '../index.js';
 import { loadArticle } from '../../actions/index.js';
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import './index.less';
 
 export default class LeftArea extends Component {
@@ -14,19 +14,19 @@ export default class LeftArea extends Component {
 	}
 
 	handleClick() {
-		alert('leftArea')
+		alert('leftA1rea1')
 	}
 	render() {
 		let { articles } = this.props;
-		let msg = ['hello', ' ', 'world']
+		let msg = ['hel2l3o232311', ' ', 'world']
 		console.log('render left area -->')
 		if (!articles) {
 			return (
 				<div className="container">
 					<span onClick={this.handleClick.bind(this)}>LeftArea1</span>
 					<Link to="/home">go home</Link>
-					
-				<br />
+
+					<br />
 					<ul>
 						{msg.map((m, idx) => <li key={idx}>{m}</li>)}
 					</ul>

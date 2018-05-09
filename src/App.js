@@ -1,22 +1,21 @@
 import React, { Component } from 'react'
-import { BrowserRouter, StaticRouter } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { Provider } from 'react-redux'
 import routes from './routes'
+import configureStore from './store'
 
 export default class App extends Component {
+
   render() {
-
-    var Router
-
-    try {
-      Router = window ? BrowserRouter : StaticRouter
-    } catch (error) {
-      Router = StaticRouter
-    }
+    var store = configureStore()
 
     return (
-      <Router context={{}}>
-        {routes}
-      </Router>
+      <Provider store={store}>
+        <div id="app-container">
+          <Link to="/">/</Link><br /><Link to="/home">/home</Link><br />
+          {routes}
+        </div>
+      </Provider>
     )
   }
 }

@@ -27,29 +27,9 @@ const LeftAreaApp = connect(
 
 const routes = (
   <div>
-    App
     <Route exact path="/" component={LeftAreaApp} />
     <Route path="/home" component={HomeApp} />
   </div>
-
 )
-
-// const routes = [
-//   {
-//     path: '/',
-//     component: HomeApp,
-//     IndexRoute: {
-//       component: HomeApp
-//     }
-//   },
-//   {
-//     path: '/albums',
-//     component: AlbumApp
-//   },
-//   {
-//     path: '/articles/:id',
-//     component: ArticleSelectedApp
-//   }
-// ]
 
 export default routes

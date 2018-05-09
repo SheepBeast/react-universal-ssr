@@ -4,19 +4,17 @@ var express = require('express')
 var React = require('react')
 var { renderToString } = require('react-dom/server')
 var { StaticRouter } = require('react-router-dom')
-var { Provider } = require('react-redux')
 
-var routes = require('../routes').default
-var store = require('../store').default
+var configureStore = require('../store').default
 
 var App = require('../App').default
 
-var app = express()
+var server = express()
 
-app.set('views', __views)
-app.set('view engine', 'ejs')
+server.set('views', __views)
+server.set('view engine', 'ejs')
 
-var contentTypes ={
+var contentTypes = {
   '.js': 'text/javascript',
   '.css': 'text/css',
   '.html': 'text/html',
@@ -24,7 +22,7 @@ var contentTypes ={
   '.jpg': 'image/jpg'
 }
 
-app.use('/assets',express.static(__assets, {
+server.use('/assets', express.static(__assets, {
   dotfiles: 'ignore',
   etag: true,
   extensions: ['html', 'css', 'png', 'jpg', 'js'],
@@ -42,36 +40,29 @@ app.use('/assets',express.static(__assets, {
 }))
 
 
-app.get('/', function (req, res) {
-  console.log('listening --> get /')
-
+server.get('/', function (req, res) {
   var html = renderToString(
-    <Provider store={store}>
+    <StaticRouter location={req.url} context={{}}>
       <App />
-    </Provider>
+    </StaticRouter>
   )
-
   console.log('listening --> html /', html)
-
+  var store = configureStore()
   res.render('index', { html, state: store.getState() })
 })
 
-app.get('/home', function (req, res) {
-  console.log('listening --> get /home')
-
+server.get('/home', function (req, res) {
+  var store = configureStore()
   var html = renderToString(
-    <Provider store={store}>
-      <StaticRouter location={req.url} context={{}}>
-        {routes}
-      </StaticRouter>
-    </Provider>
+    <StaticRouter location={req.url} context={{}}>
+      <App />
+    </StaticRouter>
   )
 
   console.log('listening --> html /home', html)
-
   res.render('index', { html, state: store.getState() })
 })
 
-app.listen(8081, function () {
+server.listen(8081, function () {
   console.log('Listenning on http://localhost:8081')
 })
