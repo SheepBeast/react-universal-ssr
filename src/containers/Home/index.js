@@ -39,7 +39,7 @@ export default class Home extends Component {
       return (
 
 
-        <div><div onClick={this.handleClick}>home2</div><br /><Link to="/">go home</Link></div>
+        <div><div onClick={this.handleClick}>Index</div></div>
       )
     }
   }

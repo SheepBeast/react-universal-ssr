@@ -1,7 +1,8 @@
 import React from 'react'
 import { Route, IndexRoute } from 'react-router'
-import { Home, LeftArea } from './containers'
 import { connect } from 'react-redux'
+
+import { Home, LeftArea } from '../containers'
 
 const HomeApp = connect(state => {
   return {
@@ -25,11 +26,11 @@ const LeftAreaApp = connect(
   }
 )(LeftArea);
 
-const routes = (
-  <div>
-    <Route exact path="/" component={LeftAreaApp} />
-    <Route path="/home" component={HomeApp} />
-  </div>
-)
-
-export default routes
+export default function getRoutes() {
+  return (
+    <div>
+      <Route exact path="/" component={LeftAreaApp} />
+      <Route path="/home" component={HomeApp} />
+    </div>
+  )
+}

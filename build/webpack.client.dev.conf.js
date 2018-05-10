@@ -41,9 +41,14 @@ module.exports = {
   },
   mode: 'development',
   plugins: [
+    new webpack.DefinePlugin({
+      '__SERVER__': '"/api"',
+      '__TERMINAL__': '"browser"'
+    }),
     new htmlWebpackPlugin({
       inject: true,
-      template: './src/server/views/index.html'
+      template: './src/server/views/index.html',
+      favicon: './src/assets/baidu.ico'
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin()

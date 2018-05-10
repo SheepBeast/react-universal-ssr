@@ -4,9 +4,9 @@ var express = require('express')
 var React = require('react')
 var { renderToString } = require('react-dom/server')
 var { StaticRouter } = require('react-router-dom')
+var axios = require('axios')
 
 var configureStore = require('../store').default
-
 var App = require('../App').default
 
 var server = express()
@@ -29,7 +29,6 @@ server.use('/assets', express.static(__assets, {
   maxAge: '3600000',
   redirect: true,
   setHeaders: function (res, pathname, stat) {
-    console.log('pathname -->', pathname)
     res.set('x-timestamp', Date.now())
     res.set('Vary', 'Accept-Encoding')
     res.set('Cache-Control', 'assets, max-age=3600')
@@ -46,8 +45,8 @@ server.get('/', function (req, res) {
       <App />
     </StaticRouter>
   )
-  console.log('listening --> html /', html)
   var store = configureStore()
+
   res.render('index', { html, state: store.getState() })
 })
 
@@ -59,7 +58,6 @@ server.get('/home', function (req, res) {
     </StaticRouter>
   )
 
-  console.log('listening --> html /home', html)
   res.render('index', { html, state: store.getState() })
 })
 

@@ -67,9 +67,14 @@ module.exports = {
     'react-router': 'ReactRouter',
     'react-router-dom': 'ReactRouterDOM',
     'redux': 'Redux',
-    'redux-thunk': 'ReduxThunk'
+    'redux-thunk': 'ReduxThunk',
+    'axios': 'axios'
   },
   plugins: [
+    new webpack.DefinePlugin({
+      '__SERVER__': '"https://t.server.wisbetter.com"',
+      '__TERMINAL__': '"browser"'
+    }),
     new htmlWebpackPlugin({
       filename: './views/index.ejs',
       template: './src/server/views/index.html',

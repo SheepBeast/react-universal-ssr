@@ -8,7 +8,7 @@
     "dev": "node ./build/dev-server",
     "server": "node ./dist/index.js",
     "build:client": "webpack --config ./build/webpack.client.prod.conf.js --colors",
-    "build:server": "webpack --config ./build/webpack.server.dev.conf.js --colors"
+    "build:server": "webpack --config ./build/webpack.server.prod.conf.js --colors"
   },
   "author": "",
   "license": "ISC",
@@ -23,6 +23,7 @@
     "react-router-dom": "^4.2.2",
     "redux": "^4.0.0",
     "redux-thunk": "^2.2.0",
+    "serve-favicon": "^2.5.0",
     "webpack": "^4.8.1"
   },
   "devDependencies": {
@@ -38,6 +39,7 @@
     "css-loader": "^0.28.11",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.2.0",
+    "http-proxy-middleware": "^0.18.0",
     "less": "^3.0.4",
     "less-loader": "^4.1.0",
     "string-replace-webpack-plugin": "^0.1.3",

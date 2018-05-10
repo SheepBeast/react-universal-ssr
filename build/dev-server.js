@@ -1,28 +1,37 @@
 const path = require('path')
 const express = require('express')
+const serveFavicon = require('serve-favicon')
 
 const app = express();
 
-if (process.env.NODE_ENV !== 'production') {
-  const webpack = require('webpack')
-  const webpackDevMiddleware = require('webpack-dev-middleware')
-  const webpackHotMiddleware = require('webpack-hot-middleware')
-  const config = require('./webpack.client.dev.conf')
-  const compiler = webpack(config)
+const webpack = require('webpack')
+const webpackDevMiddleware = require('webpack-dev-middleware')
+const webpackHotMiddleware = require('webpack-hot-middleware')
+const httpProxyMiddleware = require('http-proxy-middleware')
 
-  app.use(webpackDevMiddleware(compiler, {
-    noInfo: true,
-    publicPath: config.output.publicPath
-  }))
-  app.use(webpackHotMiddleware(compiler))
-  
+const webpackClientDevConfig = require('./webpack.client.dev.conf')
+const compiler = webpack(webpackClientDevConfig)
 
-  app.get('/', function(req, res) {
-    res.sendFile('index.html')
-  })
+const devConfig = require('../config/dev.conf')
 
-}
+app.use(webpackDevMiddleware(compiler, {
+  noInfo: true,
+  publicPath: webpackClientDevConfig.output.publicPath
+}))
 
-app.listen(8080, function() {
+app.use(webpackHotMiddleware(compiler))
+
+Object.keys(devConfig.proxyTable).forEach(key => {
+  app.use(key, httpProxyMiddleware(devConfig.proxyTable[key]))
+})
+
+app.use(serveFavicon(path.join(__dirname, '../src/assets/baidu.ico')))
+
+app.get('/', function (req, res) {
+  res.sendFile('index.html')
+})
+
+
+app.listen(8080, function () {
   console.log(`Listening at http://localhost:8080`)
 })

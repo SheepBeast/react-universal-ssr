@@ -1,19 +1,18 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Provider } from 'react-redux'
-import routes from './routes'
+import getRoutes from './routes'
 import configureStore from './store'
 
+let store = configureStore(__TERMINAL__ === "browser" && window._INITIAL_STATE_ || {})
+
 export default class App extends Component {
-
   render() {
-    var store = configureStore()
-
     return (
       <Provider store={store}>
         <div id="app-container">
           <Link to="/">/</Link><br /><Link to="/home">/home</Link><br />
-          {routes}
+          {getRoutes()}
         </div>
       </Provider>
     )

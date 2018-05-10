@@ -18,18 +18,14 @@ export default class LeftArea extends Component {
 	}
 	render() {
 		let { articles } = this.props;
-		let msg = ['hel2l3o232311', ' ', 'world']
+		let msg = ['hel2l3o2323113232', ' ', 'world']
 		console.log('render left area -->')
 		if (!articles) {
 			return (
 				<div className="container">
-					<span onClick={this.handleClick.bind(this)}>LeftArea1</span>
-					<Link to="/home">go home</Link>
+					<span onClick={this.handleClick.bind(this)}>Main</span>
 
-					<br />
-					<ul>
-						{msg.map((m, idx) => <li key={idx}>{m}</li>)}
-					</ul>
+					
 				</div>
 			);
 		} else {
