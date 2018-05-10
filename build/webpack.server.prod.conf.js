@@ -47,7 +47,10 @@ module.exports = {
     new webpack.DefinePlugin({
       '__views': JSON.stringify(path.join(process.cwd(), './dist/views')),
       '__assets': JSON.stringify(path.join(process.cwd(), './dist/assets')),
-      '__TERMINAL__': '"server"'
+      '__TERMINAL__': '"server"',
+      'process.env': {
+        'NODE_ENV': '"production"'
+      }
     }),
   ]
 }

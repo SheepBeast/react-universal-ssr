@@ -61,6 +61,8 @@ server.get('/home', function (req, res) {
   res.render('index', { html, state: store.getState() })
 })
 
-server.listen(8081, function () {
-  console.log('Listenning on http://localhost:8081')
+var port = process.env.NODE_ENV === "production" ? 1501 : 8081
+
+server.listen(port, function () {
+  console.log('Listenning on port:' + port)
 })
