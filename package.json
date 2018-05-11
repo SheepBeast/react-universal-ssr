@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node ./build/dev-server",
-    "server": "node ./dist/index.js",
+    "start": "pm2 start ./dist/index.js",
     "compile:client": "webpack --config ./build/webpack.client.dev.conf.js --colors",
     "compile:server": "webpack --config ./build/webpack.server.dev.conf.js --colors",
     "build:client": "webpack --config ./build/webpack.client.prod.conf.js --colors",
