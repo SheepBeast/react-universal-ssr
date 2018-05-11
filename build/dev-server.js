@@ -9,14 +9,14 @@ const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const httpProxyMiddleware = require('http-proxy-middleware')
 
-const webpackClientDevConfig = require('./webpack.client.dev.conf')
-const compiler = webpack(webpackClientDevConfig)
+const webpackDevServerConfig = require('./webpack.dev.server.conf')
+const compiler = webpack(webpackDevServerConfig)
 
 const devConfig = require('../config/dev.conf')
 
 app.use(webpackDevMiddleware(compiler, {
   noInfo: true,
-  publicPath: webpackClientDevConfig.output.publicPath
+  publicPath: webpackDevServerConfig.output.publicPath
 }))
 
 app.use(webpackHotMiddleware(compiler))

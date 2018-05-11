@@ -1,34 +1,51 @@
 var path = require('path')
 var webpack = require('webpack')
+var webpackMerge = require('webpack-merge')
+var webpackNodeExternals = require('webpack-node-externals')
 var htmlWebpackPlugin = require('html-webpack-plugin')
 var stringReplaceWebpackPlugin = require("string-replace-webpack-plugin");
 
-module.exports = {
-  entry: {
-    app: [
-      './src/index.js'
-    ]
-  },
+var commonOptions = {
   output: {
-    path: path.resolve(__dirname, '../dist'),
-    filename: 'assets/[name].[hash:8].js',
-    chunkFilename: '[name].js',
-    publicPath: ''
+    path: path.resolve(__dirname, '../cache')
   },
   resolve: {
     extensions: ['.js', '.json']
   },
+  mode: 'development',
+  watch: true,
+  watchOptions: {
+    aggregateTimeout: 1000,
+    ignored: /node_modules/
+  },
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(js|jsx)/,
         loader: 'babel-loader',
         exclude: /node_modules/
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/,
         loader: 'url-loader'
-      },
+      }
+    ]
+  }
+}
+
+var clientOptions = {
+  entry: {
+    app: [
+      './src/index.js'
+    ]
+  },
+  output: {
+    filename: 'assets/[name].[hash:4].js',
+    chunkFilename: '[name].js',
+    publicPath: ''
+  },
+  module: {
+    rules: [
       {
         test: /\.css$/,
         loader: 'style-loader!css-loader'
@@ -46,12 +63,12 @@ module.exports = {
         loader: stringReplaceWebpackPlugin.replace({
           replacements: [{
             pattern: /<!-- html -->/g,
-            replacement: function(match) {
+            replacement: function (match) {
               return '<%- html -%>'
             }
           }, {
             pattern: /<!-- state -->/g,
-            replacement: function(match) {
+            replacement: function (match) {
               return '<script type="text/javascript">window._INITIAL_STATE_ = <%- JSON.stringify(state) %></script>'
             }
           }]
@@ -59,7 +76,6 @@ module.exports = {
       }
     ]
   },
-  mode: 'development',
   externals: {
     'react': 'React',
     'react-dom': 'ReactDOM',
@@ -85,3 +101,41 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin()
   ]
 }
+
+var serverOptions = {
+  entry: {
+    index: './src/server/index.js'
+  },
+  output: {
+    filename: '[name].js'
+  },
+  target: 'node',
+  externals: [webpackNodeExternals()],
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        loader: 'css-loader'
+      },
+      {
+        test: /\.less$/,
+        loader: 'css-loader!less-loader'
+      }
+    ]
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      '__views': JSON.stringify(path.join(process.cwd(), './cache/views')),
+      '__assets': JSON.stringify(path.join(process.cwd(), './cache/assets')),
+      '__TERMINAL__': '"server"',
+      'process.env': {
+        'NODE_ENV': '"development"'
+      }
+    }),
+  ]
+}
+
+module.exports = [
+  webpackMerge(serverOptions, commonOptions),
+  webpackMerge(clientOptions, commonOptions)
+]

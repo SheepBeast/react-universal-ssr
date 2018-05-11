@@ -1,4 +1,0 @@
-https://blog.csdn.net/weixin_39424046/article/details/76222007
-https://github.com/peter-mouland/react-lego/tree/1d779a8ea45d08934a4e1bf9f306a0f38517960e
-https://github.com/ReactTraining/react-router
-https://reacttraining.com/react-router/
