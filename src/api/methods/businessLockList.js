@@ -1,0 +1,18 @@
+// @flow
+
+
+import base from './base'
+import { BUSINESS_LOCK_LIST } from '../method-types'
+import createApiOptions from '../../utils/createApiOptions'
+
+type format = {
+  roomId: string,
+  floorId: string,
+  buildingId: string,
+  houseId: string,
+  mac?: string,
+  startNum?: number,
+  getNum?: number
+}
+
+export default (data: format, tokenId: string): Promise => base(createApiOptions(BUSINESS_LOCK_LIST, data, tokenId))

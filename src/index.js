@@ -1,28 +1,20 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
-import axios from 'axios'
+
+import API from './api'
 
 import App from './App'
+import Axios from 'axios';
 
-// axios({
-//   url: 'https://t.server.wisbetter.com',
-//   method: 'post',
-//   headers: {
-//     'Content-Type': 'text/json;charset=utf-8',
-//     'Content-Version': '1.2'
-//   },
-//   data: {
-//     method: 'manageTest',
-//     data: {
-//       from: "browser"
-//     }
-//   }
-// }).then((ret) => {
-//   console.log('ret -->', ret)
-// }).catch(err => {
-//   console.log('err -->', err)
-// })
+var api = new API()
+
+// async function fetch() {
+//   var ret = await api.fetch('appSmsInfo', { flag: 3, phoneNo: '13802402735' })
+//   console.log('index ret -->', ret)
+// }
+
+// fetch()
 
 render(
   <BrowserRouter>

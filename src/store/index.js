@@ -21,11 +21,11 @@ import reducers from '../reducers';
 export default function configureStore(initialState = {}) {
   const store = createStore(reducers, initialState, applyMiddleware(thunk))
 
-  if(module.hot) {
-    module.hot.accept('../reducers', () => {
-      store.replaceReducer(require('../reducers').default)
-    })
-  }
+  // if(module.hot) {
+  //   module.hot.accept('../reducers', () => {
+  //     store.replaceReducer(require('../reducers').default)
+  //   })
+  // }
 
   return store
 }

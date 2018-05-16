@@ -1,0 +1,13 @@
+[ignore]
+<PROJECT_ROOT>/node_modules/
+
+[include]
+<PROJECT_ROOT>/src/api/
+
+[libs]
+
+[lints]
+
+[options]
+
+[strict]

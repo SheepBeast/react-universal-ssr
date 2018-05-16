@@ -64,5 +64,5 @@ server.get('/home', function (req, res) {
 var port = process.env.NODE_ENV === "production" ? 1501 : 8081
 
 server.listen(port, function () {
-  console.log('Listenning on port:' + port)
+  console.log('Listenning on port: ' + port)
 })

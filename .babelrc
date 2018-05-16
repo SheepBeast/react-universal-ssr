@@ -1,7 +1,9 @@
 {
   "presets": [
     "latest",
-    "react"
+    "react",
+    "stage-3",
+    "flow"
   ],
   "plugins": [
     "transform-runtime",

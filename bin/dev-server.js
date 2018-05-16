@@ -1,3 +1,5 @@
+#!/bin/node
+
 const path = require('path')
 const express = require('express')
 const serveFavicon = require('serve-favicon')
@@ -9,7 +11,7 @@ const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const httpProxyMiddleware = require('http-proxy-middleware')
 
-const webpackDevServerConfig = require('./webpack.dev.server.conf')
+const webpackDevServerConfig = require('../build/webpack.dev.conf')
 const compiler = webpack(webpackDevServerConfig)
 
 const devConfig = require('../config/dev.conf')

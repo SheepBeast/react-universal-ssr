@@ -4,17 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev:server": "node ./build/dev-server",
-    "start": "pm2 delete webapartment && pm2 start ./dist/index.js --name webapartment",
-    "release": "webpack --config ./build/webpack.release.conf.js",
-    "deploy": "npm run release && npm run start"
+    "dev:client": "node ./bin/dev-server.js",
+    "dev:server": "babel ./src/server/index.js -w -o ./cache/index.js && nodemon ./cache/index.js",
+    "release": "webpack --config ./build/webpack.prod.conf.js",
+    "deploy": "sh ./bin/deploy.sh webapartment"
   },
   "_comments": {
-    "_scripts_explain": "以下是对script命令的说明",
-    "_dev:server": "启动开发服务器",
-    "_start": "启动项目服务",
-    "_release": "编译项目",
-    "_deploy": "发布项目"
+    "_dev:client": "【开发】启动开发服务器，启用热更新功能",
+    "_dev:server": "【开发】监听并自动编译服务器文件，自动重启服务",
+    "_release": "【生产】编译打包项目",
+    "_deploy": "【生产】发布项目"
   },
   "author": "",
   "license": "ISC",
@@ -40,8 +39,10 @@
     "babel-plugin-transform-regenerator": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.1",
+    "babel-preset-flow": "^6.23.0",
     "babel-preset-latest": "^6.24.1",
     "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
     "clean-webpack-plugin": "^0.1.19",
     "css-loader": "^0.28.11",
     "html-loader": "^0.5.5",
