@@ -5,7 +5,7 @@ var htmlWebpackPlugin = require('html-webpack-plugin')
 module.exports = {
   entry: {
     app: [
-      'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=2000', 
+      'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=2000',
       './src/index.js'
     ]
   },
@@ -16,7 +16,7 @@ module.exports = {
     publicPath: ''
   },
   resolve: {
-    extensions: ['.js', '.json']
+    extensions: ['.js', '.jsx', '.json']
   },
   module: {
     rules: [

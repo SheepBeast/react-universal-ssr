@@ -13,7 +13,7 @@ var commonOptions = {
     path: distDir
   },
   resolve: {
-    extensions: ['.js', '.json']
+    extensions: ['.js', '.jsx', '.json']
   },
   mode: 'production',
   module: {
@@ -82,7 +82,9 @@ var clientOptions = {
     'react-router-dom': 'ReactRouterDOM',
     'redux': 'Redux',
     'redux-thunk': 'ReduxThunk',
-    'axios': 'axios'
+    'axios': 'axios',
+    'moment': 'moment',
+    'antd': 'antd'
   },
   plugins: [
     new webpack.DefinePlugin({

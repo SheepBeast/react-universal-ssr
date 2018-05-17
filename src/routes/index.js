@@ -2,7 +2,7 @@ import React from 'react'
 import { Route, IndexRoute } from 'react-router'
 import { connect } from 'react-redux'
 
-import { Home, LeftArea } from '../containers'
+import { Home, LeftArea, Statistic } from '../containers'
 
 const HomeApp = connect(state => {
   return {
@@ -26,11 +26,14 @@ const LeftAreaApp = connect(
   }
 )(LeftArea);
 
+const StatisticApp = connect()(Statistic)
+
 export default function getRoutes() {
   return (
     <div>
-      <Route exact path="/" component={LeftAreaApp} />
+      <Route exact path="/" component={StatisticApp} />
       <Route path="/home" component={HomeApp} />
+      <Route exact path="/Statistic" component={Statistic} />
     </div>
   )
 }

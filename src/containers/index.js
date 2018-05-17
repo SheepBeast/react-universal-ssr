@@ -1,8 +1,9 @@
-import AList from './AList'
 import Home from './Home'
 import LeftArea from './LeftArea'
+import Statistic from './Statistic/index'
+
 export {
-  AList,
   Home,
-  LeftArea
+  LeftArea,
+  Statistic
 }
