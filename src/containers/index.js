@@ -1,9 +1,12 @@
 import Home from './Home'
-import LeftArea from './LeftArea'
 import Statistic from './Statistic/index'
+
+import HouseingResource from './HouseingResource/index.jsx'
+import RoomDetail from './HouseingResource/RoomDetail.jsx'
 
 export {
   Home,
-  LeftArea,
+  HouseingResource,
+  RoomDetail,
   Statistic
 }

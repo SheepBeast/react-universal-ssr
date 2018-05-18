@@ -39,6 +39,19 @@ module.exports = {
       }
     ]
   },
+  externals: {
+    'react': 'React',
+    'react-dom': 'ReactDOM',
+    'react-redux': 'ReactRedux',
+    'react-router': 'ReactRouter',
+    'react-router-dom': 'ReactRouterDOM',
+    'redux': 'Redux',
+    'redux-thunk': 'ReduxThunk',
+    'axios': 'axios',
+    'moment': 'moment',
+    'antd': 'antd',
+    'highcharts': 'Highcharts'
+  },
   mode: 'development',
   plugins: [
     new webpack.DefinePlugin({

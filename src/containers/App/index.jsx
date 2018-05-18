@@ -1,9 +1,11 @@
 import { Component } from 'react'
 import { Provider } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 
 import { Avatar, Menu, Icon, Row, Col, Layout } from 'antd'
 const { SubMenu } = Menu
+const MenuItem = Menu.Item
 const { Sider, Content } = Layout
 
 import getRoutes from '../../routes'
@@ -14,7 +16,7 @@ import './index.less'
 class LeftSiderbar extends Component {
   render() {
     return (
-      <Sider id="LeftSiderbar"  style={{ borderRight: '1px solid #e8e8e8' }}>
+      <Sider id="LeftSiderbar" width={280} style={{ borderRight: '1px solid #e8e8e8' }}>
         <Row align="middle" justify="center">
           <Col>
             <div style={{
@@ -25,7 +27,7 @@ class LeftSiderbar extends Component {
               <div style={{ marginBottom: 15 }}>
                 <Avatar size="large" icon="user" />
               </div>
-              <h3><b>慧享公寓管理平台</b></h3>
+              <h3 className="fs-18"><b>慧享公寓管理平台</b></h3>
             </div>
           </Col>
         </Row>
@@ -33,29 +35,33 @@ class LeftSiderbar extends Component {
           style={{
             borderRight: 'none'
           }}
-          inlineIndent={45}
+          inlineIndent={90}
           defaultSelectedKeys={['Statistic']}
           mode="inline"
           theme="light">
-          <Menu.Item key="Statistic">
-            <Icon type="pie-chart" /> 统计分析
-          </Menu.Item>
-          <Menu.Item key="HouseingResource">
-            <Icon type="shop" /> 房源管理
-          </Menu.Item>
+          <MenuItem key="Statistic">
+            <Link to="/Statistic">
+              <Icon type="pie-chart" /> 统计分析
+            </Link>
+          </MenuItem>
+          <MenuItem key="HouseingResource">
+            <Link to="/HousingResource">
+              <Icon type="shop" /> 房源管理
+            </Link>
+          </MenuItem>
           <SubMenu id="Device" key="Device" title={<span><Icon type="desktop" /> 设备管理</span>}>
-            <Menu.Item key="MyDevice" indent>我的设备</Menu.Item>
-            <Menu.Item key="Lock">智能门锁</Menu.Item>
-            <Menu.Item key="ElectricityMeter">智能电表</Menu.Item>
-            <Menu.Item key="WaterMeter">智能水表</Menu.Item>
-            <Menu.Item key="AccessControl">智能门禁</Menu.Item>
-            <Menu.Item key="Monitoring">智能监控</Menu.Item>
+            <MenuItem key="MyDevice" indent>我的设备</MenuItem>
+            <MenuItem key="Lock">智能门锁</MenuItem>
+            <MenuItem key="ElectricityMeter">智能电表</MenuItem>
+            <MenuItem key="WaterMeter">智能水表</MenuItem>
+            <MenuItem key="AccessControl">智能门禁</MenuItem>
+            <MenuItem key="Monitoring">智能监控</MenuItem>
           </SubMenu>
           <SubMenu id="User" key="User" title={<span><Icon type="user" /> 用户管理</span>}>
-            <Menu.Item key="Role">角色管理</Menu.Item>
-            <Menu.Item key="Employeer">员工管理</Menu.Item>
+            <MenuItem key="Role">角色管理</MenuItem>
+            <MenuItem key="Employeer">员工管理</MenuItem>
           </SubMenu>
-          <Menu.Item key="Message"><Icon type="bell" /> 消息管理</Menu.Item>
+          <MenuItem key="Message"><Icon type="bell" /> 消息管理</MenuItem>
         </Menu>
       </Sider>
     )

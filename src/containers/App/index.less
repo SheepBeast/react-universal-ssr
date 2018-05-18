@@ -20,4 +20,35 @@
     height: 60px;
     border-radius: 30px;
   }
+
+  .ant-menu-sub.ant-menu-inline >.ant-menu-item {
+    padding-left: 135px !important;
+  }
+}
+
+.ant-layout,.ant-layout-header,.ant-layout-content,.ant-layout-footer,.ant-layout-sider {
+  background-color: #fff;
+}
+
+.generate(@prefix, @key, @start: 1, @end: 0) when (@start <= @end) {
+  .@{prefix}-@{start} {
+    @{key}: (@start * 1px);
+  }
+
+  .generate(@prefix, @key, (@start + 1), @end)
+}
+
+.container {
+  padding: 30px;
+}
+
+.generate(fs, font-size, 16, 18);
+
+.generate(pt, padding-top, 30, 30);
+.generate(pr, padding-right, 30, 30);
+.generate(pb, padding-bottom, 30, 30);
+.generate(pl, padding-left, 30, 30);
+
+.tc {
+  text-align: center;
 }

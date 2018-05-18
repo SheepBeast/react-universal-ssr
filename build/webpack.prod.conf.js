@@ -84,7 +84,8 @@ var clientOptions = {
     'redux-thunk': 'ReduxThunk',
     'axios': 'axios',
     'moment': 'moment',
-    'antd': 'antd'
+    'antd': 'antd',
+    'highcharts': 'highcharts'
   },
   plugins: [
     new webpack.DefinePlugin({
