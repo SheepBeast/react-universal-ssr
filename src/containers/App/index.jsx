@@ -50,8 +50,12 @@ class LeftSiderbar extends Component {
             </Link>
           </MenuItem>
           <SubMenu id="Device" key="Device" title={<span><Icon type="desktop" /> 设备管理</span>}>
-            <MenuItem key="MyDevice" indent>我的设备</MenuItem>
-            <MenuItem key="Lock">智能门锁</MenuItem>
+            <MenuItem key="MyDevice">
+              <Link to="/MyDevice">我的设备</Link>
+            </MenuItem>
+            <MenuItem key="Lock">
+              <Link to="/Lock">智能门锁</Link>
+            </MenuItem>
             <MenuItem key="ElectricityMeter">智能电表</MenuItem>
             <MenuItem key="WaterMeter">智能水表</MenuItem>
             <MenuItem key="AccessControl">智能门禁</MenuItem>

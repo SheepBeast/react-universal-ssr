@@ -1,14 +1,53 @@
 import { Component } from 'react'
+import { Link } from 'react-router-dom'
 
-import { Radio, Form, Icon, Button, Avatar, Row, Col, Breadcrumb, Card, Divider, Table } from 'antd'
+import { Button, Avatar, Row, Col, Breadcrumb, Card, Divider, Table, Icon, Modal, Form, Select, Input } from 'antd'
 
 const FormItem = Form.Item
-const RadioGroup = Radio.Group
-const RadioButton = Radio.Button
+const Option = Select.Option
 const BreadcrumbItem = Breadcrumb.Item
-const CardMeta = Card.Meta
+const confirm = Modal.confirm
 
 export default class RoomDetail extends Component {
+  constructor() {
+    super()
+    this.state = {
+      visible: false
+    }
+  }
+
+  showConfirm() {
+    let self = this
+    confirm({
+      title: '提示',
+      content: '确定退租吗？',
+      onOk: self.showInfo,
+      onCancel: self.showCancel,
+      okText: '确定',
+      cancelText: '取消'
+    })
+  }
+
+  showInfo() {
+    Modal.info({
+      title: '提示',
+      content: '退租成功'
+    })
+  }
+
+  showCancel() {
+    Modal.info({
+      title: '提示',
+      content: '退租失败'
+    })
+  }
+
+  toggleModal() {
+    this.setState({
+      visible: !this.state.visible
+    })
+  }
+
   render() {
     var dataSource = [{
       key: '5',
@@ -50,7 +89,6 @@ export default class RoomDetail extends Component {
       key: 'actions'
     }]
 
-
     return (
       <div id="RoomDetail" className="container">
         <h3>
@@ -69,16 +107,50 @@ export default class RoomDetail extends Component {
 
         <br />
 
+        <Modal title="换房" visible={this.state.visible} onCancel={this.toggleModal.bind(this)} onOk={this.toggleModal.bind(this)}>
+          <Form layout="horizontal">
+            <h3 className="tc">
+              <b>郑剑琪</b>
+            </h3>
+            <h3>
+              <b>当前</b>
+            </h3>
+            <Divider></Divider>
+            <p>居住房间：慧享公寓-西塔-1楼-BCV105</p>
+            <p>合约到期：2019-06-29</p>
+            <br/>
+
+            <h3>
+              <b>更换</b>
+            </h3>
+            <Divider></Divider>
+            <FormItem label="更换房间" labelCol={{span:4}} wrapperCol={{span: 20}}>
+              <Select defaultValue="1">
+                <Option value="1">慧享公寓-西塔-1楼-BCV106</Option>
+              </Select>
+            </FormItem>
+            <FormItem label="更换时间" labelCol={{span:4}} wrapperCol={{span: 20}}>
+              <Input defaultValue="2018年5月14日" disabled={true}></Input>
+            </FormItem>
+          </Form>
+
+
+        </Modal>
+
         <Row gutter={16}>
           <Col span={6}>
             <Card
               title={<span><Avatar icon="user" size="small" />&nbsp;&nbsp;<small>&nbsp;&nbsp;郑剑琪</small></span>}
               extra={<Icon type="info-circle" />}
               actions={[
-                <span>续租</span>,
-                <span>退租</span>,
-                <span>换房</span>,
-                <span>查看</span>
+                <span>
+                  <Link to="/Relet">续租</Link>
+                </span>,
+                <span onClick={this.showConfirm.bind(this)}>退租</span>,
+                <span onClick={this.toggleModal.bind(this)}>换房</span>,
+                <span>
+                  <Link to="/RoomDetailInfo">查看</Link>
+                </span>
               ]}>
               <h4>联系电话：<span className="message-detail">2018年5月16日</span></h4>
               <h4>租期时间：<span className="message-detail">2018年5月16日-2018年8月15日</span></h4>

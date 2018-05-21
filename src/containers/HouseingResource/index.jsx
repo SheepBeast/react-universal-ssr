@@ -13,7 +13,7 @@ export default class HousingResource extends Component {
       <div id="HousingResource" className="container">
         <h3><b>房源管理</b></h3>
         <Form layout="horizontal">
-          <FormItem label="公寓名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
+          <FormItem label="公寓名称" labelCol={{ span: 2 }} wrapperCol={{ span: 12 }}>
             <RadioGroup defaultValue="1">
               <RadioButton value="1">慧享公寓</RadioButton>
               <RadioButton value="2">无与伦比公寓</RadioButton>
@@ -21,7 +21,7 @@ export default class HousingResource extends Component {
             </RadioGroup>
           </FormItem>
 
-          <FormItem label="楼栋名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
+          <FormItem label="楼栋名称" labelCol={{ span: 2 }} wrapperCol={{ span: 12 }}>
             <RadioGroup defaultValue="1">
               <RadioButton value="1">东塔</RadioButton>
               <RadioButton value="2">西塔</RadioButton>
@@ -29,7 +29,7 @@ export default class HousingResource extends Component {
             </RadioGroup>
           </FormItem>
 
-          <FormItem label="楼层名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
+          <FormItem label="楼层名称" labelCol={{ span: 2 }} wrapperCol={{ span: 12 }}>
             <RadioGroup defaultValue="0">
               <RadioButton value="0">全部楼层</RadioButton>
               <RadioButton value="1">1楼</RadioButton>
