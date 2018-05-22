@@ -1,4 +1,5 @@
 import { Component } from 'react'
+import {Link} from 'react-router-dom'
 import { Row, Col, Form, Select, Button, Table, Divider , Modal} from 'antd'
 
 const FormItem = Form.Item
@@ -43,7 +44,7 @@ export default class Lock extends Component {
       key: 'actions',
       dataIndex: 'actions',
       render: (text, record) => (<span>
-        <a href="javascript:;">详情</a>
+        <Link to="/LockDetail">详情</Link>
         <Divider type="vertical"></Divider>
         <a onClick={this.toggleModal.bind(this)}>设置</a>
       </span>)
@@ -209,8 +210,6 @@ export default class Lock extends Component {
               </Select>
             </FormItem>
           </Form>
-
-
         </Modal>
       </div>
     )

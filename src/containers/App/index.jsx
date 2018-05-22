@@ -49,7 +49,7 @@ class LeftSiderbar extends Component {
               <Icon type="shop" /> 房源管理
             </Link>
           </MenuItem>
-          <SubMenu id="Device" key="Device" title={<span><Icon type="desktop" /> 设备管理</span>}>
+          <SubMenu key="Device" title={<span><Icon type="desktop" /> 设备管理</span>}>
             <MenuItem key="MyDevice">
               <Link to="/MyDevice">我的设备</Link>
             </MenuItem>
@@ -61,11 +61,22 @@ class LeftSiderbar extends Component {
             <MenuItem key="AccessControl">智能门禁</MenuItem>
             <MenuItem key="Monitoring">智能监控</MenuItem>
           </SubMenu>
-          <SubMenu id="User" key="User" title={<span><Icon type="user" /> 用户管理</span>}>
-            <MenuItem key="Role">角色管理</MenuItem>
-            <MenuItem key="Employeer">员工管理</MenuItem>
+          <SubMenu key="User" title={<span><Icon type="user" /> 用户管理</span>}>
+            <MenuItem key="Role">
+              <Link to="/Role">角色管理</Link>
+            </MenuItem>
+            <MenuItem key="Employeer">
+              <Link to="/Staff">员工管理</Link>
+            </MenuItem>
           </SubMenu>
-          <MenuItem key="Message"><Icon type="bell" /> 消息管理</MenuItem>
+          <SubMenu key="Message" title={<span><Icon type="bell" /> 消息管理</span>}>
+            <MenuItem key="AddMessage">
+              <Link to="/AddMessage">新增消息</Link>
+            </MenuItem>
+            <MenuItem key="CheckMessage">
+              <Link to="/CheckMessage">消息审核</Link>
+            </MenuItem>
+          </SubMenu>
         </Menu>
       </Sider>
     )
