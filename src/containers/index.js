@@ -1,5 +1,6 @@
 import Statistic from './Statistic/index'
 import HouseingResource from './HouseingResource/index.jsx'
+import AddRenter from './HouseingResource/AddRenter.jsx'
 import RoomDetail from './HouseingResource/RoomDetail.jsx'
 import Relet from './HouseingResource/Relet.jsx'
 import RoomDetailInfo from './HouseingResource/RoomDetailInfo.jsx'
@@ -25,5 +26,6 @@ export {
   Staff,
   Statistic,
   AddMessage,
-  CheckMessage
+  CheckMessage,
+  AddRenter
 }

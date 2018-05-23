@@ -95,7 +95,9 @@ export default class RoomDetail extends Component {
           <b>房间详情</b> <small>BCV103共<span style={{ color: 'red' }}>2</span>位租客</small>
           <div style={{ float: 'right', marginRight: 20 }}>
             <Button type="default" size="small">返回</Button>&nbsp;&nbsp;
-            <Button type="primary" icon="plus" size="small">添加租客</Button>
+            <Button type="primary" icon="plus" size="small">
+              <Link to="/AddRenter" style={{color: 'white'}} >添加租客</Link>
+            </Button>
           </div>
         </h3>
 

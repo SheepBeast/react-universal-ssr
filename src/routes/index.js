@@ -14,7 +14,8 @@ import {
   Auth,
   Staff,
   AddMessage,
-  CheckMessage
+  CheckMessage,
+  AddRenter
 } from '../containers'
 
 // const HomeApp = connect(state => {
@@ -25,6 +26,8 @@ import {
 // })(Home)
 
 const HouseingResourceApp = connect()(HouseingResource);
+
+const AddRenterApp = connect()(AddRenter);
 
 const RoomDetailApp = connect()(RoomDetail);
 
@@ -67,6 +70,7 @@ export default function getRoutes() {
       <Route path="/Staff" component={StaffApp} />
       <Route path="/AddMessage" component={AddMessageApp} />
       <Route path="/CheckMessage" component={CheckMessageApp} />
+      <Route path="/AddRenter" component={AddRenterApp}></Route>
     </div>
   )
 }
