@@ -1,4 +1,5 @@
 import { Component } from 'react'
+import { Link } from 'react-router-dom'
 import { Divider, Table, Button, Modal } from 'antd'
 
 const confirm = Modal.confirm
@@ -40,9 +41,8 @@ export default class Staff extends Component {
         <span>
           <a onClick={showConfirm}>禁用</a>
           <Divider type="vertical"></Divider>
-          <a href="javascript:;">编辑</a>
+          <Link to="/EditUser">编辑</Link>
           <Divider type="vertical"></Divider>
-
           <a href="javascript:;">删除</a>
         </span>
       )

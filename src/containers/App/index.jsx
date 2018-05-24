@@ -65,8 +65,11 @@ class LeftSiderbar extends Component {
             <MenuItem key="Role">
               <Link to="/Role">角色管理</Link>
             </MenuItem>
-            <MenuItem key="Employeer">
+            <MenuItem key="Staff">
               <Link to="/Staff">员工管理</Link>
+            </MenuItem>
+            <MenuItem key="Auth">
+              <Link to="/Auth">权限设置</Link>
             </MenuItem>
           </SubMenu>
           <SubMenu key="Message" title={<span><Icon type="bell" /> 消息管理</span>}>

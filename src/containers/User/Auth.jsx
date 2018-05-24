@@ -10,6 +10,8 @@ const housingResourceAuth = ['添加房产', '修改房产', '删除房产', '�
 const renderAuth = ['添加租客', '退租、续租、换房', '租客档案', '添加（编辑）会员', '删除会员', '租客入住']
 const accessAuth = ['门禁列表', '添加门禁', '修改门禁', '门禁开门记录', '删除开门记录', '门禁授权列表', '添加门禁授权', '修改门禁授权', '启用、禁用授权', '删除门禁授权', '删除门禁']
 
+import './Auth.less'
+
 export default class Auth extends Component {
   render() {
     return (<div id="Auth" className="container">
@@ -20,32 +22,32 @@ export default class Auth extends Component {
 
       <Form>
         <Row>
-          <Col span={4}>
+          <Col span={3}>
             <Checkbox>用户管理</Checkbox>
             <br />
             <CheckboxGroup options={userAuth}></CheckboxGroup>
           </Col>
-          <Col span={4}>
+          <Col span={3}>
             <Checkbox>角色管理</Checkbox>
             <br />
             <CheckboxGroup options={roleAuth}></CheckboxGroup>
           </Col>
-          <Col span={4}>
+          <Col span={3}>
             <Checkbox>设备管理</Checkbox>
             <br />
             <CheckboxGroup options={deviceAuth}></CheckboxGroup>
           </Col>
-          <Col span={4}>
+          <Col span={3}>
             <Checkbox>房产管理</Checkbox>
             <br />
             <CheckboxGroup options={housingResourceAuth}></CheckboxGroup>
           </Col>
-          <Col span={4}>
+          <Col span={3}>
             <Checkbox>租客管理</Checkbox>
             <br />
             <CheckboxGroup options={renderAuth}></CheckboxGroup>
           </Col>
-          <Col span={4}>
+          <Col span={3}>
             <Checkbox>智能门禁</Checkbox>
             <br />
             <CheckboxGroup options={accessAuth}></CheckboxGroup>

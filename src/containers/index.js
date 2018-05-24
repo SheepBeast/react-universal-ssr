@@ -12,6 +12,7 @@ import Auth from './User/Auth.jsx';
 import Staff from './User/Staff.jsx';
 import AddMessage from './Message/AddMessage.jsx'
 import CheckMessage from './Message/CheckMessage.jsx'
+import EditUser from './User/EditUser.jsx'
 
 export {
   HouseingResource,
@@ -27,5 +28,6 @@ export {
   Statistic,
   AddMessage,
   CheckMessage,
-  AddRenter
+  AddRenter,
+  EditUser
 }
