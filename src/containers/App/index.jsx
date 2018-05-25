@@ -95,7 +95,7 @@ export default class App extends Component {
         <Layout>
           <LeftSiderbar />
           <Content>
-            {getRoutes()}
+            {/* {getRoutes()} */}
           </Content>
         </Layout>
       </Provider>

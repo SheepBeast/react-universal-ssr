@@ -7,7 +7,7 @@ var { StaticRouter } = require('react-router-dom')
 var axios = require('axios')
 
 var configureStore = require('../store').default
-var App = require('../App').default
+var App = require('../containers/App').default
 
 var server = express()
 

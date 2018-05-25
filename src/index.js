@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
-import Axios from 'axios';
-import antd from 'antd'
-
 import App from './containers/App/index'
 
 // import API from './api'
@@ -22,6 +19,8 @@ render(
   </BrowserRouter>,
   document.getElementById('App')
 )
+
+
 
 if (module.hot) {
   module.hot.accept()
