@@ -1,5 +1,5 @@
-import { Component } from 'react'
-import { Provider } from 'react-redux'
+import React, { Component } from 'react'
+import { Provider, connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 
@@ -12,6 +12,8 @@ import getRoutes from '../../routes'
 import configureStore from '../../store'
 
 import './index.less'
+
+import Login from '../Login/index.jsx'
 
 class LeftSiderbar extends Component {
   render() {
@@ -89,15 +91,32 @@ class LeftSiderbar extends Component {
 let store = configureStore(__TERMINAL__ === "browser" && window._INITIAL_STATE_ || {})
 
 export default class App extends Component {
+  constructor() {
+    super()
+    this.state = {
+      isLogined: false
+    }
+  }
+
   render() {
+    console.log('app')
+    var Main
+    if (this.state.isLogined) {
+      Main = (<Layout>
+        <LeftSiderbar />
+        <Content>
+          {getRoutes()}
+        </Content>
+      </Layout>)
+    } else {
+      var LoginApp = connect()(Login)
+      Main = (<LoginApp></LoginApp>)
+    }
     return (
       <Provider store={store}>
-        <Layout>
-          <LeftSiderbar />
-          <Content>
-            {/* {getRoutes()} */}
-          </Content>
-        </Layout>
+        <div id="Main">
+          {Main}
+        </div>
       </Provider>
     )
   }

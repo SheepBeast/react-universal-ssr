@@ -1,9 +1,7 @@
 #!/bin/node
-
-const path = require('path')
 const express = require('express')
+const path = require('path')
 const serveFavicon = require('serve-favicon')
-
 const app = express();
 
 const webpack = require('webpack')
@@ -28,15 +26,6 @@ Object.keys(devConfig.proxyTable).forEach(key => {
 })
 
 app.use(serveFavicon(path.join(__dirname, '../src/assets/baidu.ico')))
-
-app.get('*', function (req, res) {
-  if (req.url !== '/') {
-    res.redirect(302, '/')
-  } else {
-    res.sendFile('index.html')
-  }
-})
-
 
 app.listen(8080, function () {
   console.log(`Listening at http://localhost:8080`)

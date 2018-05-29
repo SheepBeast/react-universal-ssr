@@ -1,7 +1,7 @@
 const noop = () => { }
 
 export default function createApiOptions(method, data = {}, tokenId = "", requestOptions = {}) {
-  return {
+  var options = {
     data: {
       method,
       tokenId,
@@ -9,4 +9,8 @@ export default function createApiOptions(method, data = {}, tokenId = "", reques
     },
     ...requestOptions
   }
+
+  console.log('create api options -->', options)
+
+  return options
 }

@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Form, Row, Col, Radio, Select, Input, Button, Table, Divider, DatePicker } from 'antd'
 

@@ -5,6 +5,13 @@ const proxyTable = {
     pathRewrite: {
       '^/api': ''
     }
+  },
+  '/local': {
+    target: 'http://localhost:8081',
+    changeOrigin: true,
+    path: {
+      '^/local': ''
+    }
   }
 }
 

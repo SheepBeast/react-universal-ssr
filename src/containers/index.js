@@ -13,6 +13,7 @@ import Staff from './User/Staff.jsx';
 import AddMessage from './Message/AddMessage.jsx'
 import CheckMessage from './Message/CheckMessage.jsx'
 import EditUser from './User/EditUser.jsx'
+import Login from './Login/index.jsx'
 
 export {
   HouseingResource,
@@ -29,5 +30,6 @@ export {
   AddMessage,
   CheckMessage,
   AddRenter,
-  EditUser
+  EditUser,
+  Login
 }

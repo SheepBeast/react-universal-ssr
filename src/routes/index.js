@@ -16,7 +16,8 @@ import {
   AddMessage,
   CheckMessage,
   AddRenter,
-  EditUser
+  EditUser,
+  Login
 } from '../containers'
 
 // const HomeApp = connect(state => {
@@ -56,6 +57,8 @@ const CheckMessageApp = connect()(CheckMessage)
 
 const EditUserApp = connect()(EditUser)
 
+const LoginApp = connect()(Login)
+
 export default function getRoutes() {
   return (
     <div>
@@ -75,6 +78,7 @@ export default function getRoutes() {
       <Route path="/CheckMessage" component={CheckMessageApp} />
       <Route path="/AddRenter" component={AddRenterApp} />
       <Route path="/EditUser" component={EditUserApp} />
+      <Route path="/Login" component={LoginApp} />
     </div>
   )
 }

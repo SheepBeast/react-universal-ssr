@@ -1,8 +1,8 @@
-import { Component } from 'react'
+import React, { Component } from 'react'
 import { Form, Select, Input, Checkbox, Upload, Button, Icon } from 'antd'
-import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg'
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import '../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
+import './AddMessage.less'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -11,12 +11,18 @@ const TextArea = Input.TextArea
 import './AddMessage.less'
 
 export default class AddMessage extends Component {
-  constructor(){
+  constructor() {
     super()
     this.state = {
-      editorState: EditorState.createEmpty()
+      contentState: {}
     }
   }
+
+  onContentStateChange(contentState) {
+    console.log('content')
+    // console.log('content state ->', contentState)
+  }
+
   render() {
     return (
       <div id="AddMessage" className="container">
@@ -48,7 +54,7 @@ export default class AddMessage extends Component {
           </FormItem>
 
           <FormItem label="正文" labelCol={{ span: 2 }} wrapperCol={{ span: 18 }} >
-            <Editor editorState={this.state.editorState} wrapperClassName="wrapperClassName" editorClassName="editorClassName"></Editor>
+            <Editor contentState={this.contentState} onEditorStateChange={this.onContentStateChange} onContentStateChange={this.onContentStateChange} wrapperClassName="wrapperClassName" editorClassName="editorClassName"></Editor>
 
           </FormItem>
         </Form>

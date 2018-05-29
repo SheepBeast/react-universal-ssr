@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import React, { Component } from 'react'
 import { Divider, Switch, Select, Input, Alert, Row, Col, Button, Form } from 'antd'
 const Option = Select.Option
 const FormItem = Form.Item

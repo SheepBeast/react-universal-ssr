@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import React, { Component } from 'react'
 // import Highcharts from 'highcharts'
 import { Row, Col, Table, Card, Avatar, Layout } from 'antd'
 
@@ -300,7 +300,7 @@ export default class Statistic extends Component {
           width={400}
           style={{
             backgroundColor: '#fff',
-            overflow: scroll,
+            overflow: 'scroll',
             padding: 30,
             borderLeft: '1px solid #e8e8e8'
           }}>

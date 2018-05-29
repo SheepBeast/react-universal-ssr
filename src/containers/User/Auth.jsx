@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import React, { Component } from 'react'
 import { Divider, Checkbox, Row, Col, Form, Button } from 'antd'
 
 const CheckboxGroup = Checkbox.Group

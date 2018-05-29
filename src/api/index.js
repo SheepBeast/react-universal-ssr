@@ -22,7 +22,7 @@ const createLoginReferrer = () => Object.assign({}, needLogin, notNeedLogin)
 proto.loginReferrer = createLoginReferrer()
 
 // 用于执行其他操作的函数
-proto.fetch = function (method, params) {
+proto.fetch = function (method, params, requestOptions) {
   if (this.loginReferrer[method] && !this.tokenId) {
     return {
       code: -1,
@@ -34,7 +34,7 @@ proto.fetch = function (method, params) {
     this.__proto__[method] = require(`./methods/${method}`).default
   }
 
-  return this[method].call(this, params, this.tokenId)
+  return this[method].call(this, params, this.tokenId, requestOptions)
 }
 
 // API类
