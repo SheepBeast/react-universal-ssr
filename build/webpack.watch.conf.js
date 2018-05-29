@@ -3,9 +3,9 @@ var path = require('path')
 var Webpack = require('webpack')
 var WebpackMerge = require('webpack-merge')
 
-var SERVER_COMMON_CONFIG = require('./webpack.server.common.conf')
+var COMMON_SERVER_CONFIG = require('./webpack.common.server.conf')
 
-module.exports = WebpackMerge(SERVER_COMMON_CONFIG, {
+module.exports = WebpackMerge(COMMON_SERVER_CONFIG, {
   output: {
     path: path.resolve(__dirname, '../cache')
   },

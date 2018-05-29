@@ -3,3 +3,4 @@ cache/
 dist/
 log/
 *.log
+conemu*

@@ -1,8 +1,10 @@
-var path = require('path')
-var webpack = require('webpack')
+var Webpack = require('webpack')
+var WebpackMerge = require('webpack-merge')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 
-module.exports = {
+var COMMON_CLIENT_CONFIG = require('./webpack.common.client.conf')
+
+module.exports = WebpackMerge(COMMON_CLIENT_CONFIG, {
   entry: {
     app: [
       'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=2000',
@@ -10,9 +12,8 @@ module.exports = {
     ]
   },
   output: {
-    path: path.resolve(__dirname, '../dist'),
-    filename: 'assets/[name].js',
-    chunkFilename: '[name].js',
+    filename: 'assets/js/[name].js',
+    chunkFilename: 'assets/js/[name].js',
     publicPath: ''
   },
   module: {
@@ -36,34 +37,18 @@ module.exports = {
       }
     ]
   },
-  resolve: {
-    extensions: ['.jsx', '.js', '.json']
-  },
-  externals: {
-    'react': 'React',
-    'react-dom': 'ReactDOM',
-    'react-redux': 'ReactRedux',
-    'react-router': 'ReactRouter',
-    'react-router-dom': 'ReactRouterDOM',
-    'redux': 'Redux',
-    'redux-thunk': 'ReduxThunk',
-    'axios': 'axios',
-    'moment': 'moment',
-    'antd': 'antd',
-    'highcharts': 'Highcharts'
-  },
   mode: 'development',
   plugins: [
-    new webpack.DefinePlugin({
-      '__SERVER__': '"/api"',
-      '__TERMINAL__': '"browser"'
+    new Webpack.DefinePlugin({
+      '__REMOTE_SERVER__': '"/api"',
+      '__MIDDLEWAVE_SERVER__': '"/local"'
     }),
     new HtmlWebpackPlugin({
       inject: true,
       template: './src/server/views/index.html',
       favicon: './src/assets/baidu.ico'
     }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.HotModuleReplacementPlugin()
+    new Webpack.optimize.OccurrenceOrderPlugin(),
+    new Webpack.HotModuleReplacementPlugin()
   ]
-}
+})

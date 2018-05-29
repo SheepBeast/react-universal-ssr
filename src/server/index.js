@@ -105,8 +105,6 @@ server.post('/login', async (req, res) => {
 
   let rsaKey = new NodeRSA(publicKey, 'pkcs8-public-pem')
 
-  console.log('rsakey -->', rsaKey)
-
   rsaKey.setOptions({
     encryptionScheme: 'pkcs1',
     signingScheme: 'pkcs1',

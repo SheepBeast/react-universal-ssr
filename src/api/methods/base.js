@@ -12,7 +12,7 @@ type format = {
 }
 
 const initialConfig = {
-  url: 'https://t.server.wisbetter.com',
+  url: __REMOTE_SERVER__,
   method: 'post',
   headers: {
     'Content-Type': 'text/json;charset=utf-8',

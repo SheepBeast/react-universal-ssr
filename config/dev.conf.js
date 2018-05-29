@@ -9,7 +9,7 @@ const proxyTable = {
   '/local': {
     target: 'http://localhost:8081',
     changeOrigin: true,
-    path: {
+    pathRewrite: {
       '^/local': ''
     }
   }

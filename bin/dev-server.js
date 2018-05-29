@@ -27,6 +27,14 @@ Object.keys(devConfig.proxyTable).forEach(key => {
 
 app.use(serveFavicon(path.join(__dirname, '../src/assets/baidu.ico')))
 
+app.get('*', function (req, res) {
+  if (req.url !== '/') {
+    res.redirect(302, '/')
+  } else {
+    res.sendFile('index.html')
+  }
+})
+
 app.listen(8080, function () {
   console.log(`Listening at http://localhost:8080`)
 })

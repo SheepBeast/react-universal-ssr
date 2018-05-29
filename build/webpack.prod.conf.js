@@ -18,9 +18,10 @@ var assetsPath = function (filename) {
   return path.join(assets, filename)
 }
 
-var SERVER_COMMON_CONFIG = require('./webpack.server.common.conf')
+var COMMON_CLIENT_CONFIG = require('./webpack.common.client.conf')
+var COMMON_SERVER_CONFIG = require('./webpack.common.server.conf')
 
-var clientOptions = {
+var client_options = {
   entry: {
     app: './src/index.js'
   },
@@ -68,22 +69,6 @@ var clientOptions = {
       }
     ]
   },
-  externals: {
-    'react': 'React',
-    'react-dom': 'ReactDOM',
-    'react-redux': 'ReactRedux',
-    'react-router': 'ReactRouter',
-    'react-router-dom': 'ReactRouterDOM',
-    'redux': 'Redux',
-    'redux-thunk': 'ReduxThunk',
-    'axios': 'axios',
-    'moment': 'moment',
-    'antd': 'antd',
-    'highcharts': 'highcharts'
-  },
-  resolve: {
-    extensions: ['.jsx', '.js', '.json']
-  },
   performance: {
     hints: false
   },
@@ -114,8 +99,8 @@ var clientOptions = {
   },
   plugins: [
     new Webpack.DefinePlugin({
-      '__SERVER__': '"https://t.server.wisbetter.com"',
-      '__TERMINAL__': '"browser"'
+      '__REMOTE_SERVER__': '"https://t.server.wisbetter.com"',
+      '__MIDDLEWAVE_SERVER__': '"https://t.apartment.wisbetter.com"' // 112.74.162.225
     }),
     new Webpack.HashedModuleIdsPlugin(),
     new BabelMinifyWebpackPlugin({
@@ -131,12 +116,11 @@ var clientOptions = {
       template: './src/server/views/index.html',
       inject: true
     }),
-    new StringReplaceWebpackPlugin(),
-    new BundleAnalyzerPlugin()
+    new StringReplaceWebpackPlugin()
   ]
 }
 
-var serverOptions = {
+var server_options = {
   output: {
     path: distDir
   },
@@ -157,6 +141,6 @@ var serverOptions = {
 }
 
 module.exports = [
-  clientOptions,
-  WebpackMerge(SERVER_COMMON_CONFIG, serverOptions)
+  WebpackMerge(COMMON_CLIENT_CONFIG, client_options),
+  WebpackMerge(COMMON_SERVER_CONFIG, server_options)
 ]
