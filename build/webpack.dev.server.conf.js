@@ -9,6 +9,7 @@ module.exports = WebpackMerge(COMMON_SERVER_CONFIG, {
   output: {
     path: path.resolve(__dirname, '../cache')
   },
+  watch: true,
   watchOptions: {
     poll: 1000,
     aggregateTimeout: 500,

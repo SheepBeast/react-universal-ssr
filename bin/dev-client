@@ -1,4 +1,5 @@
 #!/bin/node
+
 const express = require('express')
 const path = require('path')
 const serveFavicon = require('serve-favicon')
@@ -9,14 +10,14 @@ const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const httpProxyMiddleware = require('http-proxy-middleware')
 
-const webpackDevServerConfig = require('../build/webpack.dev.conf')
-const compiler = webpack(webpackDevServerConfig)
+const webpackDevClientConfig = require('../build/webpack.dev.client.conf')
+const compiler = webpack(webpackDevClientConfig)
 
 const devConfig = require('../config/dev.conf')
 
 app.use(webpackDevMiddleware(compiler, {
   noInfo: true,
-  publicPath: webpackDevServerConfig.output.publicPath
+  publicPath: webpackDevClientConfig.output.publicPath
 }))
 
 app.use(webpackHotMiddleware(compiler))

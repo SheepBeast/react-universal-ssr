@@ -59,7 +59,7 @@ server.use('/assets', express.static(__assets, {
 }))
 
 server.get('/test', function (req, res) {
-  res.send('ok')
+  res.send('ok 123')
 })
 
 server.get('/', function (req, res) {

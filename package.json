@@ -4,17 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev:client": "nodemon ./bin/dev-server.js",
+    "dev:client": "nodemon ./bin/dev-client",
     "dev:server": "nodemon ./cache/index.js",
-    "dev:watch": "webpack -w --progress --config ./build/webpack.watch.conf.js",
-    "release": "webpack --progress --config ./build/webpack.prod.conf.js",
-    "deploy": "sh ./bin/deploy.sh webapartment"
+    "dev:server:watch": "webpack -w --config ./build/webpack.dev.server.conf.js",
+    "prod:release": "webpack --config ./build/webpack.prod.release.conf.js",
+    "prod:deploy": "sh ./bin/deploy webapartment"
   },
   "_comments": {
     "_dev:client": "【开发】启动开发服务器，启用热更新功能",
-    "_dev:server": "【开发】监听并自动编译服务器文件，自动重启服务",
-    "_release": "【生产】编译打包项目",
-    "_deploy": "【生产】发布项目"
+    "_dev:server": "【开发】监听并自动编译服务器文件",
+    "_dev:server:watch": "监听dev:server命令修改文件的变化并自动重启服务",
+    "_prod:release": "【生产】编译打包项目",
+    "_prod:deploy": "【生产】发布项目"
   },
   "author": "",
   "license": "ISC",
