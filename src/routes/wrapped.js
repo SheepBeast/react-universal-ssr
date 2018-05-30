@@ -1,19 +1,19 @@
-import React, { Component } from 'react'
+import React from 'react'
 
 import {
   LoadableStatistic,
   LoadableHousingResource
 } from './loadable'
 
-class Statistic extends Component {
+class Statistic extends React.Component {
   render() {
-    return <LoadableStatistic {...this.props} />
+    return <LoadableStatistic />
   }
 }
 
-class HousingResource extends Component {
+class HousingResource extends React.Component {
   render() {
-    return <LoadableHousingResource {...this.props} />
+    return <LoadableHousingResource />
   }
 }
 

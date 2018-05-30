@@ -9,7 +9,6 @@
     "transform-runtime",
     "babel-plugin-transform-regenerator",
     "babel-plugin-transform-es2015-modules-commonjs",
-    "syntax-dynamic-import",
-    "react-loadable/babel"
+    "syntax-dynamic-import"
   ]
 }
