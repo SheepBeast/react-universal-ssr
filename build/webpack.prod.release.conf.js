@@ -12,11 +12,7 @@ var OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 var MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
-var assets = './assets'
 var distDir = path.resolve(__dirname, '../dist')
-var assetsPath = function (filename) {
-  return path.join(assets, filename)
-}
 
 var COMMON_CLIENT_CONFIG = require('./webpack.common.client.conf')
 var COMMON_SERVER_CONFIG = require('./webpack.common.server.conf')
@@ -26,8 +22,8 @@ var client_options = {
     app: './src/index.js'
   },
   output: {
-    filename: 'assets/js/[name].[hash:8].js',
-    chunkFilename: 'assets/js/[name].[hash:8].js',
+    filename: 'assets/js/[name].[contenthash:8].js',
+    chunkFilename: 'assets/js/[name].[contenthash:8].js',
     publicPath: './'
   },
   module: {
@@ -44,7 +40,7 @@ var client_options = {
             loader: 'url-loader',
             options: {
               limit: 8192,
-              name: assetsPath('img/[name].[hash:8].[ext]')
+              name: 'assets/img/[name].[contenthash:8].[ext]'
             }
           }
         ]
@@ -93,7 +89,8 @@ var client_options = {
         commons: {
           minChunks: 2
         }
-      }
+      },
+      chunks: 'all' // 测试
     },
     runtimeChunk: true
   },

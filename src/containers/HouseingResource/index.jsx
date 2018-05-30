@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import { Radio, Form, Icon, Button, Avatar, Row, Col, Input, Select, Switch, Upload, Modal, Checkbox } from 'antd'
@@ -9,7 +10,7 @@ const RadioButton = Radio.Button
 const CheckBoxGroup = Checkbox.Group
 const Option = Select.Option
 
-export default class HousingResource extends Component {
+class HousingResource extends Component {
   constructor() {
     super()
     this.state = {
@@ -265,3 +266,5 @@ export default class HousingResource extends Component {
     )
   }
 }
+
+export default connect()(HousingResource)

@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { Divider, Form, Input, Checkbox, Radio, Row, Col } from 'antd'
 
 const FormItem = Form.Item
 const CheckBoxGroup = Checkbox.Group
 const RadioGroup = Radio.Group
 
-export default class EditUser extends Component {
+class EditUser extends Component {
   render() {
     return (
       <div id="EditUser" className="container">
@@ -76,3 +77,5 @@ export default class EditUser extends Component {
     )
   }
 }
+
+export default connect()(EditUser)

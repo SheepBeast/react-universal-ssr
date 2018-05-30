@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Provider, connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
 
 
 import { Avatar, Menu, Icon, Row, Col, Layout } from 'antd'
@@ -90,16 +91,16 @@ class LeftSiderbar extends Component {
 
 let store = configureStore(__TERMINAL__ === "browser" && window._INITIAL_STATE_ || {})
 
+
 export default class App extends Component {
   constructor() {
     super()
     this.state = {
-      isLogined: false
+      isLogined: true
     }
   }
 
   render() {
-    console.log('app')
     var Main
     if (this.state.isLogined) {
       Main = (<Layout>
@@ -110,6 +111,7 @@ export default class App extends Component {
       </Layout>)
     } else {
       var LoginApp = connect()(Login)
+
       Main = (<LoginApp></LoginApp>)
     }
     return (

@@ -38,9 +38,11 @@ module.exports = WebpackMerge(COMMON_CLIENT_CONFIG, {
     ]
   },
   mode: 'development',
+  devtool: 'cheap-eval-source-map',
   plugins: [
     new Webpack.DefinePlugin({
-      '__REMOTE_SERVER__': '"/api"',
+      '__REMOTE_SERVER__': '"https://t.server.wisbetter.com"',
+      '__PROXY_SERVER__': '"/api"',
       '__MIDDLEWAVE_SERVER__': '"/local"'
     }),
     new HtmlWebpackPlugin({

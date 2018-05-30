@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { Form, Select, Input, Checkbox, Upload, Button, Icon } from 'antd'
 import { Editor } from 'react-draft-wysiwyg'
 import '../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
@@ -10,7 +11,7 @@ const TextArea = Input.TextArea
 
 import './AddMessage.less'
 
-export default class AddMessage extends Component {
+class AddMessage extends Component {
   constructor() {
     super()
     this.state = {
@@ -62,3 +63,5 @@ export default class AddMessage extends Component {
     )
   }
 }
+
+export default connect()(AddMessage)

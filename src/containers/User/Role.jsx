@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { Divider, Table, Button, Modal, Form, Input } from 'antd'
 
 const FormItem = Form.Item
 const TextArea = Input.TextArea
 
-export default class Role extends Component {
+class Role extends Component {
   constructor() {
     super()
     this.state = {
@@ -74,3 +75,5 @@ export default class Role extends Component {
     )
   }
 }
+
+export default connect()(Role)

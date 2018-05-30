@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import {Link} from 'react-router-dom'
-import { Row, Col, Form, Select, Button, Table, Divider , Modal} from 'antd'
+import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { Row, Col, Form, Select, Button, Table, Divider, Modal } from 'antd'
 
 const FormItem = Form.Item
 const Option = Select.Option
 
-export default class Lock extends Component {
+class Lock extends Component {
   constructor() {
     super()
     this.state = {
@@ -173,38 +174,38 @@ export default class Lock extends Component {
         <Table dataSource={data} columns={columns} rowSelection={rowSelection}></Table>
 
         <Modal title="设备关联房间" visible={this.state.visible} onCancel={this.toggleModal.bind(this)} onOk={this.toggleModal.bind(this)}>
-          <Form style={{margin: 'auto', width: '60%'}}>
-            <FormItem label="门锁名称" labelCol={{ span: 6 }} wrapperCol={{ span: 18}}>
+          <Form style={{ margin: 'auto', width: '60%' }}>
+            <FormItem label="门锁名称" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               <Select defaultValue="1">
                 <Option value="1">慧享公寓-西塔-1楼-BCV106</Option>
               </Select>
             </FormItem>
 
-            <FormItem label="门锁MAC" labelCol={{ span: 6 }} wrapperCol={{ span: 18}}>
+            <FormItem label="门锁MAC" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               <Select defaultValue="1">
                 <Option value="1">慧享公寓-西塔-1楼-BCV106</Option>
               </Select>
             </FormItem>
 
-            <FormItem label="公寓名称" labelCol={{ span: 6 }} wrapperCol={{ span: 18}}>
+            <FormItem label="公寓名称" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               <Select defaultValue="1">
                 <Option value="1">慧享公寓-西塔-1楼-BCV106</Option>
               </Select>
             </FormItem>
 
-            <FormItem label="楼栋名称" labelCol={{ span: 6 }} wrapperCol={{ span: 18}}>
+            <FormItem label="楼栋名称" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               <Select defaultValue="1">
                 <Option value="1">慧享公寓-西塔-1楼-BCV106</Option>
               </Select>
             </FormItem>
 
-            <FormItem label="楼层名称" labelCol={{ span: 6 }} wrapperCol={{ span: 18}}>
+            <FormItem label="楼层名称" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               <Select defaultValue="1">
                 <Option value="1">慧享公寓-西塔-1楼-BCV106</Option>
               </Select>
             </FormItem>
 
-            <FormItem label="房间名称" labelCol={{ span: 6 }} wrapperCol={{ span: 18}}>
+            <FormItem label="房间名称" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               <Select defaultValue="1">
                 <Option value="1">慧享公寓-西塔-1楼-BCV106</Option>
               </Select>
@@ -215,3 +216,5 @@ export default class Lock extends Component {
     )
   }
 }
+
+export default connect()(Lock)

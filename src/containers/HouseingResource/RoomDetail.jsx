@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-
+import { connect } from 'react-redux'
 import { Button, Avatar, Row, Col, Breadcrumb, Card, Divider, Table, Icon, Modal, Form, Select, Input } from 'antd'
 
 const FormItem = Form.Item
@@ -8,7 +8,7 @@ const Option = Select.Option
 const BreadcrumbItem = Breadcrumb.Item
 const confirm = Modal.confirm
 
-export default class RoomDetail extends Component {
+class RoomDetail extends Component {
   constructor() {
     super()
     this.state = {
@@ -220,8 +220,9 @@ export default class RoomDetail extends Component {
         <br /><br />
         <Table dataSource={dataSource} columns={columns} pagination={false}></Table>
 
-
       </div>
     )
   }
 }
+
+export default connect()(RoomDetail)

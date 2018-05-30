@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 import { Divider, Table, Button, Modal } from 'antd'
 
 const confirm = Modal.confirm
@@ -11,7 +12,7 @@ function showConfirm() {
   });
 }
 
-export default class Staff extends Component {
+class Staff extends Component {
   render() {
     var columns = [{
       title: '用户账号',
@@ -73,3 +74,5 @@ export default class Staff extends Component {
     )
   }
 }
+
+export default connect()(Staff)

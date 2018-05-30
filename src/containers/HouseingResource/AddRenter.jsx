@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { Divider, Form, Input, DatePicker, Switch, Select, Row, Col, Checkbox, Alert, Button } from 'antd'
 
 const FormItem = Form.Item
 const Option = Select.Option
 const TextArea = Input.TextArea
 
-export default class AddRenter extends Component {
+class AddRenter extends Component {
   render() {
     return (
       <div id="AddRenter" className="container">
@@ -109,3 +110,5 @@ export default class AddRenter extends Component {
     )
   }
 }
+
+export default connect()(AddRenter)

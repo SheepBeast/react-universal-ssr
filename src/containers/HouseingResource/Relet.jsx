@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-
+import { connect } from 'react-redux'
 import { Divider, Form, Input, Select, Row, Col, Button } from 'antd'
 
 const FormItem = Form.Item
 const Option = Select.Option
 
-export default class Relet extends Component {
+class Relet extends Component {
   render() {
     return (
       <div id="Relet" className="container">
@@ -61,3 +61,5 @@ export default class Relet extends Component {
     )
   }
 }
+
+export default connect()(Relet)

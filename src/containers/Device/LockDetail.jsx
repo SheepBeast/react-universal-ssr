@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 import { Row, Col, Button, Divider, Table, Tabs, Timeline, Popconfirm, Avatar, Icon, Form, Switch, Slider } from 'antd'
 
 const TabPane = Tabs.TabPane
@@ -8,7 +9,7 @@ const FormItem = Form.Item
 
 import './LockDetail.less'
 
-export default class LockDetail extends Component {
+class LockDetail extends Component {
   render() {
     const columns = [{
       title: '设备名称',
@@ -141,7 +142,7 @@ export default class LockDetail extends Component {
             <Table dataSource={dataSource} columns={columns}></Table>
           </TabPane>
           <TabPane tab="高级功能设置" key="4">
-            <Form style={{width: 600}}>
+            <Form style={{ width: 600 }}>
               <FormItem>
                 <Row gutter={16}>
                   <Col span={12}>
@@ -218,7 +219,7 @@ export default class LockDetail extends Component {
             </Form>
           </TabPane>
           <TabPane tab="门锁资料与售后" key="5">
-            <Button style={{marginRight: 20}}>厂家信息</Button>
+            <Button style={{ marginRight: 20 }}>厂家信息</Button>
             <Button>使用说明</Button>
           </TabPane>
         </Tabs>
@@ -226,3 +227,5 @@ export default class LockDetail extends Component {
     )
   }
 }
+
+export default connect()(LockDetail)

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 import { Form, Row, Col, Radio, Select, Input, Button, Table, Divider, DatePicker } from 'antd'
 
 const FormItem = Form.Item
@@ -9,7 +10,7 @@ const Option = Select.Option
 const Search = Input.Search
 const RangePicker = DatePicker.RangePicker
 
-export default class CheckMessage extends Component {
+class CheckMessage extends Component {
   render() {
     const dataSource = [{
       key: '5',
@@ -117,3 +118,5 @@ export default class CheckMessage extends Component {
     )
   }
 }
+
+export default connect()(CheckMessage)

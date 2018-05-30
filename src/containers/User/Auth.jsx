@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { Divider, Checkbox, Row, Col, Form, Button } from 'antd'
 
 const CheckboxGroup = Checkbox.Group
@@ -12,7 +13,7 @@ const accessAuth = ['门禁列表', '添加门禁', '修改门禁', '门禁开�
 
 import './Auth.less'
 
-export default class Auth extends Component {
+class Auth extends Component {
   render() {
     return (<div id="Auth" className="container">
       <h3>
@@ -61,3 +62,5 @@ export default class Auth extends Component {
     )
   }
 }
+
+export default connect()(Auth)

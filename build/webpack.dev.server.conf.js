@@ -20,7 +20,9 @@ module.exports = WebpackMerge(COMMON_SERVER_CONFIG, {
     new Webpack.DefinePlugin({
       '__views': JSON.stringify(path.join(process.cwd(), './cache/views')),
       '__assets': JSON.stringify(path.join(process.cwd(), './cache/assets')),
-      '__TERMINAL__': '"server"',
+      '__REMOTE_SERVER__': '"https://t.server.wisbetter.com"',
+      '__PROXY_SERVER__': '"/api"',
+      '__MIDDLEWAVE_SERVER__': '"/local"',
       'process.env': {
         'NODE_ENV': '"development"'
       }

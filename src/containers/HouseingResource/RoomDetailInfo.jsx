@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { Divider, Switch, Select, Input, Alert, Row, Col, Button, Form } from 'antd'
 const Option = Select.Option
 const FormItem = Form.Item
 
-export default class Info extends Component {
+class RoomDetailInfo extends Component {
   render() {
     return (
       <div id="RoomDetailInfo" className="container">
@@ -95,3 +96,5 @@ export default class Info extends Component {
     )
   }
 }
+
+export default connect()(RoomDetailInfo)

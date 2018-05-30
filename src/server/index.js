@@ -88,7 +88,7 @@ server.get('/Statistic', function (req, res) {
 
 
 
-server.post('/login', async (req, res) => {
+server.post('/login', (req, res) => {
   // console.log('headers -->', req.headers)
   console.log('login -->', req.body)
 
@@ -115,9 +115,14 @@ server.post('/login', async (req, res) => {
 
   console.log('rsa -->', encrypted)
 
-  let ret = await api.fetch(method, { userName: username, password: encrypted })
-
-  res.send(ret.data)
+  let ret = api.fetch(method, { userName: username, password: encrypted }, {
+    url: __REMOTE_SERVER__
+  }).then(r => {
+    console.log('r -->', r.data)
+    res.send(r.data)
+  }).catch(e => {
+    console.log('e -->', e)
+  })
 })
 
 var port = process.env.NODE_ENV === "production" ? 1501 : 8081

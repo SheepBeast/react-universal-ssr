@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { Form, Radio, Select, Input, Row, Col, Button, Table, Divider } from 'antd'
 
 const FormItem = Form.Item
@@ -9,7 +10,7 @@ const Search = Input.Search
 
 import './MyDevice.less'
 
-export default class Device extends Component {
+class MyDevice extends Component {
   render() {
     const dataSource = [{
       key: '5',
@@ -100,3 +101,5 @@ export default class Device extends Component {
     )
   }
 }
+
+export default connect()(MyDevice)

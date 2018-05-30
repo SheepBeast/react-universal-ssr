@@ -12,7 +12,8 @@ type format = {
 }
 
 const initialConfig = {
-  url: __REMOTE_SERVER__,
+  url: process.env.NODE_ENV === "production" ? __REMOTE_SERVER__ : __PROXY_SERVER__ ,
+  // url: '/api',
   method: 'post',
   headers: {
     'Content-Type': 'text/json;charset=utf-8',
@@ -23,6 +24,7 @@ const initialConfig = {
 
 const base = (options: format): Promise => {
   const requestOptions = Object.assign({}, initialConfig, options)
+  console.log('request options -->', requestOptions)
   return Axios(requestOptions)
 }
 

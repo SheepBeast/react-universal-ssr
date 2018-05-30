@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 // import Highcharts from 'highcharts'
 import { Row, Col, Table, Card, Avatar, Layout } from 'antd'
 
@@ -6,7 +7,7 @@ const { Content, Sider } = Layout
 
 import './index.less'
 
-export default class Statistic extends Component {
+class Statistic extends Component {
   componentDidMount() {
     var chart1, chart2,
       chartConfig1 = {
@@ -337,3 +338,5 @@ export default class Statistic extends Component {
     )
   }
 }
+
+export default connect()(Statistic)

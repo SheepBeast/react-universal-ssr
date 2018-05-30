@@ -1,5 +1,7 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Form, Icon, Input, Button, Checkbox } from 'antd';
+import PropTypes from 'prop-types'
 const FormItem = Form.Item;
 
 import API from '../../api'
@@ -37,4 +39,10 @@ class Login extends React.Component {
   }
 }
 
-export default Form.create()(Login)
+Login.contextTypes = {
+  store: PropTypes.object
+}
+
+
+
+export default connect()(Form.create()(Login))
