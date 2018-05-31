@@ -2,13 +2,15 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { Radio, Form, Icon, Button, Avatar, Row, Col, Input, Select, Switch, Upload, Modal, Checkbox } from 'antd'
+import { Radio, Form, Icon, Button, Avatar, Row, Col, Input, Select, Switch, Upload, Modal, Checkbox, Card, Divider } from 'antd'
 
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
 const RadioButton = Radio.Button
 const CheckBoxGroup = Checkbox.Group
 const Option = Select.Option
+
+import './index.less'
 
 class HousingResource extends Component {
   constructor() {
@@ -34,33 +36,36 @@ class HousingResource extends Component {
       'Apple', 'Pear', 'Orange'
     ]
     return (
-      <div id="HousingResource" className="container">
-        <h3>
-          <b>房源管理</b>
-          <Button onClick={this.toggleModal} style={{ float: 'right' }} >添加房产</Button>
-        </h3>
-        <Row>
-          <Col span={12} >
-            <Form layout="horizontal">
-              <FormItem label="公寓名称" labelCol={{ span: 2 }} wrapperCol={{ span: 16 }}>
-                <RadioGroup defaultValue="1">
-                  <RadioButton value="1">慧享公寓</RadioButton>
-                  <RadioButton value="2">无与伦比公寓</RadioButton>
-                  <RadioButton value="3">创越时代公寓</RadioButton>
-                </RadioGroup>
-              </FormItem>
+      <div id="HousingResource">
+        <Form id="filter-form" className="mb-20">
+          <FormItem label="公寓名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
+            <RadioGroup defaultValue="0">
+              <RadioButton value="0">慧享公寓</RadioButton>
+              <RadioButton value="1">无与伦比公寓</RadioButton>
+              <RadioButton value="2">创越时代公寓</RadioButton>
+              <RadioButton value="3">慧享公寓</RadioButton>
+              <RadioButton value="4">无与伦比公寓</RadioButton>
+              <RadioButton value="5">创越时代公寓</RadioButton>
+            </RadioGroup>
+          </FormItem>
 
-              <FormItem label="楼栋名称" labelCol={{ span: 2 }} wrapperCol={{ span: 16 }}>
-                <RadioGroup defaultValue="1">
-                  <RadioButton value="1">东塔</RadioButton>
-                  <RadioButton value="2">西塔</RadioButton>
-                  <RadioButton value="3">南塔</RadioButton>
-                </RadioGroup>
-              </FormItem>
+          <FormItem label="楼栋名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
+            <RadioGroup defaultValue="0">
+              <RadioButton value="0">东塔</RadioButton>
+              <RadioButton value="1">东塔</RadioButton>
+              <RadioButton value="2">西塔</RadioButton>
+              <RadioButton value="3">南塔</RadioButton>
+            </RadioGroup>
+          </FormItem>
 
-              <FormItem label="楼层名称" labelCol={{ span: 2 }} wrapperCol={{ span: 16 }}>
+          <FormItem label="楼层名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
+            <div className="radio-group-pagination">
+              <span className="prev-button">
+                <Icon type="left" />
+              </span>
+              <div className="radio-group-container">
                 <RadioGroup defaultValue="0">
-                  <RadioButton value="0">全部楼层</RadioButton>
+                  <RadioButton value="0">全部</RadioButton>
                   <RadioButton value="1">1楼</RadioButton>
                   <RadioButton value="2">2楼</RadioButton>
                   <RadioButton value="3">3楼</RadioButton>
@@ -68,50 +73,68 @@ class HousingResource extends Component {
                   <RadioButton value="5">5楼</RadioButton>
                   <RadioButton value="6">6楼</RadioButton>
                   <RadioButton value="7">7楼</RadioButton>
+                  <RadioButton value="8">8楼</RadioButton>
+                  <RadioButton value="9">9楼</RadioButton>
+                  <RadioButton value="10">10楼</RadioButton>
                 </RadioGroup>
-              </FormItem>
-            </Form>
-          </Col>
-        </Row>
+              </div>
+              <span className="next-button">
+                <Icon type="right" />
+              </span>
+            </div>
 
-        <h3>
-          <b><Icon type="shop" /> 慧享公寓</b> <small>共168套 闲置<span style={{ color: 'red' }}>143</span>套</small>
-          <span style={{ marginLeft: 20 }} >
-            <Button type="primary" icon="plus" size="small">添加用户</Button>&nbsp;&nbsp;
-            <Button type="primary" icon="tool" size="small">添加用户</Button>&nbsp;&nbsp;
-            <Button type="primary" icon="close" size="small">添加用户</Button>
-          </span>
-        </h3>
+          </FormItem>
 
-        <Row gutter={8}>
-          <Col span={8} style={{ padding: 8, border: '1px solid #eee' }}>
-            <Link to="/RoomDetail">
-              <img style={{ width: '100%' }} src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526644051240&di=792b5b537c73e257653a4a6e0c5a4257&imgtype=jpg&src=http%3A%2F%2Fimg2.imgtn.bdimg.com%2Fit%2Fu%3D1751883757%2C4269759370%26fm%3D214%26gp%3D0.jpg" alt="" />
-            </Link>
-          </Col>
-          <Col span={8} style={{ padding: 8, border: '1px solid #eee' }}>
-            <Link to="/RoomDetail">
-              <img style={{ width: '100%' }} src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526644051240&di=792b5b537c73e257653a4a6e0c5a4257&imgtype=jpg&src=http%3A%2F%2Fimg2.imgtn.bdimg.com%2Fit%2Fu%3D1751883757%2C4269759370%26fm%3D214%26gp%3D0.jpg" alt="" />
-            </Link>
-          </Col>
-          <Col span={8} style={{ padding: 8, border: '1px solid #eee' }}>
-            <Link to="/RoomDetail">
-              <img style={{ width: '100%' }} src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526644051240&di=792b5b537c73e257653a4a6e0c5a4257&imgtype=jpg&src=http%3A%2F%2Fimg2.imgtn.bdimg.com%2Fit%2Fu%3D1751883757%2C4269759370%26fm%3D214%26gp%3D0.jpg" alt="" />
-            </Link>
-          </Col>
-          <Col span={8} style={{ padding: 8, border: '1px solid #eee' }}>
-            <Link to="/RoomDetail">
-              <img style={{ width: '100%' }} src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526644051240&di=792b5b537c73e257653a4a6e0c5a4257&imgtype=jpg&src=http%3A%2F%2Fimg2.imgtn.bdimg.com%2Fit%2Fu%3D1751883757%2C4269759370%26fm%3D214%26gp%3D0.jpg" alt="" />
-            </Link>
-          </Col>
-          <Col span={8} style={{ padding: 8, border: '1px solid #eee' }}>
-            <Link to="/RoomDetail">
-              <img style={{ width: '100%' }} src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526644051240&di=792b5b537c73e257653a4a6e0c5a4257&imgtype=jpg&src=http%3A%2F%2Fimg2.imgtn.bdimg.com%2Fit%2Fu%3D1751883757%2C4269759370%26fm%3D214%26gp%3D0.jpg" alt="" />
-            </Link>
-          </Col>
-        </Row>
+          <FormItem label="房间状态" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
+            <RadioGroup defaultValue="0">
+              <RadioButton value="0">全部</RadioButton>
+              <RadioButton value="1">入住</RadioButton>
+              <RadioButton value="2">闲置</RadioButton>
+            </RadioGroup>
+          </FormItem>
 
-        <Modal title="添加房产" visible={false}>
+          <FormItem label="楼栋名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
+            <RadioGroup defaultValue="0">
+              <RadioButton value="0">全部</RadioButton>
+              <RadioButton value="1">正常</RadioButton>
+              <RadioButton value="2">异常</RadioButton>
+            </RadioGroup>
+          </FormItem>
+        </Form>
+
+        <div style={{ padding: 30, backgroundColor: 'white' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ width: 100, height: 100 }} className="mr-30">
+              <Avatar style={{ width: 100, height: 100, borderRadius: '50%' }} src="http://cdn.duitang.com/uploads/item/201405/27/20140527173845_dk8uY.jpeg" />
+            </div>
+            <div style={{ flexGrow: 1 }}>
+              <h3>
+                <b>慧享公寓</b>
+              </h3>
+              <span style={{ color: 'gray' }}>已租200套&nbsp;&nbsp;闲置40套</span>
+            </div>
+            <div style={{ width: 210 }} >
+              <Button type="primary" className="mr-30">添加账号</Button>
+              <Button type="primary">删除房产</Button>
+            </div>
+          </div>
+          <Divider></Divider>
+          <Row gutter={8}>
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(() => (
+              <Col span={4} className="mb-20" >
+                <Card actions={['file-text', 'form', 'select', 'tag-o'].map((type) => <Icon type={type} />)}>
+                  <div className="tc">
+                    <Avatar style={{ width: 100, height: 100, borderRadius: '50%' }} src="http://cdn.duitang.com/uploads/item/201405/27/20140527173845_dk8uY.jpeg" className="mb-20"></Avatar>
+                    <h3 className="mb-20">AVC1908房</h3>
+                    <h3>闲置</h3>
+                  </div>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </div>
+
+        {/* <Modal title="添加房产" visible={false}>
           <Form>
             <FormItem label="房产" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }} >
               <Input placeholder="请输入房产名称"></Input>
@@ -200,9 +223,9 @@ class HousingResource extends Component {
               <Input></Input>
             </FormItem>
           </Form>
-        </Modal>
+        </Modal> */}
 
-        <Modal title="添加房产" visible={false}>
+        {/* <Modal title="添加房产" visible={false}>
           <Form>
             <FormItem label="房产" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }} >
               <Input placeholder="请输入房产名称"></Input>
@@ -261,7 +284,7 @@ class HousingResource extends Component {
               <CheckBoxGroup options={plainOptions}></CheckBoxGroup>
             </div>
           </Form>
-        </Modal>
+        </Modal> */}
       </div>
     )
   }

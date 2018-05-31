@@ -19,7 +19,8 @@ module.exports = {
     'axios': 'axios',
     'moment': 'moment',
     'antd': 'antd',
-    'highcharts': 'Highcharts'
+    'highcharts': 'Highcharts',
+    'prop-types': 'PropTypes'
   },
   plugins: [
     new webpack.DefinePlugin({

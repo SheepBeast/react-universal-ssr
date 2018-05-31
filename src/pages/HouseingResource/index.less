@@ -1,0 +1,44 @@
+#HousingResource {
+  #filter-form {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px 30px 10px 30px;
+  }
+  .ant-radio-button-wrapper {
+    border: none;
+    line-height: 39px;
+    &.ant-radio-button-wrapper-checked {
+      box-shadow: 0 0 0 0 transparent;
+    }
+  }
+  .ant-radio-button-wrapper,
+  .ant-radio-button-wrapper.ant-radio-button-wrapper-checked,
+  .ant-radio-button-wrapper:not(:first-child):before {
+    background-color: transparent;
+  }
+
+  .radio-group-pagination {
+    display: inline-flex;
+    width: 100%;
+    justify-content: space-between;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+    /* margin-left: 20px; */
+    margin-left: 16px;
+    width: 98%;
+    >.prev-button,
+    >.next-button {
+      display: inline-block;
+      background-color: #eee;
+      width: 39px;
+      text-align: center;
+      > i {
+        line-height: 39px;
+      }
+    }
+    >.radio-group-container {
+      flex-grow: 1;
+    }
+  }
+}

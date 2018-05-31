@@ -1,0 +1,80 @@
+// .ant-layout,.ant-layout-header,.ant-layout-content,.ant-layout-footer,.ant-layout-sider {
+//   background-color: #fff;
+// }
+
+.generate(@prefix, @key, @start: 1, @end: 0) when (@start <= @end) {
+  .@{prefix}-@{start} {
+    @{key}: (@start * 1px);
+  }
+
+  .generate(@prefix, @key, (@start + 1), @end)
+}
+
+
+.generate(fs, font-size, 12, 18);
+.generate(br, border-radius, 4, 20);
+
+.generate(pt, padding-top, 20, 30);
+.generate(pr, padding-right, 20, 30);
+.generate(pb, padding-bottom, 20, 30);
+.generate(pl, padding-left, 20, 30);
+
+.generate(mt, margin-top, 20, 30);
+.generate(mr, margin-right, 20, 30);
+.generate(mb, margin-bottom, 0, 30);
+.generate(ml, margin-left, 20, 30);
+
+.tc {
+  text-align: center;
+}
+.pos-r {
+  position: relative;
+}
+.pos-a {
+  position: absolute;
+}
+.bg-w {
+  background-color: white;
+}
+
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
+.clearfix {
+  clear: both;
+}
+.w-100 {
+  width: 100%;
+}
+
+
+// 自定义
+.container {
+  .pt-30;
+  .pr-30;
+  .pb-30;
+  .pl-30;
+  .mb-20;
+  .br-8;
+  .bg-w;
+}
+
+
+table {
+  >thead {
+    .fs-14;
+  }
+  >tbody {
+    .fs-12;
+  }
+}
+
+.ant-form-item-label {
+  line-height: 32px;
+  height: 32px;
+}
