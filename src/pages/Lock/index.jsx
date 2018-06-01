@@ -163,10 +163,10 @@ class Lock extends React.Component {
 
         <Modal
           title={
-            <h3 className="tc" style={{ marginBottom: 0, position: 'relative', color: '#fff' }}>
+            <h3 className="tc" style={{ marginBottom: 0, position: 'relative' }}>
               <span>设备关联房间</span>
               <div className="pos-a" style={{ width: 55, height: 55, top: -16, right: -24 }} onClick={this.toggleModal.bind(this)} >
-                <Icon type="close-circle-o" style={{ lineHeight: '55px' }} />
+                <Icon type="close-circle-o" style={{ lineHeight: '55px', color: '#adadad' }} />
               </div>
             </h3>
           }
@@ -228,7 +228,7 @@ class Lock extends React.Component {
 
           <br />
           <div className="tc">
-            <Button className="mr-30" style={{ width: 84 }}>确定</Button>
+            <Button className="mr-30" style={{ width: 84 }}>取消</Button>
             <Button type="primary" style={{ width: 84 }}>确定</Button>
           </div>
         </Modal>
