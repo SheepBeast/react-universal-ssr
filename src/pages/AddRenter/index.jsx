@@ -11,7 +11,7 @@ class AddRenter extends Component {
     return (
       <div id="AddRenter" className="container">
         <h3>
-          <b>新增租客</b>
+          <b>增加租客</b>
         </h3>
         <h4>
           <b>慧享公寓</b>
@@ -76,42 +76,6 @@ class AddRenter extends Component {
           </Form>
         </div>
 
-        {/* <Row>
-          <Col span={8} >
-            <Form>
-
-
-
-
-
-              <Divider>授权信息</Divider>
-
-
-
-
-
-
-
-
-
-              <FormItem label="卡片授权" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} >
-                <Alert message="APP授权是一定有的，即租客可通过手机号码登陆慧享家获得权限，如果只通过APP来管理的话，门锁密码及授权卡号是不需要的" type="info"></Alert>
-              </FormItem>
-
-              <Divider>备注信息</Divider>
-              <FormItem label="备注信息" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} >
-                <TextArea autosize={{ minRows: 3, maxRows: 6 }} />
-              </FormItem>
-
-              <br />
-
-              <div className="tc">
-                <Button>确认</Button>
-              </div>
-            </Form>
-          </Col>
-        </Row> */}
-
         <div className="container" style={{ border: '1px solid #eee' }}>
           <h3>
             <b>授权信息</b>
@@ -148,12 +112,9 @@ class AddRenter extends Component {
                     </FormItem>
                   </Col>
                 </Row>
-
-
               </FormItem>
             </Col>
           </Row>
-
         </div>
 
         <div className="container" style={{ border: '1px solid #eee' }}>
@@ -163,15 +124,16 @@ class AddRenter extends Component {
           <Divider></Divider>
           <Row>
             <Col span={16}>
-              <FormItem label="备注信息" labelCol={{ span: 2}} wrapperCol={{ span: 22 }} className="mb-0" >
+              <FormItem label="备注信息" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }} className="mb-0" >
                 <TextArea autosize={{ minRows: 6, maxRows: 6 }} />
               </FormItem>
             </Col>
           </Row>
-
-
         </div>
 
+        <div className="tc">
+          <Button type="primary" style={{ width: 260 }}>确认</Button>
+        </div>
       </div >
     )
   }

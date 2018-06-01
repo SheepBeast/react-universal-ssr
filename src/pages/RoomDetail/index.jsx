@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Button, Avatar, Row, Col, Breadcrumb, Card, Divider, Table, Icon, Modal, Form, Select, Input } from 'antd'
+import { Button, Avatar, Row, Col, Breadcrumb, Card, Divider, Table, Icon, Modal, Form, Select, Input, DatePicker } from 'antd'
 
 import './index.less'
 
@@ -21,8 +21,8 @@ class RoomDetail extends Component {
   showConfirm() {
     let self = this
     confirm({
-      title: '提示',
-      content: '确定退租吗？',
+      title: '退租确认',
+      content: '退租后对应租客的门锁相关联的APP/卡片/密码权限会消失',
       onOk: self.showInfo,
       onCancel: self.showCancel,
       okText: '确定',
@@ -88,7 +88,15 @@ class RoomDetail extends Component {
     {
       title: '操作',
       dataIndex: 'actions',
-      key: 'actions'
+      key: 'actions',
+      render: () => {
+        return (
+          <span>
+            <Icon type="file-text" className="mr-20 " style={{ backgroundColor: '#D5D5D5', color: '#fff', fontSize: 16, padding: 6, borderRadius: '50%' }} />
+            <Icon type="paper-clip" style={{ backgroundColor: '#D5D5D5', color: '#fff', fontSize: 16, padding: 6, borderRadius: '50%' }} />
+          </span>
+        )
+      }
     }]
 
     return (
@@ -99,14 +107,14 @@ class RoomDetail extends Component {
               <h3>
                 <b>房间详情</b>
               </h3>
-              <Breadcrumb className="mr-20" style={{ display: 'inline-block' }} >
-                <Breadcrumb.Item>Home</Breadcrumb.Item>
-                <Breadcrumb.Item><a href="">Application Center</a></Breadcrumb.Item>
-                <Breadcrumb.Item><a href="">Application List</a></Breadcrumb.Item>
-                <Breadcrumb.Item>An Application</Breadcrumb.Item>
+              <Breadcrumb className="mr-20" style={{ display: 'inline-block' }} separator=">" >
+                <Breadcrumb.Item>慧享公寓</Breadcrumb.Item>
+                <Breadcrumb.Item><a href="">西塔</a></Breadcrumb.Item>
+                <Breadcrumb.Item><a href="">1楼</a></Breadcrumb.Item>
+                <Breadcrumb.Item><b>BCV103共<span style={{ color: 'red' }}>2</span>位租客</b></Breadcrumb.Item>
               </Breadcrumb>
 
-              <b>BCV103共<span style={{ color: 'red' }}>2</span>位租客</b>
+
 
             </div>
             <div>
@@ -120,7 +128,7 @@ class RoomDetail extends Component {
           </div>
 
           <Divider></Divider>
-          {false ?
+          {true ?
             <Row gutter={24}>
               {[1, 2, 3, 4].map(() => (
                 <Col span={6}>
@@ -147,7 +155,7 @@ class RoomDetail extends Component {
 
                       <Row gutter={0} className="tc btn-cols" >
                         <Col span={6} className="btn-col">
-                          <Link to="/Relet">续租</Link>
+                          <Link to="/HousingResource/Relet">续租</Link>
                         </Col>
 
                         <Col span={6} className="btn-col">
@@ -171,43 +179,15 @@ class RoomDetail extends Component {
 
             <div className="tc pt-30 pb-30">
               <Avatar style={{ width: 150, height: 150, borderRadius: '50%' }} src="http://cdn.duitang.com/uploads/item/201405/27/20140527173845_dk8uY.jpeg" />
-              <br/>
+              <br />
               <h2 className="mt-30">暂无租客居住</h2>
 
             </div>
-        }
+          }
         </div>
 
 
-        {/* <Modal title="换房" visible={this.state.visible} onCancel={this.toggleModal.bind(this)} onOk={this.toggleModal.bind(this)}>
-          <Form layout="horizontal">
-            <h3 className="tc">
-              <b>郑剑琪</b>
-            </h3>
-            <h3>
-              <b>当前</b>
-            </h3>
-            <Divider></Divider>
-            <p>居住房间：慧享公寓-西塔-1楼-BCV105</p>
-            <p>合约到期：2019-06-29</p>
-            <br/>
 
-            <h3>
-              <b>更换</b>
-            </h3>
-            <Divider></Divider>
-            <FormItem label="更换房间" labelCol={{span:4}} wrapperCol={{span: 20}}>
-              <Select defaultValue="1">
-                <Option value="1">慧享公寓-西塔-1楼-BCV106</Option>
-              </Select>
-            </FormItem>
-            <FormItem label="更换时间" labelCol={{span:4}} wrapperCol={{span: 20}}>
-              <Input defaultValue="2018年5月14日" disabled={true}></Input>
-            </FormItem>
-          </Form>
-
-
-        </Modal> */}
 
         <div id="devices-manegement" className="container">
           <h3>
@@ -224,7 +204,57 @@ class RoomDetail extends Component {
           <Table dataSource={dataSource} columns={columns} pagination={false}></Table>
         </div>
 
+        {
+          false ?
+            <Modal
+              className="modal-primary"
+              title={
+                <h3 className="tc" style={{ marginBottom: 0, position: 'relative', color: '#fff' }}>
+                  <span>换房</span>
+                  <div className="pos-a" style={{ width: 55, height: 55, top: -16, right: -24 }} onClick={this.toggleModal.bind(this)} >
+                    <Icon type="close-circle-o" style={{ lineHeight: '55px' }} />
+                  </div>
+                </h3>
+              }
+              visible={true}
+              destroyOnClose={true}
+              closable={false}
+              footer={null}
+            >
+              <Form>
+                <h3>
+                  <b>郑剑琪</b>
+                </h3>
+                <br />
+                <h3 style={{ color: '#999' }}>
+                  <b>当前</b>
+                </h3>
+                <FormItem label="居住房间" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} style={{ marginBottom: 2 }} >
+                  <b style={{ lineHeight: '31px' }}>慧享公寓-西塔-1楼-BCV105</b>
+                </FormItem>
 
+                <FormItem label="合约到期" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}  >
+                  <b style={{ lineHeight: '31px' }}>2019-06-29</b>
+                </FormItem>
+
+                <h3 style={{ color: '#999' }}>
+                  <b>更换</b>
+                </h3>
+                <FormItem label="更换房间" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
+                  <Select defaultValue="1">
+                    <Option value="1">慧享公寓-西塔-1楼-BCV106</Option>
+                  </Select>
+                </FormItem>
+                <FormItem label="更换时间" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
+                  <DatePicker className="w-100"></DatePicker>
+                </FormItem>
+
+                <div className="tc">
+                  <Button type="primary" style={{ width: 84 }} >保存</Button>
+                </div>
+              </Form>
+            </Modal> : ''
+        }
       </div>
     )
   }

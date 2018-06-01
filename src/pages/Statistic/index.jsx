@@ -254,7 +254,7 @@ class Statistic extends Component {
                   <h4 className="fs-14 mb-20">已租：200套</h4>
                   <h4 className="fs-14 mb-20">闲置：40套</h4>
                   <h4 className="fs-14 mb-20">今日出租：3套</h4>
-                  <Divider type="vertical" style={{ width: 2, height: 240, top: 20, right: -8, position: 'absolute' }} ></Divider>
+                  <Divider type="vertical" className="pos-a" style={{ width: 2, height: 240, top: 20, right: -8 }} ></Divider>
                 </Col>
                 <Col span={13}>
                   <div id="chart1-wrapper" style={{ width: chart_dimeter, height: chart_dimeter }}></div>
@@ -269,7 +269,7 @@ class Statistic extends Component {
                   <h4 className="fs-14 mb-20">总共：1922台</h4>
                   <h4 className="fs-14 mb-20">1918台设备正常运行365天</h4>
                   <h4 className="fs-14 mb-20">4台设备存在异常</h4>
-                  <Divider type="vertical" style={{ width: 2, height: 240, top: 20, right: -8, position: 'absolute' }} ></Divider>
+                  <Divider type="vertical" className="pos-a" style={{ width: 2, height: 240, top: 20, right: -8 }} ></Divider>
                 </Col>
                 <Col span={13}>
                   <div id="chart2-wrapper" style={{ width: chart_dimeter, height: chart_dimeter }}></div>

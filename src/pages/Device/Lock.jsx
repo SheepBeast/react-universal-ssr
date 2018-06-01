@@ -162,8 +162,7 @@ class Lock extends Component {
               <dd>异常门锁：6</dd>
             </dl>
           </Col>
-          <Col span={6} style={{
-            position: 'absolute',
+          <Col span={6} className="pos-a" style={{
             right: 20,
             bottom: 30
           }}>

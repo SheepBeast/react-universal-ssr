@@ -73,7 +73,7 @@ class LockDetail extends Component {
             <small>关联房间：慧享公寓 -> 西塔 -> 1楼 -> BCV10 <span style={{ color: 'red' }}>解除关联</span></small>
           </Col>
           <Col span={12} style={{ position: 'relative' }}>
-            <div style={{ position: 'absolute', right: 20, bottom: 20 }}>
+            <div className="pos-a" style={{  right: 20, bottom: 20 }}>
               <Button style={{ marginRight: 20 }}>返回</Button>
               <Button type="danger">还原出厂设置</Button>
             </div>

@@ -4,7 +4,14 @@ import {
   LoadableStatistic,
   LoadableHousingResource,
   LoadableRoomDetail,
-  LoadableAddRenter
+  LoadableAddRenter,
+  LoadableRelet,
+
+  LoadableMyDevice,
+  LoadableGatewayManagement,
+
+  LoadableLock
+
 } from './loadable'
 
 class Statistic extends React.Component {
@@ -31,9 +38,37 @@ class AddRenter extends React.Component {
   }
 }
 
+class Relet extends React.Component {
+  render(){
+    return <LoadableRelet />
+  }
+}
+
+class MyDevice extends React.Component {
+  render(){
+    return <LoadableMyDevice />
+  }
+}
+
+class GatewayManagement extends React.Component {
+  render(){
+    return <LoadableGatewayManagement />
+  }
+}
+
+class Lock extends React.Component {
+  render(){
+    return <LoadableLock />
+  }
+}
+
 module.exports = {
   Statistic,
   HousingResource,
   RoomDetail,
-  AddRenter
+  AddRenter,
+  Relet,
+  MyDevice,
+  GatewayManagement,
+  Lock
 }

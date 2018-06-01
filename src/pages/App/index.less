@@ -11,7 +11,7 @@
 }
 
 
-.generate(fs, font-size, 12, 18);
+.generate(fs, font-size, 12, 30);
 .generate(br, border-radius, 4, 20);
 
 .generate(pt, padding-top, 20, 30);
@@ -52,6 +52,10 @@
   width: 100%;
 }
 
+.br-50 {
+  border-radius: 50%;
+}
+
 
 // 自定义
 .container {
@@ -74,7 +78,31 @@ table {
   }
 }
 
-.ant-form-item-label {
+.form-shim .ant-form-item-label {
   line-height: 32px;
   height: 32px;
+}
+
+
+.modal-primary .ant-modal-header {
+  background-color: #0084E3;
+}
+
+.custom-radio-button-group {
+  .ant-radio-button-wrapper {
+    border: none;
+    line-height: 39px;
+    &.ant-radio-button-wrapper-checked {
+      box-shadow: 0 0 0 0 transparent;
+      &:before {
+        background-color: transparent !important;
+        opacity: 1;
+      }
+    }
+  }
+  .ant-radio-button-wrapper,
+  .ant-radio-button-wrapper.ant-radio-button-wrapper-checked,
+  .ant-radio-button-wrapper:not(:first-child):before {
+    background-color: transparent;
+  }
 }

@@ -1,22 +1,4 @@
 #HousingResource {
-  #filter-form {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 20px 30px 10px 30px;
-  }
-  .ant-radio-button-wrapper {
-    border: none;
-    line-height: 39px;
-    &.ant-radio-button-wrapper-checked {
-      box-shadow: 0 0 0 0 transparent;
-    }
-  }
-  .ant-radio-button-wrapper,
-  .ant-radio-button-wrapper.ant-radio-button-wrapper-checked,
-  .ant-radio-button-wrapper:not(:first-child):before {
-    background-color: transparent;
-  }
-
   .radio-group-pagination {
     display: inline-flex;
     width: 100%;
@@ -39,6 +21,42 @@
     }
     >.radio-group-container {
       flex-grow: 1;
+    }
+  }
+}
+
+.modal-room-list {
+  width: 560px !important;
+  .ant-checkbox-wrapper {
+    background: #D4EDFF;
+    border: 1px solid #D4EDFF;
+    border-radius: 4px;
+    padding: 6px 0;
+    margin-bottom: 8px;
+    &.checkbox-wrapper-unchecked {
+      background: transparent;
+      border: 1px solid #cac6c6;
+      color: #cac6c6;
+    }
+    .ant-checkbox {
+      display: none;
+    }
+  }
+
+}
+
+.modal-batch-title {
+  margin-bottom: 0;
+  position: relative;
+  .modal-batch-close-wrapper {
+    width: 55px;
+    height: 55px;
+    position: absolute;
+    top: -16px;
+    right: -24px;
+    .modal-batch-close {
+      line-height: 55px;
+      color: #ddd;
     }
   }
 }
