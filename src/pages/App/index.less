@@ -17,16 +17,20 @@
 .generate(pt, padding-top, 20, 30);
 .generate(pr, padding-right, 20, 30);
 .generate(pb, padding-bottom, 20, 30);
-.generate(pl, padding-left, 20, 30);
+.generate(pl, padding-left, 20, 50);
 
 .generate(mt, margin-top, 20, 30);
-.generate(mr, margin-right, 20, 30);
+.generate(mr, margin-right, 10, 30);
 .generate(mb, margin-bottom, 0, 30);
 .generate(ml, margin-left, 20, 30);
 
 .tc {
   text-align: center;
 }
+.tr {
+  text-align: right;
+}
+
 .pos-r {
   position: relative;
 }
@@ -105,4 +109,31 @@ table {
   .ant-radio-button-wrapper:not(:first-child):before {
     background-color: transparent;
   }
+}
+
+.gray {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.ant-tabs-nav-container {
+  border-bottom: 2px solid #1890ff;
+}
+.ant-tabs.ant-tabs-card>.ant-tabs-bar .ant-tabs-tab {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+.ant-tabs.ant-tabs-card>.ant-tabs-bar .ant-tabs-tab-active {
+  color: #fff;
+  background-color: #1890ff;
+}
+
+.ant-tooltip-placement-right .ant-tooltip-arrow {
+  border-right-color: #fff;
+}
+.ant-tooltip-inner {
+  background-color:#fff;
+}
+
+.danger {
+  color: #FF5555;
 }

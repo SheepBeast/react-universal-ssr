@@ -170,7 +170,7 @@ class Lock extends React.Component {
               </div>
             </h3>
           }
-          visible={true}
+          visible={false}
           destroyOnClose={true}
           closable={false}
           footer={null}
@@ -181,13 +181,13 @@ class Lock extends React.Component {
                 height: 188,
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'center'
+                justifyContent: 'space-around'
               }}>
-                <FormItem label="设备名称" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
+                <FormItem label="设备名称" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} style={{ marginBottom: 0 }}>
                   <span>门锁1</span>
                 </FormItem>
-                <FormItem label="设备MAC" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
-                  123:423:321:121
+                <FormItem label="设备MAC" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} style={{ marginBottom: 0 }}>
+                  123: 423:321:121
               </FormItem>
               </Col>
               <Col span={6} className="tc">
@@ -232,7 +232,7 @@ class Lock extends React.Component {
             <Button type="primary" style={{ width: 84 }}>确定</Button>
           </div>
         </Modal>
-      </div>
+      </div >
     )
   }
 }

@@ -10,13 +10,19 @@ import {
   Relet,
   GatewayManagement,
   MyDevice,
-  Lock
+  Lock,
+  LockDetail,
+  Staff,
+  AddStaff,
+  EditStaff,
+  Role,
+  AddRole
 } from './wrapped'
 
 export default function getRoutes() {
   return (
     <div>
-      <Route path="/" component={Lock} exact />
+      <Route path="/" component={AddRole} exact />
 
       <Route path="/Statistic" component={Statistic} />
 
@@ -28,6 +34,13 @@ export default function getRoutes() {
       <Route path="/Device/MyDevice" component={MyDevice} />
       <Route path="/Device/GatewayManagement" component={GatewayManagement} />
       <Route path="/Device/Lock" component={Lock} />
+      <Route path="/Device/LockDetail" component={LockDetail} />
+
+      <Route path="/User/Staff" component={Staff} />
+      <Route path="/User/AddStaff" component={AddStaff} />
+      <Route path="/User/EditStaff" component={EditStaff} />
+      <Route path="/User/Role" component={Role} />
+      <Route path="/User/AddRole" component={AddRole} />
     </div>
   )
 }
