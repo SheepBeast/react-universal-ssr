@@ -1,4 +1,4 @@
-import methodTypes, { BUSSINESS_REGISTER, APP_SMS_INFO, BUSINESS_LOGIN, BUSINESS_FORGET_PASSWORD } from './method-types'
+import methodTypes, { BUSSINESS_REGISTER, APP_SMS_INFO, BUSINESS_LOGIN, BUSINESS_FORGET_PASSWORD } from '../constants/method-types'
 
 let proto = {}, needLogin = {}, method
 
@@ -43,3 +43,9 @@ class API { }
 API.prototype = proto
 
 export default API
+
+let api = new API()
+
+export {
+  api
+}

@@ -2,7 +2,7 @@
 
 
 import base from './base'
-import { BUSINESS_ADD_BUILDING } from '../method-types'
+import { BUSINESS_ADD_BUILDING } from '../../constants/method-types'
 import createApiOptions from '../../utils/createApiOptions'
 
 type format = {
@@ -24,4 +24,4 @@ type format = {
   contact: string
 }
 
-export default (data: format, tokenId: string): Promise => base(createApiOptions(BUSINESS_ADD_BUILDING, data, tokenId))
+export default (data: format, tokenId: string, requestOptions: object): Promise => base(createApiOptions(BUSINESS_ADD_BUILDING, data, tokenId))

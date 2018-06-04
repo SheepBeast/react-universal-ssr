@@ -1,12 +1,14 @@
 import { combineReducers } from 'redux'
-import { articleReducer } from './article'
-import { aboutReducer } from './about'
-import { photoReducer } from './photo'
 
-const reducers = combineReducers({
-  articleReducer,
-  aboutReducer,
-  photoReducer
+
+import { userInfo, tokenID, onLoginError } from './auth'
+import { rentStatisticsData, deviceStatisticsData } from './statistics'
+
+export default combineReducers({
+  userInfo,
+  tokenID,
+  onLoginError,
+
+  rentStatisticsData,
+  deviceStatisticsData
 })
-
-export default reducers

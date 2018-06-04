@@ -1,7 +1,7 @@
 // @flow
 
 import base from './base'
-import { BUSINESS_UPDATE_PASSWORD } from '../method-types'
+import { BUSINESS_UPDATE_PASSWORD } from '../../constants/method-types'
 import createApiOptions from '../../utils/createApiOptions'
 
 type format = {
@@ -9,4 +9,4 @@ type format = {
   newPassword: string
 }
 
-export default (data: format, tokenId: string): Promise => base(createApiOptions(BUSINESS_UPDATE_PASSWORD, data, tokenId))
+export default (data: format, tokenId: string, requestOptions: object): Promise => base(createApiOptions(BUSINESS_UPDATE_PASSWORD, data, tokenId))

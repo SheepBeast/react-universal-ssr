@@ -2,7 +2,7 @@
 
 
 import base from './base'
-import { BUSINESS_WEB_LOGIN } from '../method-types'
+import { BUSINESS_WEB_LOGIN } from '../../constants/method-types'
 import createApiOptions from '../../utils/createApiOptions'
 
 type format = {

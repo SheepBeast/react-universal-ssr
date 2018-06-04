@@ -2,7 +2,7 @@
 
 
 import base from './base'
-import { BUSINESS_FORGET_PASSWORD } from '../method-types'
+import { BUSINESS_FORGET_PASSWORD } from '../../constants/method-types'
 import createApiOptions from '../../utils/createApiOptions'
 
 type format = {
@@ -12,4 +12,4 @@ type format = {
   password: string
 }
 
-export default (data: format, tokenId: string): Promise => base(createApiOptions(BUSINESS_FORGET_PASSWORD, data, tokenId))
+export default (data: format, tokenId: string, requestOptions: object): Promise => base(createApiOptions(BUSINESS_FORGET_PASSWORD, data, tokenId))

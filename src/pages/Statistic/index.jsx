@@ -7,8 +7,50 @@ const { Content, Sider } = Layout
 
 import './index.less'
 
+import { fetchRentStatisticsData, fetchDeviceStatisticsData } from '../../actions/statistic'
+
 class Statistic extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      timer: null,
+      rentStatisticsData: null,
+      deviceStaticsData: null
+    }
+  }
+
+  componentWillMount() {
+    console.log('will m')
+    this.props.fetchRentStatistics()
+    this.props.fetchDeviceStatistics()
+  }
+
   componentDidMount() {
+    console.log('did mount')
+    setTimeout(() => {
+      console.log('did mount tiemout')
+    }, 1000);
+    this.state.timer = setInterval(function (self) {
+      console.log('timer -->')
+      console.log('statistics props -->', self.props)
+      let { rentStatisticsData, deviceStaticsData } = self.props
+
+      if (rentStatisticsData && deviceStaticsData) {
+        console.log('complete')
+        self.draw(rentStatisticsData, deviceStaticsData)
+
+        clearInterval(self.state.timer)
+      } else {
+        console.log('un complete')
+      }
+    }, 1000, this)
+  }
+
+  // componentDidMount() {
+  //   console.log('did m')
+  // }
+
+  draw(rentStatisticsData, deviceStaticsData) {
     var chart1, chart2,
       chartConfig1 = {
         chart: {
@@ -65,15 +107,15 @@ class Statistic extends Component {
           data: [
             {
               name: '已租',
-              y: 200,
+              y: rentStatisticsData.hasRentNum,
               color: '#0084E3',
-              all: 240
+              all: rentStatisticsData.total
             },
             {
               name: '闲置',
-              y: 40,
+              y: rentStatisticsData.total - rentStatisticsData.hasRentNum,
               color: '#ddd',
-              all: 240
+              all: rentStatisticsData.total
             }
           ]
         }]
@@ -125,12 +167,12 @@ class Statistic extends Component {
           useHTML: true,
           labelFormatter: function () {
             return `
-            <span class="fs-14">
-              <span style="color: #999;">${this.name}</span>
-              <br />
-              ${this.y}套
-              <span style="color: #999;">${((this.y / this.all) * 100).toFixed(1) + '%'}</span>
-            </span>`;
+          <span class="fs-14">
+            <span style="color: #999;">${this.name}</span>
+            <br />
+            ${this.y}套
+            <span style="color: #999;">${((this.y / this.all) * 100).toFixed(1) + '%'}</span>
+          </span>`;
           }
         },
         series: [{
@@ -140,15 +182,15 @@ class Statistic extends Component {
           data: [
             {
               name: '正常',
-              y: 1918,
+              y: deviceStaticsData.normalNum,
               color: '#0084E3',
-              all: 1922
+              all: deviceStaticsData.total
             },
             {
               name: '故障',
-              y: 4,
+              y: deviceStaticsData.faultNum + deviceStaticsData.alarmNum,
               color: '#e800e8',
-              all: 1922
+              all: deviceStaticsData.total
             }
           ]
         }]
@@ -164,10 +206,10 @@ class Statistic extends Component {
 
     var chart1 = Highcharts.chart('chart1-wrapper', chartConfig1, renderred),
       chart2 = Highcharts.chart('chart2-wrapper', chartConfig2, renderred)
-
   }
 
   render() {
+    console.log('this ------------------- -->', this)
     var self = this
 
     var count = 0
@@ -241,6 +283,7 @@ class Statistic extends Component {
     const col_height = 280,
       chart_dimeter = 280
 
+    const { rentStatisticsData, deviceStaticsData } = this.props
 
     return (
       <Layout id="MainStatistic">
@@ -249,32 +292,46 @@ class Statistic extends Component {
             <div className="bg-w" style={{ width: 508, marginRight: 15, overflow: 'hidden', display: 'inline-block' }} >
               <Row>
                 <Col span={11} className="pt-20 pb-30 pl-30 pos-r" style={{ height: col_height }}>
-                  <h3 className="fs-18 mb-20"><b>出租统计</b></h3>
-                  <h4 className="fs-14 mb-20">总共：240套</h4>
-                  <h4 className="fs-14 mb-20">已租：200套</h4>
-                  <h4 className="fs-14 mb-20">闲置：40套</h4>
-                  <h4 className="fs-14 mb-20">今日出租：3套</h4>
+                  {
+                    rentStatisticsData ?
+                      <div>
+                        <h3 className="fs-18 mb-20"><b>出租统计</b></h3>
+                        <h4 className="fs-14 mb-20">总共：{rentStatisticsData.total}套</h4>
+                        <h4 className="fs-14 mb-20">已租：{rentStatisticsData.hasRentNum}套</h4>
+                        <h4 className="fs-14 mb-20">闲置：{rentStatisticsData.total - rentStatisticsData.hasRentNum}套</h4>
+                        <h4 className="fs-14 mb-20">今日出租：{rentStatisticsData.curDayRentNum}套</h4>
+                      </div> : null
+                  }
+
                   <Divider type="vertical" className="pos-a" style={{ width: 2, height: 240, top: 20, right: -8 }} ></Divider>
                 </Col>
                 <Col span={13}>
                   <div id="chart1-wrapper" style={{ width: chart_dimeter, height: chart_dimeter }}></div>
-                  {/* <div id="chart2-wrapper" style={{ width: chart_dimeter, height: chart_dimeter }}></div> */}
                 </Col>
               </Row>
+
             </div>
             <div className="bg-w" style={{ width: 508, marginLeft: 15, overflow: 'hidden', display: 'inline-block' }}>
               <Row>
                 <Col span={11} className="pt-20 pb-30 pl-30 pos-r" style={{ height: col_height }}>
-                  <h3 className="fs-18 mb-20"><b>设备状态统计</b></h3>
-                  <h4 className="fs-14 mb-20">总共：1922台</h4>
-                  <h4 className="fs-14 mb-20">1918台设备正常运行365天</h4>
-                  <h4 className="fs-14 mb-20">4台设备存在异常</h4>
+                  {
+                    deviceStaticsData ?
+                      <div>
+                        <h3 className="fs-18 mb-20"><b>设备状态统计</b></h3>
+                        <h4 className="fs-14 mb-20">总共：{deviceStaticsData.total}台</h4>
+                        <h4 className="fs-14 mb-20">{deviceStaticsData.total - deviceStaticsData.faultNum - deviceStaticsData.alarmNum}台设备正常运行365天</h4>
+                        <h4 className="fs-14 mb-20">{deviceStaticsData.faultNum + deviceStaticsData.alarmNum}台设备存在异常</h4>
+                      </div>
+                      : null
+                  }
+
                   <Divider type="vertical" className="pos-a" style={{ width: 2, height: 240, top: 20, right: -8 }} ></Divider>
                 </Col>
                 <Col span={13}>
                   <div id="chart2-wrapper" style={{ width: chart_dimeter, height: chart_dimeter }}></div>
                 </Col>
               </Row>
+
             </div>
           </div>
 
@@ -293,8 +350,6 @@ class Statistic extends Component {
             borderLeft: '1px solid #e8e8e8',
             height: 907
           }}>
-
-
 
           <h3 style={{ marginBottom: 20 }} className="fs-18"><b>消息提醒</b></h3>
 
@@ -331,14 +386,27 @@ class Statistic extends Component {
               <h4>租赁负责人：<span className="message-detail">王大川</span></h4>
             </Card>
           </div>
-
-
         </Sider>
-
-
       </Layout>
     )
   }
 }
 
-export default connect()(Statistic)
+const mapStateToProps = state => ({
+  rentStatisticsData: state.rentStatisticsData,
+  deviceStaticsData: state.deviceStatisticsData
+})
+
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchRentStatistics(params) {
+      dispatch(fetchRentStatisticsData(params))
+    },
+
+    fetchDeviceStatistics(params) {
+      dispatch(fetchDeviceStatisticsData(params))
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Statistic)

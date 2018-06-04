@@ -1,7 +1,7 @@
 import React from 'react'
 import {Layout} from 'antd'
 
-import getRoutes from '../../routes'
+import getRoutes from '../../router'
 
 
 export default class Main extends React.Component {

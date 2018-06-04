@@ -2,7 +2,7 @@
 
 
 import base from './base'
-import { BUSINESS_DEL_ROOM } from '../method-types'
+import { BUSINESS_DEL_ROOM } from '../../constants/method-types'
 import createApiOptions from '../../utils/createApiOptions'
 
 type format = {
@@ -10,4 +10,4 @@ type format = {
   level: number
 }
 
-export default (data: format, tokenId: string): Promise => base(createApiOptions(BUSINESS_DEL_ROOM, data, tokenId))
+export default (data: format, tokenId: string, requestOptions: object): Promise => base(createApiOptions(BUSINESS_DEL_ROOM, data, tokenId))

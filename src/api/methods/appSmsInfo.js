@@ -1,7 +1,7 @@
 // @flow
 
 import base from './base'
-import { APP_SMS_INFO } from '../method-types'
+import { APP_SMS_INFO } from '../../constants/method-types'
 import createApiOptions from '../../utils/createApiOptions'
 
 type format = {
@@ -11,4 +11,4 @@ type format = {
   locale?: 'CN' | 'US'
 }
 
-export default (data: format, tokenId: string): Promise => base(createApiOptions(APP_SMS_INFO, data, tokenId))
+export default (data: format, tokenId: string, requestOptions: object): Promise => base(createApiOptions(APP_SMS_INFO, data, tokenId))

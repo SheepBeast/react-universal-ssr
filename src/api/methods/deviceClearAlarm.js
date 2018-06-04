@@ -1,7 +1,7 @@
 // @flow
 
 import base from './base'
-import { DEVICE_CLEAR_ALARM } from '../method-types'
+import { DEVICE_CLEAR_ALARM } from '../../constants/method-types'
 import createApiOptions from '../../utils/createApiOptions'
 
 type format = {
@@ -9,4 +9,4 @@ type format = {
   deviceId: string
 }
 
-export default (data: format, tokenId: string): Promise => base(createApiOptions(DEVICE_CLEAR_ALARM, data, tokenId))
+export default (data: format, tokenId: string, requestOptions: object): Promise => base(createApiOptions(DEVICE_CLEAR_ALARM, data, tokenId))

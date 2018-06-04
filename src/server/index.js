@@ -11,7 +11,7 @@ var { renderToString } = require('react-dom/server')
 var { StaticRouter } = require('react-router-dom')
 
 var configureStore = require('../store').default
-var App = require('../containers/App').default
+var App = require('../pages/App/index').default
 var API = require('../api').default
 
 var server = express()
@@ -92,7 +92,7 @@ server.post('/login', (req, res) => {
   // console.log('headers -->', req.headers)
   console.log('login -->', req.body)
 
-  var { method, data: { username, password } } = req.body
+  var { method, data: { accountName, password } } = req.body
 
   var md5 = crypto.createHash('md5')
 
@@ -115,7 +115,7 @@ server.post('/login', (req, res) => {
 
   console.log('rsa -->', encrypted)
 
-  let ret = api.fetch(method, { userName: username, password: encrypted }, {
+  let ret = api.fetch(method, { accountName, password: encrypted }, {
     url: __REMOTE_SERVER__
   }).then(r => {
     console.log('r -->', r.data)
