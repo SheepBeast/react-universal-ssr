@@ -13,7 +13,7 @@ import {
   // LoadableLock,
   // LoadableLockDetail,
 
-  // LoadableStaff,
+  LoadableStaff,
   // LoadableAddStaff,
   // LoadableEditStaff,
   // LoadableRole,
@@ -75,11 +75,11 @@ class Statistic extends React.Component {
 //   }
 // }
 
-// class Staff extends React.Component {
-//   render() {
-//     return <LoadableStaff />
-//   }
-// }
+class Staff extends React.Component {
+  render() {
+    return <LoadableStaff />
+  }
+}
 
 // class AddStaff extends React.Component {
 //   render() {
@@ -115,7 +115,7 @@ module.exports = {
   // GatewayManagement,
   // Lock,
   // LockDetail,
-  // Staff,
+  Staff,
   // AddStaff,
   // EditStaff,
   // Role,

@@ -92,7 +92,13 @@ class SideBar extends React.Component {
           mode="inline"
           theme="light">
 
-          {
+          <Menu.Item key="statistics">
+            <Link to="/statistics">
+              <Icon type="pie-chart" /> <span>统计</span>
+            </Link>
+          </Menu.Item>
+
+          {/* {
             actions.map(({ actionName, actionStr, lowerActions }) => {
               if (lowerActions) {
                 return (
@@ -118,7 +124,7 @@ class SideBar extends React.Component {
                 )
               }
             })
-          }
+          } */}
         </Menu>
       </Layout.Sider>
     )

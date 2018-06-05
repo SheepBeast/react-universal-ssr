@@ -43,10 +43,10 @@ var loadable = __TERMINAL__ === 'browser' ? {
   //   loader: () => import('../pages/LockDetail/index'),
   //   loading
   // }),
-  // LoadableStaff: Loadable({
-  //   loader: () => import('../pages/Staff/index'),
-  //   loading
-  // }),
+  LoadableStaff: Loadable({
+    loader: () => import('../pages/Staff/index'),
+    loading
+  }),
   // LoadableAddStaff: Loadable({
   //   loader: () => import('../pages/AddStaff/index'),
   //   loading
@@ -76,6 +76,7 @@ var loadable = __TERMINAL__ === 'browser' ? {
     // LoadableLock: require('../pages/Lock/index').default,
     // LoadableLockDetail: require('../pages/LockDetail/index').default,
 
+    LoadableStaff: require('../pages/Staff/index').default,
     // LoadableAddStaff: require('../pages/AddStaff/index').default,
     // LoadableEditStaff: require('../pages/EditStaff/index').default,
     // LoadableRole: require('../pages/Role/index').default,

@@ -12,7 +12,7 @@ import {
   // MyDevice,
   // Lock,
   // LockDetail,
-  // Staff,
+  Staff,
   // AddStaff,
   // EditStaff,
   // Role,
@@ -22,7 +22,7 @@ import {
 export default function getRoutes() {
     return (
         <div>
-          <Route path="/" component={Statistic} exact />
+          <Route path="/" component={Staff} exact />
 
           <Route path="/statistic" component={Statistic} />
 
