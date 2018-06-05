@@ -1,4 +1,4 @@
-import Statistic from './Statistic/index'
+import Statistics from './Statistics/index'
 import HouseingResource from './HouseingResource/index.jsx'
 import AddRenter from './HouseingResource/AddRenter.jsx'
 import RoomDetail from './HouseingResource/RoomDetail.jsx'
@@ -26,7 +26,7 @@ export {
   Role,
   Auth,
   Staff,
-  Statistic,
+  Statistics,
   AddMessage,
   CheckMessage,
   AddRenter,

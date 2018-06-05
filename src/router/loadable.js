@@ -4,8 +4,8 @@ import Loadable from 'react-loadable'
 const loading = () => <div>loading...</div>
 
 var loadable = __TERMINAL__ === 'browser' ? {
-  LoadableStatistic: Loadable({
-    loader: () => import('../pages/Statistic/index'),
+  LoadableStatistics: Loadable({
+    loader: () => import('../pages/Statistics/index'),
     loading
   }),
 
@@ -64,7 +64,7 @@ var loadable = __TERMINAL__ === 'browser' ? {
   //   loading
   // })
 } : {
-    LoadableStatistic: require('../pages/Statistic/index').default,
+    LoadableStatistics: require('../pages/Statistics/index').default,
     // LoadableHousingResource: require('../pages/HouseingResource/index').default,
     // LoadableRoomDetail: require('../pages/RoomDetail/index').default,
     // LoadableAddRenter: require('../pages/AddRenter/index').default,

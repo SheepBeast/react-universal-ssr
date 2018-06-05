@@ -9,7 +9,7 @@ import './index.less'
 
 import { fetchRentStatisticsData, fetchDeviceStatisticsData } from '../../actions/statistics'
 
-class Statistic extends Component {
+class Statistics extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -20,35 +20,21 @@ class Statistic extends Component {
   }
 
   componentWillMount() {
-    console.log('will m')
     this.props.fetchRentStatistics()
     this.props.fetchDeviceStatistics()
   }
 
   componentDidMount() {
-    console.log('did mount')
-    setTimeout(() => {
-      console.log('did mount tiemout')
-    }, 1000);
     this.state.timer = setInterval(function (self) {
-      console.log('timer -->')
-      console.log('statistics props -->', self.props)
       let { rentStatisticsData, deviceStaticsData } = self.props
 
       if (rentStatisticsData && deviceStaticsData) {
-        console.log('complete')
         self.draw(rentStatisticsData, deviceStaticsData)
 
         clearInterval(self.state.timer)
-      } else {
-        console.log('un complete')
       }
     }, 1000, this)
   }
-
-  // componentDidMount() {
-  //   console.log('did m')
-  // }
 
   draw(rentStatisticsData, deviceStaticsData) {
     var chart1, chart2,
@@ -392,10 +378,13 @@ class Statistic extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  rentStatisticsData: state.rentStatisticsData,
-  deviceStaticsData: state.deviceStatisticsData
-})
+const mapStateToProps = state => {
+  console.log('state -->', state)
+  return {
+    rentStatisticsData: state.rentStatisticsData,
+    deviceStaticsData: state.deviceStatisticsData
+  }
+}
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -409,4 +398,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Statistic)
+export default connect(mapStateToProps, mapDispatchToProps)(Statistics)

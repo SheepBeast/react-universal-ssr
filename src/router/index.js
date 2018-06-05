@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom'
 import Loadable from 'react-loadable'
 
 import {
-  Statistic,
+  Statistics,
   // HousingResource,
   // RoomDetail,
   // AddRenter,
@@ -24,7 +24,7 @@ export default function getRoutes() {
         <div>
           <Route path="/" component={Staff} exact />
 
-          <Route path="/statistic" component={Statistic} />
+          <Route path="/statistics" component={Statistics} />
 
           {/* <Route path="/HousingResource" component={HousingResource} exact />
     <Route path="/HousingResource/RoomDetail" component={RoomDetail} />

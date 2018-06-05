@@ -11,7 +11,7 @@ class SideBar extends React.Component {
     let { userPhoto, accountName, actions } = userInfo
 
     const Links = {
-      "statistics": '/statistic',
+      "statistics": '/statistics',
 
       "roleManage": '',
       "roleManage-list": '/role/list',
@@ -88,7 +88,7 @@ class SideBar extends React.Component {
             borderRight: 'none'
           }}
           inlineIndent={90}
-          defaultSelectedKeys={['statistic']}
+          defaultSelectedKeys={['statistics']}
           mode="inline"
           theme="light">
 

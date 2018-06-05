@@ -75,7 +75,7 @@ server.get('/', function (req, res) {
   res.render('index', { html, state: store.getState() })
 })
 
-server.get('/Statistic', function (req, res) {
+server.get('/Statistics', function (req, res) {
   var html = renderToString(
     <StaticRouter location={req.url} context={{}}>
       <App />

@@ -61,8 +61,8 @@ class Staff extends Component {
       )
     }]
 
-    var dataSource = Array(4).fill(1).map(() => ({
-      key: '1',
+    var dataSource = Array(4).fill(1).map((val, idx) => ({
+      key: idx,
       name: '罗京夫',
       role: '管理者',
       userName: 'tenant_001',

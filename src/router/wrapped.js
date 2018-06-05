@@ -1,7 +1,7 @@
 import React from 'react'
 
 import {
-  LoadableStatistic,
+  LoadableStatistics,
   // LoadableHousingResource,
   // LoadableRoomDetail,
   // LoadableAddRenter,
@@ -21,9 +21,9 @@ import {
 
 } from './loadable'
 
-class Statistic extends React.Component {
+class Statistics extends React.Component {
   render() {
-    return <LoadableStatistic />
+    return <LoadableStatistics />
   }
 }
 
@@ -106,7 +106,7 @@ class Staff extends React.Component {
 // }
 
 module.exports = {
-  Statistic,
+  Statistics,
   // HousingResource,
   // RoomDetail,
   // AddRenter,
