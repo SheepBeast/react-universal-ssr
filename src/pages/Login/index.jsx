@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import { Form, Icon, Input, Button, Checkbox } from 'antd';
 import PropTypes from 'prop-types'
 
@@ -10,7 +11,9 @@ const FormItem = Form.Item;
 
 class Login extends React.Component {
   componentDidMount() {
-    this.props.submit()
+    this.props.submit().then(() => {
+      this.props.history.push('/')
+    })
   }
 
   render() {
@@ -38,7 +41,7 @@ const mapDispatchToProps = dispatch => {
     submit(e) {
       e && e.preventDefault()
 
-      dispatch(login({
+      return dispatch(login({
         accountName: '慧享测试公寓',
         password: '123456'
       }))
@@ -46,4 +49,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(Login))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(Login)))

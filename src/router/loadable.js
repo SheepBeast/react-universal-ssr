@@ -55,14 +55,18 @@ var loadable = __TERMINAL__ === 'browser' ? {
   //   loader: () => import('../pages/EditStaff/index'),
   //   loading
   // }),
-  // LoadableRole: Loadable({
-  //   loader: () => import('../pages/Role/index'),
-  //   loading
-  // }),
-  // LoadableAddRole: Loadable({
-  //   loader: () => import('../pages/AddRole/index'),
-  //   loading
-  // })
+  LoadableRole: Loadable({
+    loader: () => import('../pages/Role/index'),
+    loading
+  }),
+  LoadableAddRole: Loadable({
+    loader: () => import('../pages/AddRole/index'),
+    loading
+  }),
+  LoadableLogin: Loadable({
+    loader: () => import ('../pages/Login/index'),
+    loading
+  })
 } : {
     LoadableStatistics: require('../pages/Statistics/index').default,
     // LoadableHousingResource: require('../pages/HouseingResource/index').default,
@@ -79,8 +83,9 @@ var loadable = __TERMINAL__ === 'browser' ? {
     LoadableStaff: require('../pages/Staff/index').default,
     // LoadableAddStaff: require('../pages/AddStaff/index').default,
     // LoadableEditStaff: require('../pages/EditStaff/index').default,
-    // LoadableRole: require('../pages/Role/index').default,
-    // LoadableAddRole: require('../pages/AddRole/index').default
+    LoadableRole: require('../pages/Role/index').default,
+    LoadableAddRole: require('../pages/AddRole/index').default,
+    LoadableLogin: require('../pages/Login/index').default
   }
 
 module.exports = loadable

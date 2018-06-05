@@ -21,9 +21,27 @@ const roleAuth = ['角色列表', '添加角色', '修改角色', '删除角色'
 const staffAuth = ['员工列表', '添加员工', '修改员工', '删除员工', '启用/禁用']
 
 import './index.less'
+import { addRoleData, fetchRoleListData, fetchMenuPermissionListData } from '../../actions/role';
+
+import { api } from '../../api'
+import { BUSINESS_MENU_PERMISSION_LIST } from '../../constants/method-types'
 
 class AddRole extends React.Component {
+
+
+  componentWillMount() {
+    console.log('role list -->', this.props)
+
+    if (!this.props.roleList) {
+      this.props.fetchRoleList({ state: 1 })
+    }
+
+    this.props.fetchMenuPermissionList()
+  }
+
   render() {
+    var roleList = this.props.roleList || []
+
     return (
       <div id="AddRole" className="container">
         <Row>
@@ -39,7 +57,7 @@ class AddRole extends React.Component {
 
         <Divider></Divider>
 
-        <Form className="form-shim">
+        <Form className="form-shim" onSubmit={this.props.submit.bind(this)}>
           <Row>
             <Col span={14}>
               <FormItem label="角色名称" labelCol={{ span: 2 }} wrapperCol={{ span: 16 }}>
@@ -50,72 +68,49 @@ class AddRole extends React.Component {
                 <TextArea autosize={{ minRows: 6, maxRows: 6 }} />
               </FormItem>
 
-              <FormItem label="权限" labelCol={{ span: 2 }} wrapperCol={{ span: 21 }}>
-                <RadioGroup defaultValue="0">
-                  <RadioButton value="0">管理员</RadioButton>
-                  <RadioButton value="1">客服</RadioButton>
-                  <RadioButton value="2" style={{ width: 100 }}>施工人员</RadioButton>
-                </RadioGroup>
-              </FormItem>
+              {
+                roleList.length > 0 ?
+                  <FormItem label="权限" labelCol={{ span: 2 }} wrapperCol={{ span: 21 }}>
+                    <RadioGroup defaultValue="0">
+                      {
+                        roleList.map(role => <RadioButton value={role.roleId} style={{ width: 100 }}>{role.roleName}</RadioButton>)
+                      }
+                    </RadioGroup>
+                  </FormItem> : null
+              }
+
             </Col>
           </Row>
 
-          <Row>
-            <Col span={8} offset={1}>
-              <div className="mb-20">
-                <div>
-                  <Icon type="down" className="mr-10"></Icon>
-                  <Checkbox>
-                    <span>房源管理</span>
-                  </Checkbox>
-                </div>
+          {
+            roleList.length > 0 ?
+              <Row>
+                <Col span={8} offset={1}>
+                  {
+                    actions.map(({ actionName, actionStr, lowerActions }) => {
+                      let _lowerActions = lowerActions ? lowerActions.map((action) => {
+                        return action.actionName
+                      }) : []
 
-                <div className="pl-50">
-                  <CheckboxGroup options={houseAuth} />
-                </div>
-              </div>
+                      return (
+                        <div className="mb-20">
+                          <div>
+                            <Icon type="down" className="mr-10"></Icon>
+                            <Checkbox>
+                              <span>{actionName}</span>
+                            </Checkbox>
+                          </div>
 
-              <div className="mb-20">
-                <div>
-                  <Icon type="down" className="mr-10"></Icon>
-                  <Checkbox>
-                    <span>设备管理</span>
-                  </Checkbox>
-                </div>
-
-                <div className="pl-50">
-                  <CheckboxGroup options={deviceAuth} />
-                </div>
-              </div>
-
-              <div className="mb-20">
-                <div>
-                  <Icon type="down" className="mr-10"></Icon>
-                  <Checkbox>
-                    <span>角色管理</span>
-                  </Checkbox>
-                </div>
-
-                <div className="pl-50">
-                  <CheckboxGroup options={roleAuth} />
-                </div>
-              </div>
-
-              <div className="mb-20">
-                <div>
-                  <Icon type="down" className="mr-10"></Icon>
-                  <Checkbox>
-                    <span>员工管理</span>
-                  </Checkbox>
-                </div>
-
-                <div className="pl-50">
-                  <CheckboxGroup options={staffAuth} />
-                </div>
-              </div>
-            </Col>
-          </Row>
-
+                          <div className="pl-50">
+                            <CheckboxGroup options={_lowerActions} />
+                          </div>
+                        </div>
+                      )
+                    })
+                  }
+                </Col>
+              </Row> : null
+          }
           <br />
           <Row>
             <Col span={8} offset={1}>
@@ -129,4 +124,25 @@ class AddRole extends React.Component {
   }
 }
 
-export default connect()(AddRole)
+const mapStateToProps = state => state
+const mapDispatchToProps = dispatch => {
+  return {
+    submit(e) {
+      e.preventDefault()
+      var params = {
+        roleName: 'a',
+        remark: '我时备住',
+        actionId: '1'
+      }
+      return dispatch(addRoleData(params))
+    },
+    fetchRoleList(params) {
+      return dispatch(fetchRoleListData(params))
+    },
+    fetchMenuPermissionList(params) {
+      return dispatch(fetchMenuPermissionListData(params))
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddRole)

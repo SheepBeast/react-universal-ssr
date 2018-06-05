@@ -16,8 +16,9 @@ import {
   LoadableStaff,
   // LoadableAddStaff,
   // LoadableEditStaff,
-  // LoadableRole,
-  // LoadableAddRole
+  LoadableRole,
+  LoadableAddRole,
+  LoadableLogin
 
 } from './loadable'
 
@@ -93,17 +94,23 @@ class Staff extends React.Component {
 //   }
 // }
 
-// class Role extends React.Component {
-//   render() {
-//     return <LoadableRole />
-//   }
-// }
+class Role extends React.Component {
+  render() {
+    return <LoadableRole />
+  }
+}
 
-// class AddRole extends React.Component {
-//   render() {
-//     return <LoadableAddRole />
-//   }
-// }
+class AddRole extends React.Component {
+  render() {
+    return <LoadableAddRole />
+  }
+}
+
+class Login extends React.Component {
+  render(){
+    return <LoadableLogin />
+  }
+}
 
 module.exports = {
   Statistics,
@@ -118,6 +125,7 @@ module.exports = {
   Staff,
   // AddStaff,
   // EditStaff,
-  // Role,
-  // AddRole
+  Role,
+  AddRole,
+  Login
 }

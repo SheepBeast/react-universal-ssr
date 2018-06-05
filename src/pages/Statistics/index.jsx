@@ -389,11 +389,11 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     fetchRentStatistics(params) {
-      dispatch(fetchRentStatisticsData(params))
+      return dispatch(fetchRentStatisticsData(params))
     },
 
     fetchDeviceStatistics(params) {
-      dispatch(fetchDeviceStatisticsData(params))
+      return dispatch(fetchDeviceStatisticsData(params))
     }
   }
 }

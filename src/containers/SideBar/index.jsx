@@ -14,19 +14,19 @@ class SideBar extends React.Component {
       "statistics": '/statistics',
 
       "roleManage": '',
-      "roleManage-list": '/role/list',
-      "roleManage-add": '/role/add',
-      "roleManage-delete": '/role/delete',
-      "roleManage-update": '/role/update',
+      "roleManage-list": '/role-list',
+      "roleManage-add": '/role-add',
+      "roleManage-delete": '/role-delete',
+      "roleManage-update": '/role-update',
 
       "staffManage": '/staff',
-      "staffManage-list": '/staff/list',
-      "staffManage-add": '/staff/add',
-      "staffManage-delete": '/staff/delete',
-      "staffManage-enable": '/staff/enable',
-      "staffManage-modify": '/staff/modify',
-      "staffManage-relateRole": '/staff/relateRole',
-      "staffManage-relateProperty": '/staff/relateProperty',
+      "staffManage-list": '/staff-list',
+      "staffManage-add": '/staff-add',
+      "staffManage-delete": '/staff-delete',
+      "staffManage-enable": '/staff-enable',
+      "staffManage-modify": '/staff-modify',
+      "staffManage-relateRole": '/staff-relateRole',
+      "staffManage-relateProperty": '/staff-relateProperty',
 
       "tenantManage": '/tenant',
       "tenantManage-list": '/tenant/list',
@@ -59,74 +59,74 @@ class SideBar extends React.Component {
       "msgManage-audit": '/msg/audit',
 
       "propertyManage": '/property',
-      "propertyManage-list": '/property/list',
-      "propertyManage-add": '/property/add',
-      "propertyManage-delete": '/property/delete',
-      "propertyManage-update": '/property/update',
-      "propertyManage-detail": '/property/detail',
-      "propertyManage-relateDevice": '/propery/relateDevice'
+      "propertyManage-list": '/property-list',
+      "propertyManage-add": '/property-add',
+      "propertyManage-delete": '/property-delete',
+      "propertyManage-update": '/property-update',
+      "propertyManage-detail": '/property-detail',
+      "propertyManage-relateDevice": '/property-relateDevice'
     }
 
+
     return (
-      <Layout.Sider id="SideBar" width={280} className="bg-w">
-        <Row align="middle" justify="center">
-          <Col>
-            <div style={{
-              textAlign: 'center',
-              paddingTop: 30,
-              paddingBottom: 30
-            }}>
-              <div style={{ marginBottom: 15 }}>
-                <Avatar size="large" src={userPhoto} />
-              </div>
-              <h3 className="fs-18"><b>{accountName}</b></h3>
-            </div>
-          </Col>
-        </Row>
-        <Menu
-          style={{
-            borderRight: 'none'
-          }}
-          inlineIndent={90}
-          defaultSelectedKeys={['statistics']}
-          mode="inline"
-          theme="light">
+      <div>
+        {
+          this.props.tokenID ? <Layout.Sider id="SideBar" width={280} className="bg-w">
+            <Row align="middle" justify="center">
+              <Col>
+                <div style={{
+                  textAlign: 'center',
+                  paddingTop: 30,
+                  paddingBottom: 30
+                }}>
+                  <div style={{ marginBottom: 15 }}>
+                    <Avatar size="large" src={userPhoto} />
+                  </div>
+                  <h3 className="fs-18"><b>{accountName}</b></h3>
+                </div>
+              </Col>
+            </Row>
+            <Menu
+              style={{
+                borderRight: 'none'
+              }}
+              inlineIndent={90}
+              defaultSelectedKeys={['statistics']}
+              mode="inline"
+              theme="light">
 
-          <Menu.Item key="statistics">
-            <Link to="/statistics">
-              <Icon type="pie-chart" /> <span>统计</span>
-            </Link>
-          </Menu.Item>
-
-          {/* {
-            actions.map(({ actionName, actionStr, lowerActions }) => {
-              if (lowerActions) {
-                return (
-                  <Menu.SubMenu key={actionStr} title={<span><Icon type="desktop" /> <span>{actionName}</span></span>}>
-                    {
-                      lowerActions.map((lowerAction) => (
-                        <Menu.Item key={lowerAction.actionStr}>
-                          <Link to={Links[lowerAction.actionStr]}>
-                            {lowerAction.actionName.split('-')[1]}
-                          </Link>
-                        </Menu.Item>
-                      ))
-                    }
-                  </Menu.SubMenu>
-                )
-              } else {
-                return (
-                  <Menu.Item key={actionStr}>
-                    <Link to={Links[actionStr]}>
-                      <Icon type="pie-chart" /> <span>{actionName}</span>
-                    </Link>
-                  </Menu.Item>
-                )
+              {
+                actions.map(({ actionName, actionStr, lowerActions }) => {
+                  if (lowerActions) {
+                    return (
+                      <Menu.SubMenu key={actionStr} title={<span><Icon type="desktop" /> <span>{actionName}</span></span>}>
+                        {
+                          lowerActions.map((lowerAction) => (
+                            <Menu.Item key={lowerAction.actionStr}>
+                              <Link to={Links[lowerAction.actionStr]}>
+                                {lowerAction.actionName.split('-')[1]}
+                              </Link>
+                            </Menu.Item>
+                          ))
+                        }
+                      </Menu.SubMenu>
+                    )
+                  } else {
+                    return (
+                      <Menu.Item key={actionStr}>
+                        <Link to={Links[actionStr]}>
+                          <Icon type="pie-chart" /> <span>{actionName}</span>
+                        </Link>
+                      </Menu.Item>
+                    )
+                  }
+                })
               }
-            })
-          } */}
-        </Menu>
-      </Layout.Sider>
+            </Menu>
+          </Layout.Sider> : null
+        }
+      </div>
+
     )
   }
 }

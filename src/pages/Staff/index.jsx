@@ -17,8 +17,15 @@ function showConfirm() {
 }
 
 import './index.less'
+import { fetchStaffListData } from '../../actions/staff';
 
 class Staff extends Component {
+  componentWillMount() {
+    this.props.fetchStaffList().then(r => {
+      console.log('staff list -->', r)
+    })
+  }
+
   render() {
     var columns = [{
       title: '姓名',
@@ -111,4 +118,9 @@ class Staff extends Component {
   }
 }
 
-export default connect()(Staff)
+const mapStateToProps = state => state
+const mapDispatchToProps = dispatch => ({
+  fetchStaffList: params => dispatch(fetchStaffListData(params))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Staff)
