@@ -1,10 +1,10 @@
-import {SET_STAFF_LIST} from '../constants/action-types'
+import { SET_STAFF_LIST } from '../constants/action-types'
 
-import {api} from '../api'
-import { BUSINESS_USER_LIST } from '../constants/method-types';
+import { api } from '../api'
+import { BUSINESS_USER_LIST, BUSINESS_ADD_USER } from '../constants/method-types';
 import isRequestSuccess from '../utils/isRequestSuccess';
 
-export const setStaffList = staffListData => {
+export const setStaffListData = staffListData => {
   return {
     type: SET_STAFF_LIST,
     staffListData
@@ -16,7 +16,21 @@ export const fetchStaffListData = params => async dispatch => {
 
   console.log('user list ret -->', ret)
 
-  if(isRequestSuccess(ret)){
-    dispatch(setStaffList(ret.data.data))
+  if (isRequestSuccess(ret)) {
+    dispatch(setStaffListData(ret.data.data.list))
+  } else {
+    console.log('fetch staff list data error -->', ret)
+  }
+}
+
+export const addStaffData = params => async dispatch => {
+  let ret = await api.fetch(BUSINESS_ADD_USER, params)
+
+  console.log('add user ret -->', ret)
+
+  if (isRequestSuccess(ret)) {
+
+  } else {
+    console.log('add staff data error -->', ret)
   }
 }

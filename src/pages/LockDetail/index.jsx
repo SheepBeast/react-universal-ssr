@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
+import qs from 'querystring'
 import { Tooltip, Row, Col, Button, Divider, Table, Tabs, Timeline, Popconfirm, Avatar, Icon, Form, Switch, Slider } from 'antd'
 
 const TabPane = Tabs.TabPane
@@ -9,18 +10,86 @@ const FormItem = Form.Item
 const ButtonGroup = Button.Group
 
 import './index.less'
+import { fetchLockDetailData, fetchLockKeyListData } from '../../actions/device';
 
-class LockDetail extends Component {
+class LockDetail extends React.Component {
+  componentWillMount() {
+    let params = this.parseQueryToParams()
+
+    this.props.fetchLockDetail(params)
+    this.props.fetchLockKeyList(params)
+  }
+
+  parseQueryToParams() {
+    let search = this.props.location.search.replace('?', ''), k, params = {}
+    search = qs.parse(search)
+
+    for(k in search) {
+      params[k] = decodeURIComponent(search[k])
+    }
+
+    return params
+  }
+
   render() {
+    console.log('lock detail -->', this.props.lockDetail)
+    let {
+      lockState,
+      electricNum,
+      // 门锁信号
+      // 网关信号
+      lockMac,
+      lockType,
+      lockName,
+      gatewayMAC,
+      gatewayType,
+      roomId,
+      roomName, floorName, buildingName, houseName,
+      // 当前租客
+      maxVolume
+    } = this.props.lockDetail
+
+
+    const lockTypeRefers = {
+      1: '网关锁',
+      2: 'WIFI锁',
+      3: '蓝牙锁 ',
+      4: 'NB锁'
+    }
+
+    const gatewayTypeRefers = {
+      1: '有线网关',
+      2: '无线网关'
+    }
+
+    const stateRefers = {
+      0: '异常',
+      1: '正常',
+      2: '低电量',
+      3: '挟持告警',
+      4: '离线'
+    }
+
+
+
+
     const lockCols = [{
       title: '门锁MAC',
-      dataIndex: 'lockMAC',
-      key: 'lockMAC'
+      dataIndex: 'lockMac',
+      key: 'lockMac'
     }, {
       title: '门锁类型',
       dataIndex: 'lockType',
       key: 'lockType'
     }];
+
+    const lockData = [{
+      key: 1,
+      lockMac,
+      lockType: lockTypeRefers[lockType]
+    }]
+
+
 
     const gatewayCols = [{
       title: '网关MAC',
@@ -33,34 +102,30 @@ class LockDetail extends Component {
     }]
 
 
-    const lockData = [{
-      key: 1,
-      lockMAC: '11:233:323:12',
-      lockType: '网关锁'
-    }]
+
 
     const gatewayData = [{
       key: 2,
-      lockMAC: '11:233:323:12',
-      lockType: '智慧网关'
+      gatewayMAC,
+      gatewayType: gatewayTypeRefers[gatewayType]
     }]
 
     const roomCols = [{
       title: '房产',
-      dataIndex: 'estate',
-      key: 'estate'
+      dataIndex: 'houseName',
+      key: 'houseName'
     }, {
       title: '楼栋',
-      dataIndex: 'building',
-      key: 'building'
+      dataIndex: 'buildingName',
+      key: 'buildingName'
     }, {
       title: '楼层',
-      dataIndex: 'floor',
-      key: 'floor'
+      dataIndex: 'floorName',
+      key: 'floorName'
     }, {
       title: '房间',
-      dataIndex: 'room',
-      key: 'room'
+      dataIndex: 'roomName',
+      key: 'roomName'
     }, {
       title: '当前租客',
       dataIndex: 'renter',
@@ -77,12 +142,12 @@ class LockDetail extends Component {
     }];
 
     const roomData = [{
-      key: 1,
-      estate: '慧享公寓',
-      building: 'A栋',
-      floor: 2,
-      room: 'A201',
-      renter: '4位',
+      key: roomId,
+      houseName: houseName || '--',
+      buildingName: buildingName || '--',
+      floorName: floorName || '--',
+      roomName: roomName || '--',
+      renter: '--',
       actions: null
     }]
 
@@ -152,7 +217,7 @@ class LockDetail extends Component {
           <Row>
             <Col span={12}>
               <h3>
-                <b>慧享公寓A栋B楼3层302：门锁</b>
+                <b>{lockName}</b>
               </h3>
             </Col>
             <Col span={12}>
@@ -172,22 +237,22 @@ class LockDetail extends Component {
               <Col span={6}>
                 <span className="fs-14 gray">当前状态</span>
                 <br />
-                <span className="fs-24" style={{ color: '#ff57578c' }}>劫持报警</span>
+                <span className="fs-24" className={lockState === 1 ? '' : 'danger'}>{stateRefers[lockState]}</span>
               </Col>
               <Col span={6}>
                 <span className="fs-14 gray">电量</span>
                 <br />
-                <span className="fs-24">60%</span>
+                <span className="fs-24">{electricNum}%</span>
               </Col>
               <Col span={6}>
                 <span className="fs-14 gray">门锁信号</span>
                 <br />
-                <span className="fs-24">-60db</span>
+                <span className="fs-24">--</span>
               </Col>
               <Col span={6}>
                 <span className="fs-14 gray">网关信号</span>
                 <br />
-                <span className="fs-24">-30db</span>
+                <span className="fs-24">--</span>
               </Col>
             </Row>
           </div>
@@ -202,7 +267,7 @@ class LockDetail extends Component {
         </div>
 
         {
-          false ?
+          roomId ?
             <div className="container">
               <h3>
                 <Row>
@@ -236,7 +301,7 @@ class LockDetail extends Component {
                 <Timeline>
                   {
                     Array(3).fill(1).map((val, idx) => (
-                      <TimelineItem
+                      <TimelineItem key={idx}
                         dot={
                           <Avatar src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526969661280&di=a5aebf85080548c16ed57e49ea9cac17&imgtype=0&src=http%3A%2F%2Fimg.1ting.com%2Fimages%2Fspecial%2F99%2Fs300_d7d69fb2354557be5178919fe6562688.jpg"></Avatar>
                         }
@@ -341,4 +406,15 @@ class LockDetail extends Component {
   }
 }
 
-export default connect()(LockDetail)
+const mapStateToProps = state => ({
+  lockDetail: state.lockDetail || {},
+  lockKeyList: state.lockKeyList || []
+})
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchLockDetail: params => dispatch(fetchLockDetailData(params)),
+    fetchLockKeyList: params => dispatch(fetchLockKeyListData(params))
+  }
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(LockDetail))

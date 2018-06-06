@@ -7,7 +7,7 @@ import assign from '../utils/assign'
 export const roleList = (state = [], action) => {
   switch (action.type) {
     case SET_ROLE_LIST:
-      return action.roleListData
+      return action.roleListData || []
     default:
       return state
   }
@@ -16,7 +16,7 @@ export const roleList = (state = [], action) => {
 export const menuPermissionList = (state = [], action) => {
   switch (action.type) {
     case SET_MENU_PERMISSION_LIST:
-      return action.menuPermissionListData
+      return action.menuPermissionListData || []
     default:
       return state
   }

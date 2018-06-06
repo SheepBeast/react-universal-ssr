@@ -50,15 +50,12 @@ class Role extends Component {
       )
     }]
 
-
-    let { listSum, totalPages, list } = this.props.roleList
-
-    let dataSource = listSum > 0 ? list.map(({ roleId, roleName, state, remark }) => ({
+    let dataSource = (this.props.roleList || []).map(({ roleId, roleName, state, remark }) => ({
       roleName,
       state,
       actions: roleId,
       remark
-    })) : []
+    }))
 
     console.log('this role -->', this.props)
     return (
@@ -84,7 +81,9 @@ class Role extends Component {
   }
 }
 
-const mapStateToProps = state => state
+const mapStateToProps = state => ({
+  roleList: state.roleList
+})
 const mapDispatchToProps = dispatch => {
   return {
     fetchRoleList(params) {

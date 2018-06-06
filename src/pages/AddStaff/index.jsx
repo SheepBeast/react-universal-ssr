@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { Divider, Form, Input, DatePicker, Switch, Select, Row, Col, Checkbox, Alert, Button, Radio } from 'antd'
 
@@ -8,8 +8,9 @@ const TextArea = Input.TextArea
 const CheckboxGroup = Checkbox.Group
 
 import './index.less'
+import { addStaffData } from '../../actions/staff';
 
-class AddStaff extends Component {
+class AddStaff extends React.Component {
 
   onCheckBoxChange(e) {
     e.stopPropagation()
@@ -39,7 +40,7 @@ class AddStaff extends Component {
         </Row>
 
         <br />
-        <Form className="form-shim" style={{ width: 540 }} >
+        <Form className="form-shim" style={{ width: 540 }} onSubmit={this.props.submit}>
           <FormItem label="姓名" labelCol={{ span: 3 }} wrapperCol={{ span: 15 }} >
             <Input></Input>
           </FormItem>
@@ -100,36 +101,36 @@ class AddStaff extends Component {
                 </Row>
               </Col>
               <Col span={8}>
-              <CheckboxGroup options={options} style={{float: 'right' , marginTop: 4}} />
+                <CheckboxGroup options={options} style={{ float: 'right', marginTop: 4 }} />
               </Col>
             </Row>
             <Divider></Divider>
 
             <div className="add-staff-room-list">
-            {
-              [1, 2, 3].map((num) => (
-                <div className="mb-30">
-                  <h3>
-                    <b>慧享公寓 {num}栋 {num}楼</b>
-                  </h3>
-                  <Row className="tc">
-                    {
-                      Array(Math.floor(Math.random() * 24) + 1).fill(1).map(() => (
-                        <Col span={3}>
-                          {
-                            Math.random() > 0.5 ?
-                              <Checkbox value="1" onChange={this.onCheckBoxChange.bind(this)} defaultChecked={true}>AVC2314</Checkbox> :
-                              <Checkbox className="checkbox-wrapper-unchecked " value="1" onChange={this.onCheckBoxChange.bind(this)} defaultChecked={false}>AVC2314</Checkbox>
-                          }
+              {
+                [1, 2, 3].map((num, idx) => (
+                  <div className="mb-30" key={idx}>
+                    <h3>
+                      <b>慧享公寓 {num}栋 {num}楼</b>
+                    </h3>
+                    <Row className="tc">
+                      {
+                        Array(Math.floor(Math.random() * 24) + 1).fill(1).map((val, key) => (
+                          <Col key={key} span={3}>
+                            {
+                              Math.random() > 0.5 ?
+                                <Checkbox value="1" onChange={this.onCheckBoxChange.bind(this)} defaultChecked={true}>AVC2314</Checkbox> :
+                                <Checkbox className="checkbox-wrapper-unchecked " value="1" onChange={this.onCheckBoxChange.bind(this)} defaultChecked={false}>AVC2314</Checkbox>
+                            }
 
-                        </Col>
-                      ))
-                    }
+                          </Col>
+                        ))
+                      }
 
-                  </Row>
-                </div>
-              ))
-            }
+                    </Row>
+                  </div>
+                ))
+              }
             </div>
 
           </div>
@@ -148,4 +149,22 @@ class AddStaff extends Component {
   }
 }
 
-export default connect()(AddStaff)
+const mapStateToProps = state => ({})
+const mapDispatchToProps = dispatch => {
+  return {
+    submit(e) {
+      e.preventDefault()
+
+      var params = {
+        userAccount: 'dzh384925935',
+        userName: '糯米玩',
+        phoneNo: '13802402735',
+        password: 'asd751011568'
+      }
+
+      return dispatch(addStaffData(params))
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddStaff)

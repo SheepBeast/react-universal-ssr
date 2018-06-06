@@ -1,23 +1,20 @@
 import { combineReducers } from 'redux'
 
 
-import { userInfo, tokenID, onLoginError } from './auth'
-import { rentStatisticsData, deviceStatisticsData } from './statistics'
+import * as authReducers from './auth'
+import * as statisticsReducers from './statistics'
 
-import { roleList, menuPermissionList } from './role'
+import * as roleReducers from './role'
 
-import { staffList } from './staff'
+import * as staffReducers from './staff'
+
+// import { deviceList, lockList, lockStatistics, gatewayList, lockDetail, lockKeyList } from './device'
+import * as deviceReducers from './device'
 
 export default combineReducers({
-  userInfo,
-  tokenID,
-  onLoginError,
-
-  rentStatisticsData,
-  deviceStatisticsData,
-
-  roleList,
-  menuPermissionList,
-
-  staffList
+  ...authReducers,
+  ...statisticsReducers,
+  ...roleReducers,
+  ...staffReducers,
+  ...deviceReducers
 })

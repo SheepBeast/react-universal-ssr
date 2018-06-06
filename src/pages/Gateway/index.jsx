@@ -9,30 +9,25 @@ const RadioButton = Radio.Button
 const Search = Input.Search
 
 import './index.less'
-import { fetchDeviceListData } from '../../actions/device';
+import { fetchGatewayListData } from '../../actions/device';
 
-class MyDevice extends React.Component {
+class Gateway extends React.Component {
   componentWillMount() {
-    this.props.fetchDeviceList()
+    this.props.fetchGatewayList()
   }
 
   onSearch(e) {
     var params = {
-      findName: '26F96'
+      findName: 'F'
     }
 
-    this.props.fetchDeviceList(params)
+    this.props.fetchGatewayList(params)
   }
 
   render() {
-    console.log('device list -->', this.props.deviceList)
-
-    const deviceTypeRefers = {
-      0: '网关',
-      1: '摄像头',
-      2: '门锁',
-      3: '猫眼',
-      4: '水表'
+    const gatewayTypeRefers = {
+      1: '有线网关',
+      2: '无线网关'
     }
 
     const stateRefers = {
@@ -42,21 +37,23 @@ class MyDevice extends React.Component {
       3: '挟持告警',
       4: '离线'
     }
-    const dataSource = this.props.deviceList.map(({ deviceId, deviceName, mac, deviceType, state, roomName, floorName, buildingName, houseName }) => {
+
+    const dataSource = this.props.gatewayList.map(({ deviceId, deviceName, gatewayType, hardwareVersion, mac, roomName, floorName, buildingName, houseName, state, softwareVersion }) => {
       let installationSite = `${houseName || ''}${buildingName ? buildingName + '栋' : ''}${floorName ? floorName + '层' : ''}${roomName || ''}`
-      let _deviceType = deviceTypeRefers[deviceType]
+      let _gatewayType = gatewayTypeRefers[gatewayType]
 
       return {
         key: deviceId,
         mac,
         installationSite,
-        deviceType: _deviceType,
-        deviceName: deviceName || `${installationSite}：${_deviceType}`,
+        gatewayType: _gatewayType,
+        deviceName: deviceName || `${installationSite}：${_gatewayType}`,
         state,
-        actions: ''
+        actions: deviceId,
+        hardwareVersion,
+        softwareVersion
       }
     })
-
 
     const columns = [{
       title: '设备名称',
@@ -67,14 +64,23 @@ class MyDevice extends React.Component {
       dataIndex: 'mac',
       key: 'mac'
     }, {
+      title: '硬件版本',
+      dataIndex: 'hardwareVersion',
+      key: 'hardwareVersion'
+    },
+    {
+      title: '固件',
+      dataIndex: 'softwareVersion',
+      key: 'softwareVersion'
+    }, {
       title: '关联安装位置',
       dataIndex: 'installationSite',
       key: 'installationSite'
     },
     {
       title: '设备类型',
-      dataIndex: 'deviceType',
-      key: 'deviceType'
+      dataIndex: 'gatewayType',
+      key: 'gatewayType'
     },
     {
       title: '状态',
@@ -98,9 +104,8 @@ class MyDevice extends React.Component {
         )
       }
     }]
-
     return (
-      <div id="MyDevice" className="container">
+      <div id="Gateway" className="container">
         <Form className="mb-20">
           <FormItem label="房间状态" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
             <RadioGroup className="custom-radio-button-group" defaultValue="0">
@@ -122,12 +127,12 @@ class MyDevice extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  deviceList: state.deviceList || []
+  gatewayList: state.gatewayList || []
 })
 const mapDispatchToProps = dispatch => {
   return {
-    fetchDeviceList: params => dispatch(fetchDeviceListData(params))
+    fetchGatewayList: params => dispatch(fetchGatewayListData(params))
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MyDevice)
+export default connect(mapStateToProps, mapDispatchToProps)(Gateway)

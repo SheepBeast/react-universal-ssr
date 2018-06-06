@@ -1,9 +1,9 @@
 import { SET_STAFF_LIST } from "../constants/action-types";
 
-export const staffList = (state =[ ],action) =>{
-  switch(action.type){
+export const staffList = (state = [], action) => {
+  switch (action.type) {
     case SET_STAFF_LIST:
-      return action.staffListData
+      return action.staffListData || []
     default:
       return state
   }

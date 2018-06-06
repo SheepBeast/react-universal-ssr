@@ -21,40 +21,34 @@ import { fetchStaffListData } from '../../actions/staff';
 
 class Staff extends Component {
   componentWillMount() {
-    this.props.fetchStaffList().then(r => {
-      console.log('staff list -->', r)
-    })
+    this.props.fetchStaffList()
   }
 
   render() {
     var columns = [{
       title: '姓名',
-      key: 'name',
-      dataIndex: 'name'
-    }, {
-      title: '角色',
-      key: 'role',
-      dataIndex: 'role'
-    }, {
-      title: '用户账号',
       key: 'userName',
       dataIndex: 'userName'
     }, {
-      title: '手机号',
-      key: 'mobile',
-      dataIndex: 'mobile'
+      title: '角色',
+      key: 'roleName',
+      dataIndex: 'roleName'
     }, {
-      title: '邮箱',
-      key: 'email',
-      dataIndex: 'email'
+      title: '用户账号',
+      key: 'userAccount',
+      dataIndex: 'userAccount'
+    }, {
+      title: '手机号',
+      key: 'phoneNo',
+      dataIndex: 'phoneNo'
     }, {
       title: '注册时间',
-      key: 'registerTime',
-      dataIndex: 'registerTime'
+      key: 'createTime',
+      dataIndex: 'createTime'
     }, {
       title: '状态',
-      key: 'status',
-      dataIndex: 'status'
+      key: 'state',
+      dataIndex: 'state'
     }, {
       title: '操作',
       key: 'actions',
@@ -68,15 +62,20 @@ class Staff extends Component {
       )
     }]
 
-    var dataSource = Array(4).fill(1).map((val, idx) => ({
-      key: idx,
-      name: '罗京夫',
-      role: '管理者',
-      userName: 'tenant_001',
-      mobile: '无',
-      email: '314739189@qq.com',
-      registerTime: '2012-23-53 21:20:32',
-      status: '正常',
+    const userStateRefer = {
+      0: '停用',
+      1: '启用',
+      2: '删除'
+    }
+
+    var dataSource = this.props.staffList.map(({ userId, userAccount, userName, state, phoneNo, roleName, createTime }) => ({
+      key: userId,
+      userName,
+      roleName,
+      userAccount,
+      phoneNo,
+      createTime,
+      state: userStateRefer[state],
       actions: ''
     }))
 
@@ -118,7 +117,9 @@ class Staff extends Component {
   }
 }
 
-const mapStateToProps = state => state
+const mapStateToProps = state => ({
+  staffList: state.staffList || []
+})
 const mapDispatchToProps = dispatch => ({
   fetchStaffList: params => dispatch(fetchStaffListData(params))
 })

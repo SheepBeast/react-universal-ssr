@@ -40,7 +40,7 @@ class AddRole extends React.Component {
   }
 
   render() {
-    var roleList = this.props.roleList || []
+    var roleList = this.props.roleList
 
     return (
       <div id="AddRole" className="container">
@@ -124,7 +124,9 @@ class AddRole extends React.Component {
   }
 }
 
-const mapStateToProps = state => state
+const mapStateToProps = state => ({
+  roleList: state.roleList
+})
 const mapDispatchToProps = dispatch => {
   return {
     submit(e) {

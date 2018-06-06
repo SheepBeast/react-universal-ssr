@@ -13,9 +13,7 @@ class Statistics extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      timer: null,
-      rentStatisticsData: null,
-      deviceStaticsData: null
+      timer: null
     }
   }
 
@@ -379,7 +377,6 @@ class Statistics extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log('state -->', state)
   return {
     rentStatisticsData: state.rentStatisticsData,
     deviceStaticsData: state.deviceStatisticsData

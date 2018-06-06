@@ -33,7 +33,7 @@ export const fetchRoleListData = params => async dispatch => {
   console.log('role list data -->', ret)
 
   if (isRequestSuccess(ret)) {
-    dispatch(setRoleList(ret.data.data))
+    dispatch(setRoleList(ret.data.data.list))
   }
   // else
 }

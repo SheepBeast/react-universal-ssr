@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Row, Col, Form, Select, Button, Table, Divider, Modal, Radio, Input, Icon, Checkbox } from 'antd'
+import { fetchLockListData, fetchLockStatisticsData } from '../../actions/device';
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -17,6 +18,11 @@ class Lock extends React.Component {
     }
   }
 
+  componentWillMount() {
+    this.props.fetchLocStatistics()
+    this.props.fetchLockList()
+  }
+
   toggleModal() {
     this.setState({
       visible: !this.state.visible
@@ -25,14 +31,16 @@ class Lock extends React.Component {
 
 
   render() {
+    let lockStatistics = this.props.lockStatistics
+
     const columns = [{
       title: '设备名称',
       dataIndex: 'deviceName',
       key: 'deviceName'
     }, {
       title: '设备mac',
-      dataIndex: 'deviceMac',
-      key: 'deviceMac'
+      dataIndex: 'mac',
+      key: 'mac'
     }, {
       title: '关联安装位置',
       key: 'installationSite',
@@ -40,21 +48,27 @@ class Lock extends React.Component {
     },
     {
       title: '设备类型',
-      dataIndex: 'deviceType',
-      key: 'deviceType'
+      dataIndex: 'lockType',
+      key: 'lockType'
     },
     {
       title: '状态',
-      dataIndex: 'status',
-      key: 'status'
+      dataIndex: 'state',
+      key: 'state',
+      render: (state) => {
+        return <span style={state === 1 ? {} : { color: 'red' }}>{stateRefers[state]}</span>
+      }
     }, {
       title: '操作',
       key: 'actions',
       dataIndex: 'actions',
-      render: () => {
+      render: (lockId) => {
+        const detailUrl = `/device-lockDetail?lockId=${encodeURIComponent(lockId)}`
         return (
           <span>
-            <Icon type="file-text" className="mr-20 fs-16 br-50" style={{ backgroundColor: '#D5D5D5', color: '#fff', padding: 6 }} />
+            <Link to={detailUrl}>
+              <Icon type="file-text" className="mr-20 fs-16 br-50" style={{ backgroundColor: '#D5D5D5', color: '#fff', padding: 6 }} />
+            </Link>
             <Icon type="paper-clip" className="mr-20 fs-16 br-50" style={{ backgroundColor: '#D5D5D5', color: '#fff', padding: 6 }} />
             <Icon type="shop" className="fs-16 br-50" style={{ backgroundColor: '#D5D5D5', color: '#fff', padding: 6 }} />
           </span>
@@ -62,35 +76,37 @@ class Lock extends React.Component {
       }
     }];
 
-    const data = [{
-      key: '5',
-      deviceMac: '11-22-33-44-55-66',
-      installationSite: '享家公寓A栋B楼3层301',
-      deviceType: '蓝牙锁',
-      deviceName: '之家公寓4栋A106：门锁',
-      status: '在线',
-      actions: ''
-    },
-    {
-      key: '1',
-      deviceMac: '11-22-33-44-55-66',
-      installationSite: '享家公寓A栋B楼3层301',
-      deviceType: '蓝牙锁',
-      deviceName: '之家公寓4栋A106：门锁',
-      status: '在线',
-      actions: ''
-    },
-    {
-      key: '2',
-      deviceMac: '11-22-33-44-55-66',
-      installationSite: '享家公寓A栋B楼3层301',
-      deviceType: '蓝牙锁',
-      deviceName: '之家公寓4栋A106：门锁',
-      status: '在线',
-      actions: ''
-    }];
+    const lockTypeRefers = {
+      1: '网关锁',
+      2: 'WIFI锁',
+      3: '蓝牙锁 ',
+      4: 'NB锁'
+    }
+
+    const stateRefers = {
+      0: '异常',
+      1: '正常',
+      2: '低电量',
+      3: '挟持告警',
+      4: '离线'
+    }
+    const dataSource = this.props.lockList.map(({ deviceId, deviceName, mac, lockType, state, roomName, floorName, buildingName, houseName }) => {
+      let installationSite = `${houseName || ''}${buildingName ? buildingName + '栋' : ''}${floorName ? floorName + '层' : ''}${roomName || ''}`
+      let _lockType = lockTypeRefers[lockType]
+
+      return {
+        key: deviceId,
+        mac,
+        installationSite,
+        lockType: _lockType,
+        deviceName: deviceName || `${installationSite}：${_lockType}`,
+        state,
+        actions: deviceId
+      }
+    })
 
     const rowSelection = {};
+
 
     return (
       <div id="Lock">
@@ -100,14 +116,14 @@ class Lock extends React.Component {
               <span className="fs-14">在线门锁</span>
               <br />
               <span className="fs-24">
-                <b>1258</b>
+                <b>{lockStatistics.onlineNum}</b>
               </span>
             </Col>
             <Col span={12}>
               <span className="fs-14">异常门锁</span>
               <br />
               <span className="fs-24" style={{ color: 'red' }}>
-                <b>8</b>
+                <b>{lockStatistics.exceptionNum}</b>
               </span>
             </Col>
           </Row>
@@ -156,7 +172,7 @@ class Lock extends React.Component {
             </FormItem>
           </Form>
 
-          <Table dataSource={data} columns={columns} rowSelection={rowSelection} pagination={false}></Table>
+          <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} pagination={false}></Table>
 
         </div>
 
@@ -237,4 +253,18 @@ class Lock extends React.Component {
   }
 }
 
-export default connect()(Lock)
+const mapStateToProps = state => ({
+  lockStatistics: state.lockStatistics || {
+    onlineNum: 0,
+    exceptionNum: 0
+  },
+  lockList: state.lockList || []
+})
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchLockList: params => dispatch(fetchLockListData(params)),
+    fetchLocStatistics: params => dispatch(fetchLockStatisticsData(params))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Lock)
