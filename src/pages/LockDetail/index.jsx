@@ -10,14 +10,16 @@ const FormItem = Form.Item
 const ButtonGroup = Button.Group
 
 import './index.less'
-import { fetchLockDetailData, fetchLockKeyListData } from '../../actions/device';
+import { fetchLockDetailData, fetchLockKeyListData, fetchLockAppKeyListData, updateLockFunctionConfig } from '../../actions/device';
 
 class LockDetail extends React.Component {
   componentWillMount() {
     let params = this.parseQueryToParams()
 
     this.props.fetchLockDetail(params)
-    this.props.fetchLockKeyList(params)
+    // this.props.fetchLockKeyList(params)
+    // this.props.fetchLockAppKeyList(params)
+    this.props.updateLockFunction(params)
   }
 
   parseQueryToParams() {
@@ -46,7 +48,12 @@ class LockDetail extends React.Component {
       roomId,
       roomName, floorName, buildingName, houseName,
       // 当前租客
-      maxVolume
+      maxVolume,
+
+      comName,
+      projectLogo,
+      // 门锁型号
+      // 公司型号
     } = this.props.lockDetail
 
 
@@ -395,9 +402,17 @@ class LockDetail extends React.Component {
                 <Button className="mr-20" type="primary" ghost>厂家信息</Button>
                 <Button>使用说明</Button>
               </div>
-              <div style={{ border: '1px solid #ddd', height: 200, lineHeight: '200px', textAlign: 'center', color: '#c8c8c8' }}>
-                文本区
-              </div>
+                    <Row>
+                      <Col span={12}>
+                        <p>公司名称：{comName}</p>
+                        <p>售后电话：</p>
+                        <p>门锁型号：</p>
+                        <p>公司简介：</p>
+                      </Col>
+                      <Col className="tr" span={12}>
+                        <img src={projectLogo} alt="LOGO" />
+                      </Col>
+                    </Row>
             </TabPane>
           </Tabs>
         </div>
@@ -408,12 +423,15 @@ class LockDetail extends React.Component {
 
 const mapStateToProps = state => ({
   lockDetail: state.lockDetail || {},
-  lockKeyList: state.lockKeyList || []
+  lockKeyList: state.lockKeyList || [],
+  lockAppKeyList: state.lockAppKeyList || []
 })
 const mapDispatchToProps = dispatch => {
   return {
     fetchLockDetail: params => dispatch(fetchLockDetailData(params)),
-    fetchLockKeyList: params => dispatch(fetchLockKeyListData(params))
+    fetchLockKeyList: params => dispatch(fetchLockKeyListData(params)),
+    fetchLockAppKeyList: params => dispatch(fetchLockAppKeyListData(params)),
+    updateLockFunction:params=> dispatch(updateLockFunctionConfig(params))
   }
 }
 

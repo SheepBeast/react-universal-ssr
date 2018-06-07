@@ -2,19 +2,28 @@ import { combineReducers } from 'redux'
 
 
 import * as authReducers from './auth'
+
 import * as statisticsReducers from './statistics'
 
 import * as roleReducers from './role'
 
-import * as staffReducers from './staff'
+import * as userReducers from './user'
 
-// import { deviceList, lockList, lockStatistics, gatewayList, lockDetail, lockKeyList } from './device'
 import * as deviceReducers from './device'
+
+import * as propertyReducers from './property'
+
+import * as newsReducers from './news'
+
+import * as tenantReducers from './tenant'
 
 export default combineReducers({
   ...authReducers,
   ...statisticsReducers,
   ...roleReducers,
-  ...staffReducers,
-  ...deviceReducers
+  ...userReducers,
+  ...deviceReducers,
+  ...propertyReducers,
+  ...newsReducers,
+  ...tenantReducers
 })

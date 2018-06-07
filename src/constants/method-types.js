@@ -84,8 +84,12 @@ export const BUSINESS_RENT_STATICSTICS = 'businessRentStatistics'
 export const BUSINESS_DEVICE_STATICSTICS = 'businessDeviceStatistics'
 export const BUSINESS_GATEWAY_LIST = 'businessGatewayList'
 
+
 export const BUSINESS_MENU_PERMISSION_LIST = 'businessMenuPermissionList'
 export const BUSINESS_LOCK_KEY_LIST = 'businessLockKeyList'
+
+export const  BUSINESS_LOCK_APP_KEY_LIST = 'businessLockAppKeyList'
+export const BUSINESS_UPDATE_lOCK_FUNCTION = 'businessUpdateLockFunction'
 // export const BUSINESS_DEVICE_LIST ='businessDeviceList'
 // export const BUSINESS_UNBIND_DEVICE ='businessUnbindDevice'
 // export const BUSINESS_UNBIND_DEVICE ='businessUnbindDevice'

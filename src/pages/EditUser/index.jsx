@@ -7,7 +7,7 @@ const Option = Select.Option
 const TextArea = Input.TextArea
 const Search = Input.Search
 
-class EditStaff extends Component {
+class EditUser extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -25,7 +25,7 @@ class EditStaff extends Component {
 
   render() {
     return (
-      <div id="EditStaff" className="container">
+      <div id="EditUser" className="container">
         <Row>
           <Col span={12}>
             <h3>
@@ -93,4 +93,4 @@ class EditStaff extends Component {
   }
 }
 
-export default connect()(EditStaff)
+export default connect()(EditUser)

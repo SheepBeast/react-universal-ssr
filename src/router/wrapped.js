@@ -2,7 +2,7 @@ import React from 'react'
 
 import {
   LoadableStatistics,
-  LoadableHousingResource,
+  LoadableProperty,
   LoadableRoomDetail,
   LoadableAddRenter,
   LoadableRelet,
@@ -13,12 +13,15 @@ import {
   LoadableLock,
   LoadableLockDetail,
 
-  LoadableStaff,
-  LoadableAddStaff,
-  LoadableEditStaff,
+  LoadableUser,
+  LoadableAddUser,
+  LoadableEditUser,
   LoadableRole,
   LoadableAddRole,
-  LoadableLogin
+  LoadableLogin,
+  LoadableNews,
+  LoadableAddNews,
+  LoadableAuditNews
 
 } from './loadable'
 
@@ -28,9 +31,9 @@ class Statistics extends React.Component {
   }
 }
 
-class HousingResource extends React.Component {
+class Property extends React.Component {
   render() {
-    return <LoadableHousingResource />
+    return <LoadableProperty />
   }
 }
 
@@ -76,21 +79,21 @@ class LockDetail extends React.Component {
   }
 }
 
-class Staff extends React.Component {
+class User extends React.Component {
   render() {
-    return <LoadableStaff />
+    return <LoadableUser />
   }
 }
 
-class AddStaff extends React.Component {
+class AddUser extends React.Component {
   render() {
-    return <LoadableAddStaff />
+    return <LoadableAddUser />
   }
 }
 
-class EditStaff extends React.Component {
+class EditUser extends React.Component {
   render() {
-    return <LoadableEditStaff />
+    return <LoadableEditUser />
   }
 }
 
@@ -112,9 +115,27 @@ class Login extends React.Component {
   }
 }
 
+class News extends React.Component {
+  render(){
+    return <LoadableNews />
+  }
+}
+
+class AddNews extends React.Component {
+  render(){
+    return <LoadableAddNews />
+  }
+}
+
+class AuditNews extends React.Component {
+  render(){
+    return <LoadableAuditNews />
+  }
+}
+
 module.exports = {
   Statistics,
-  HousingResource,
+  Property,
   RoomDetail,
   AddRenter,
   Relet,
@@ -122,10 +143,13 @@ module.exports = {
   Gateway,
   Lock,
   LockDetail,
-  Staff,
-  AddStaff,
-  EditStaff,
+  User,
+  AddUser,
+  EditUser,
   Role,
   AddRole,
-  Login
+  Login,
+  News,
+  AddNews,
+  AuditNews
 }

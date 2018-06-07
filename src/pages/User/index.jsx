@@ -17,11 +17,11 @@ function showConfirm() {
 }
 
 import './index.less'
-import { fetchStaffListData } from '../../actions/staff';
+import { fetchUserListData } from '../../actions/user';
 
-class Staff extends Component {
+class User extends Component {
   componentWillMount() {
-    this.props.fetchStaffList()
+    this.props.fetchUserList()
   }
 
   render() {
@@ -68,7 +68,7 @@ class Staff extends Component {
       2: '删除'
     }
 
-    var dataSource = this.props.staffList.map(({ userId, userAccount, userName, state, phoneNo, roleName, createTime }) => ({
+    var dataSource = this.props.userList.map(({ userId, userAccount, userName, state, phoneNo, roleName, createTime }) => ({
       key: userId,
       userName,
       roleName,
@@ -80,7 +80,7 @@ class Staff extends Component {
     }))
 
     return (
-      <div id="Staff" className="container">
+      <div id="User" className="container">
 
         <Row>
           <Col span={20}>
@@ -118,10 +118,10 @@ class Staff extends Component {
 }
 
 const mapStateToProps = state => ({
-  staffList: state.staffList || []
+  userList: state.userList || []
 })
 const mapDispatchToProps = dispatch => ({
-  fetchStaffList: params => dispatch(fetchStaffListData(params))
+  fetchUserList: params => dispatch(fetchUserListData(params))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Staff)
+export default connect(mapStateToProps, mapDispatchToProps)(User)

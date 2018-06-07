@@ -9,8 +9,8 @@ var loadable = __TERMINAL__ === 'browser' ? {
     loading
   }),
 
-  LoadableHousingResource: Loadable({
-    loader: () => import('../pages/HouseingResource/index'),
+  LoadableProperty: Loadable({
+    loader: () => import('../pages/Property/index'),
     loading
   }),
   LoadableRoomDetail: Loadable({
@@ -43,16 +43,16 @@ var loadable = __TERMINAL__ === 'browser' ? {
     loader: () => import('../pages/LockDetail/index'),
     loading
   }),
-  LoadableStaff: Loadable({
-    loader: () => import('../pages/Staff/index'),
+  LoadableUser: Loadable({
+    loader: () => import('../pages/User/index'),
     loading
   }),
-  LoadableAddStaff: Loadable({
-    loader: () => import('../pages/AddStaff/index'),
+  LoadableAddUser: Loadable({
+    loader: () => import('../pages/AddUser/index'),
     loading
   }),
-  LoadableEditStaff: Loadable({
-    loader: () => import('../pages/EditStaff/index'),
+  LoadableEditUser: Loadable({
+    loader: () => import('../pages/EditUser/index'),
     loading
   }),
   LoadableRole: Loadable({
@@ -66,10 +66,22 @@ var loadable = __TERMINAL__ === 'browser' ? {
   LoadableLogin: Loadable({
     loader: () => import ('../pages/Login/index'),
     loading
+  }),
+  LoadableNews: Loadable({
+    loader: ()=> import('../pages/News/index'),
+    loading
+  }),
+  LoadableAddNews: Loadable({
+    loader: ()=> import('../pages/AddNews/index'),
+    loading
+  }),
+  LoadableAuditNews: Loadable({
+    loader:() => import('../pages/AuditNews/index'),
+    loading
   })
 } : {
     LoadableStatistics: require('../pages/Statistics/index').default,
-    LoadableHousingResource: require('../pages/HouseingResource/index').default,
+    LoadableProperty: require('../pages/Property/index').default,
     LoadableRoomDetail: require('../pages/RoomDetail/index').default,
     LoadableAddRenter: require('../pages/AddRenter/index').default,
     LoadableRelet: require('../pages/Relet/index').default,
@@ -80,12 +92,16 @@ var loadable = __TERMINAL__ === 'browser' ? {
     LoadableLock: require('../pages/Lock/index').default,
     LoadableLockDetail: require('../pages/LockDetail/index').default,
 
-    LoadableStaff: require('../pages/Staff/index').default,
-    LoadableAddStaff: require('../pages/AddStaff/index').default,
-    LoadableEditStaff: require('../pages/EditStaff/index').default,
+    LoadableUser: require('../pages/User/index').default,
+    LoadableAddUser: require('../pages/AddUser/index').default,
+    LoadableEditUser: require('../pages/EditUser/index').default,
     LoadableRole: require('../pages/Role/index').default,
     LoadableAddRole: require('../pages/AddRole/index').default,
-    LoadableLogin: require('../pages/Login/index').default
+    LoadableLogin: require('../pages/Login/index').default,
+
+    LoadableNews: require('../pages/News/index').default,
+    LoadableAddNews: require('../pages/AddNews/index').default,
+    LoadableAuditNews: require('../pages/AuditNews/index').default
   }
 
 module.exports = loadable

@@ -9,17 +9,6 @@ const TextArea = Input.TextArea
 const RadioGroup = Radio.Group
 const RadioButton = Radio.Button
 
-const houseAuth = ['房源列表', '添加房源', '编辑房源', '删除房源']
-const deviceAuth = [
-  '设备列表', '添加设备', '修改设备', '删除设备',
-  '智能门锁', '发送密码', '密码列表', '删除密码',
-  '临时密码', '开门记录', '我的设备', '绑定门卡',
-  '一键开门', '智能电表', '智能水表', '开关电表',
-  '开关水表', '电表统计', '水表统计'
-]
-const roleAuth = ['角色列表', '添加角色', '修改角色', '删除角色']
-const staffAuth = ['员工列表', '添加员工', '修改员工', '删除员工', '启用/禁用']
-
 import './index.less'
 import { addRoleData, fetchRoleListData, fetchMenuPermissionListData } from '../../actions/role';
 

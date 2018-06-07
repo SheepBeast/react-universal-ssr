@@ -1,7 +1,7 @@
 import { api } from "../api";
-import { BUSINESS_DEVICE_LIST, BUSINESS_LOCK_LIST, BUSINESS_LOCK_STATISTICS, BUSINESS_GATEWAY_LIST, BUSINESS_LOCK_DETAIL, BUSINESS_LOCK_KEY_LIST } from "../constants/method-types";
+import { BUSINESS_DEVICE_LIST, BUSINESS_LOCK_LIST, BUSINESS_LOCK_STATISTICS, BUSINESS_GATEWAY_LIST, BUSINESS_LOCK_DETAIL, BUSINESS_LOCK_KEY_LIST, BUSINESS_LOCK_APP_KEY_LIST, BUSINESS_UPDATE_lOCK_FUNCTION, BUSINESS_HOUSE_LIST } from "../constants/method-types";
 import isRequestSuccess from "../utils/isRequestSuccess";
-import { SET_DEVICE_LIST, SET_LOCK_LIST, SET_LOCK_STATISTICS, SET_GATEWAY_LIST, SET_LOCK_DETAIL, SET_LOCK_KEY_LIST } from "../constants/action-types";
+import { SET_DEVICE_LIST, SET_LOCK_LIST, SET_LOCK_STATISTICS, SET_GATEWAY_LIST, SET_LOCK_DETAIL, SET_LOCK_KEY_LIST, SET_LOCK_APP_KEY_LIST, SET_HOUSE_LIST } from "../constants/action-types";
 
 export const setDeviceList = deviceListData => ({
   type: SET_DEVICE_LIST,
@@ -34,7 +34,10 @@ export const setLockKeyList = lockKeyListData => ({
   lockKeyListData
 })
 
-
+export const setLockAppKeyList= lockAppKeyListData => ({
+  type: SET_LOCK_APP_KEY_LIST,
+  lockAppKeyListData
+})
 
 export const fetchDeviceListData = params => async dispatch => {
   let ret = await api.fetch(BUSINESS_DEVICE_LIST, params)
@@ -108,5 +111,29 @@ export const fetchLockKeyListData = params => async dispatch => {
     dispatch(setLockKeyList(ret.data.data.list))
   } else {
     console.log('fetch lock key list data error -->', ret)
+  }
+}
+
+export const fetchLockAppKeyListData = params => async dispatch => {
+  let ret = await api.fetch(BUSINESS_LOCK_APP_KEY_LIST, params)
+
+  console.log('lock app key list data --> ', ret)
+
+  if(isRequestSuccess(ret)){
+    dispatch(setLockAppKeyList(ret.data.data.list))
+  }else {
+    console.log('fetch lock app key list error -->', ret)
+  }
+}
+
+export const updateLockFunctionConfig = params => async dispatch => {
+  let ret = await api.fetch(BUSINESS_UPDATE_lOCK_FUNCTION, params)
+
+  console.log('update lock fucntion  ret -->', ret)
+
+  if(isRequestSuccess(ret)){
+
+  }else{
+    console.log('update lock function  error -->', ret)
   }
 }

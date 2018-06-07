@@ -8,9 +8,9 @@ const TextArea = Input.TextArea
 const CheckboxGroup = Checkbox.Group
 
 import './index.less'
-import { addStaffData } from '../../actions/staff';
+import { addUserData } from '../../actions/user';
 
-class AddStaff extends React.Component {
+class AddUser extends React.Component {
 
   onCheckBoxChange(e) {
     e.stopPropagation()
@@ -27,7 +27,7 @@ class AddStaff extends React.Component {
     ];
 
     return (
-      <div id="AddStaff" className="container">
+      <div id="AddUser" className="container">
         <Row>
           <Col span={12}>
             <h3>
@@ -106,7 +106,7 @@ class AddStaff extends React.Component {
             </Row>
             <Divider></Divider>
 
-            <div className="add-staff-room-list">
+            <div className="add-user-room-list">
               {
                 [1, 2, 3].map((num, idx) => (
                   <div className="mb-30" key={idx}>
@@ -162,9 +162,9 @@ const mapDispatchToProps = dispatch => {
         password: 'asd751011568'
       }
 
-      return dispatch(addStaffData(params))
+      return dispatch(addUserData(params))
     }
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddStaff)
+export default connect(mapStateToProps, mapDispatchToProps)(AddUser)

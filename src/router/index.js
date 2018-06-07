@@ -4,7 +4,7 @@ import Loadable from 'react-loadable'
 
 import {
     Statistics,
-    HousingResource,
+    Property,
     RoomDetail,
     AddRenter,
     Relet,
@@ -12,37 +12,45 @@ import {
     MyDevice,
     Lock,
     LockDetail,
-    Staff,
-    AddStaff,
-    EditStaff,
+    User,
+    AddUser,
+    EditUser,
     Role,
     AddRole,
-    Login
+    Login,
+    News,
+    AddNews,
+    AuditNews
 } from './wrapped'
 
 export default function getRoutes() {
     return (
-        <div>
-            <Route path="/" component={Lock} exact />
+        <div style={{ minWidth: 1563, maxWidth: 1563 }}>
+            <Route path="/" component={News} exact />
 
             <Route path="/statistics" component={Statistics} />
 
-            <Route path="/HousingResource" component={HousingResource} />
-            <Route path="/HousingResource/RoomDetail" component={RoomDetail} />
-            <Route path="/HousingResource/AddRenter" component={AddRenter} />
-            <Route path="/HousingResource/Relet" component={Relet} />
+            <Route path="/property" component={Property} />
+            <Route path="/property-room-detail" component={RoomDetail} />
+            <Route path="/property-add-renter" component={AddRenter} />
+            <Route path="/property-relet" component={Relet} />
 
             <Route path="/device-list" component={MyDevice} />
             <Route path="/device-gateway" component={Gateway} />
             <Route path="/device-lockList" component={Lock} />
             <Route path="/device-lockDetail" component={LockDetail} />
 
-            <Route path="/staff-list" component={Staff} />
-            <Route path="/staff-add" component={AddStaff} />
-            <Route path="/staff-edit" component={EditStaff} />
+            <Route path="/user" component={User} />
+            <Route path="/user-add" component={AddUser} />
+            <Route path="/user-edit" component={EditUser} />
 
-            <Route path="/role-list" component={Role} />
+            <Route path="/role" component={Role} />
             <Route path="/role-add" component={AddRole} />
+
+
+            <Route path="/news-list" component={News} />
+            <Route path="/news-add" component={AddNews} />
+            <Route path="/news-audit" component={AuditNews} />
 
             <Route path="/login" component={Login} />
         </div>

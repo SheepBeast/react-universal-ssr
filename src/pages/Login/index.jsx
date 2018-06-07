@@ -42,7 +42,7 @@ const mapDispatchToProps = dispatch => {
       e && e.preventDefault()
 
       return dispatch(login({
-        accountName: '慧享测试公寓',
+        accountName: 'bestZZY',
         password: '123456'
       }))
     }
