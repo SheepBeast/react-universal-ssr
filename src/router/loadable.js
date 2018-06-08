@@ -78,6 +78,18 @@ var loadable = __TERMINAL__ === 'browser' ? {
   LoadableAuditNews: Loadable({
     loader:() => import('../pages/AuditNews/index'),
     loading
+  }),
+  LoadableCheckNews: Loadable({
+    loader: ()=> import('../pages/CheckNews/index'),
+    loading
+  }),
+  // LoadableTenant: Loadable({
+  //   loader: ()=> import('../pages/Tenant/index'),
+  //   loading
+  // })
+  LoadableRegister: Loadable({
+    loader: () => import ('../pages/Register/index'),
+    loading
   })
 } : {
     LoadableStatistics: require('../pages/Statistics/index').default,
@@ -101,7 +113,12 @@ var loadable = __TERMINAL__ === 'browser' ? {
 
     LoadableNews: require('../pages/News/index').default,
     LoadableAddNews: require('../pages/AddNews/index').default,
-    LoadableAuditNews: require('../pages/AuditNews/index').default
+    LoadableAuditNews: require('../pages/AuditNews/index').default,
+    LoadableCheckNews: require('../pages/CheckNews/index').default,
+
+    // LoadableTenant: require('../pages/Tenant/index').default
+
+    LoadableRegister: require('../pages/Register/index').default
   }
 
 module.exports = loadable

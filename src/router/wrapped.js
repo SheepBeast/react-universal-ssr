@@ -21,7 +21,10 @@ import {
   LoadableLogin,
   LoadableNews,
   LoadableAddNews,
-  LoadableAuditNews
+  LoadableAuditNews,
+  LoadableCheckNews,
+  // LoadableTenant,
+  LoadableRegister
 
 } from './loadable'
 
@@ -133,6 +136,23 @@ class AuditNews extends React.Component {
   }
 }
 
+class CheckNews extends React.Component {
+  render(){
+    return <LoadableCheckNews />
+  }
+}
+
+// class Tenant extends React.Component {
+//   render(){
+//     return <LoadableTenant />
+//   }
+// }
+
+class Register extends React.Component {
+  render(){
+    return <LoadableRegister />
+  }
+}
 module.exports = {
   Statistics,
   Property,
@@ -151,5 +171,8 @@ module.exports = {
   Login,
   News,
   AddNews,
-  AuditNews
+  AuditNews,
+  CheckNews,
+  // Tenant,
+  Register
 }

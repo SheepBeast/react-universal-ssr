@@ -20,13 +20,16 @@ import {
     Login,
     News,
     AddNews,
-    AuditNews
+    AuditNews,
+    CheckNews,
+    // Tenant
 } from './wrapped'
+import Register from '../pages/Register';
 
 export default function getRoutes() {
     return (
         <div style={{ minWidth: 1563, maxWidth: 1563 }}>
-            <Route path="/" component={News} exact />
+            <Route path="/" component={Register} exact />
 
             <Route path="/statistics" component={Statistics} />
 
@@ -40,17 +43,22 @@ export default function getRoutes() {
             <Route path="/device-lockList" component={Lock} />
             <Route path="/device-lockDetail" component={LockDetail} />
 
-            <Route path="/user" component={User} />
+            <Route path="/user-list" component={User} />
             <Route path="/user-add" component={AddUser} />
             <Route path="/user-edit" component={EditUser} />
 
-            <Route path="/role" component={Role} />
+            <Route path="/role-list" component={Role} />
             <Route path="/role-add" component={AddRole} />
 
 
             <Route path="/news-list" component={News} />
             <Route path="/news-add" component={AddNews} />
             <Route path="/news-audit" component={AuditNews} />
+            <Route path="/news-check" component={CheckNews} />
+
+            {/* <Route path="/tenant-list" component={Tenant} /> */}
+
+            <Route path="/register" component={Register} />
 
             <Route path="/login" component={Login} />
         </div>

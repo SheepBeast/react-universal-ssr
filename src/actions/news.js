@@ -1,11 +1,16 @@
-import { SET_NEWS_LIST } from "../constants/action-types";
+import { SET_NEWS_LIST, SET_NEWS_DETAIL } from "../constants/action-types";
 import { api } from "../api";
-import { BUSINESS_NEWS_LIST, BUSINESS_ADD_NEWS, BUSINESS_AUDIT_NEWS } from "../constants/method-types";
+import { BUSINESS_NEWS_LIST, BUSINESS_ADD_NEWS, BUSINESS_AUDIT_NEWS, BUSINESS_NEWS_DETAIL } from "../constants/method-types";
 import isRequestSuccess from "../utils/isRequestSuccess";
 
 export const setNewsList = newsListData => ({
   type: SET_NEWS_LIST,
   newsListData
+})
+
+export const setNewsDetail = newsDetailData => ({
+  type: SET_NEWS_DETAIL,
+  newsDetailData
 })
 
 export const fetchNewsListData = params => async dispatch => {
@@ -42,5 +47,17 @@ export const auditNewsData = params => async dispatch => {
 
   } else {
     console.log('audit news data error -->', ret)
+  }
+}
+
+export const fetchNewsDetailData = params => async dispatch => {
+  let ret = await api.fetch(BUSINESS_NEWS_DETAIL, params)
+
+  console.log('news detail data -->', ret)
+
+  if(isRequestSuccess(ret)) {
+    dispatch(setNewsDetail(ret.data.data))
+  }else {
+    console.log('fetch news detail data error -->', ret)
   }
 }

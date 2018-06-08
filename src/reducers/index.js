@@ -15,7 +15,7 @@ import * as propertyReducers from './property'
 
 import * as newsReducers from './news'
 
-import * as tenantReducers from './tenant'
+// import * as tenantReducers from './tenant'
 
 export default combineReducers({
   ...authReducers,
@@ -25,5 +25,5 @@ export default combineReducers({
   ...deviceReducers,
   ...propertyReducers,
   ...newsReducers,
-  ...tenantReducers
+  // ...tenantReducers
 })

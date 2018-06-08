@@ -32,14 +32,15 @@ class News extends React.Component {
 
     console.log('news list -->', this.props.newsList)
 
-    let dataSource = this.props.newsList.map(({ newsTitle, pushType, userNames, state, createTime, userName, auditName }) => ({
+    let dataSource = this.props.newsList.map(({ newsTitle, pushType, userNames, state, createTime, userName, auditName, newsId }) => ({
       newsTitle,
       pushType: newsPushTypeRefers[pushType],
       userNames,
       userName,
       state: newsStateRefers[state],
       auditName,
-      createTime
+      createTime,
+      actions: newsId
     }))
 
     let columns = [{
@@ -75,26 +76,26 @@ class News extends React.Component {
       title: '操作',
       key: 'actions',
       dataIndex: 'actions',
-      render: (roleId) => (
-        <span>
-          <Icon type="file-text" className="mr-20 fs-16 br-50" style={{ backgroundColor: '#D5D5D5', color: '#fff', padding: 6 }} />
-          <Icon type="paper-clip" className="fs-16 br-50" style={{ backgroundColor: '#D5D5D5', color: '#fff', padding: 6 }} />
-        </span>
-      )
+      render: (newsId) => {
+        var url = `/news-check?newsId=${encodeURIComponent(newsId)}`
+
+        return (
+          <span>
+            <Link to={url}>
+              <Icon type="file-text" className="mr-20 fs-16 br-50" style={{ backgroundColor: '#D5D5D5', color: '#fff', padding: 6 }} />
+            </Link>
+
+            <Icon type="paper-clip" className="fs-16 br-50" style={{ backgroundColor: '#D5D5D5', color: '#fff', padding: 6 }} />
+          </span>
+        )
+      }
     }]
 
     return (
       <div id="News" className="container">
-        <Row>
-          <Col span={12}>
-            <h3>
-              <b>消息列表</b>
-            </h3>
-          </Col>
-          <Col span={12} className="tr">
-            <Button type="primary" >返回</Button>
-          </Col>
-        </Row>
+        <h3>
+          <b>消息列表</b>
+        </h3>
 
         <Form className="mb-20">
           <Row>

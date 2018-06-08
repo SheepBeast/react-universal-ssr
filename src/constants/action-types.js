@@ -25,5 +25,6 @@ export const SET_FLOOR_LIST = 'SET_FLOOR_LIST'
 export const SET_ROOM_LIST = 'SET_ROOM_LIST'
 
 export const SET_NEWS_LIST = 'SET_NEWS_LIST'
+export const SET_NEWS_DETAIL = 'SET_NEWS_DETAIL'
 
-export const SET_TENANT_LIST = 'SET_TENANT_LIST'
+// export const SET_TENANT_LIST = 'SET_TENANT_LIST'

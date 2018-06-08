@@ -63,10 +63,10 @@ class Lock extends React.Component {
       key: 'actions',
       dataIndex: 'actions',
       render: (lockId) => {
-        const detailUrl = `/device-lockDetail?lockId=${encodeURIComponent(lockId)}`
+        const url = `/device-lockDetail?lockId=${encodeURIComponent(lockId)}`
         return (
           <span>
-            <Link to={detailUrl}>
+            <Link to={url}>
               <Icon type="file-text" className="mr-20 fs-16 br-50" style={{ backgroundColor: '#D5D5D5', color: '#fff', padding: 6 }} />
             </Link>
             <Icon type="paper-clip" className="mr-20 fs-16 br-50" style={{ backgroundColor: '#D5D5D5', color: '#fff', padding: 6 }} />
