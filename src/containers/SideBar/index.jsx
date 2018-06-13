@@ -72,7 +72,7 @@ class SideBar extends React.Component {
                   <Menu.Item key="role">
                     <Link to="/role-list">角色管理</Link>
                   </Menu.Item>
-                  <Menu.Item key="user">
+                  <Menu.Item key="staff">
                     <Link to="/user-list">员工管理</Link>
                   </Menu.Item>
                 </Menu.SubMenu>
@@ -89,35 +89,45 @@ class SideBar extends React.Component {
                   </Menu.Item>
                 </Menu.SubMenu>
 
-                <Menu.SubMenu key="device" title={
+                <Menu.SubMenu key="account" title={
+                  <span>
+                    <Icon type="bell" /> <span>个人中心</span>
+                  </span>
+                }>
+                  <Menu.Item key="account-info">
+                    <Link to="/account-info">个人信息</Link>
+                  </Menu.Item>
+                </Menu.SubMenu>
+
+                {/* <Menu.SubMenu key="account" title={
                   <span>
                     <Icon type="desktop" /> <span>个人中心</span>
                   </span>
                 }>
-                  <Menu.Item key="myDevice">
+                  <Menu.Item key="register">
                     <Link to="/register">注册</Link>
                   </Menu.Item>
-                  <Menu.Item key="gateway">
+                  <Menu.Item key="login">
                     <Link to="/device-gateway">登陆</Link>
                   </Menu.Item>
-                  <Menu.Item key="lock">
+                  <Menu.Item key="forgetPassword">
                     <Link to="/device-lockList">忘记密码</Link>
                   </Menu.Item>
 
-                  <Menu.Item key="myDevice">
+                  <Menu.Item key="account-center">
                     <Link to="/device-list">个人中心</Link>
                   </Menu.Item>
-                  <Menu.Item key="gateway">
+                  <Menu.Item key="modifyAvatar">
                     <Link to="/device-gateway">修改头像</Link>
                   </Menu.Item>
-                  <Menu.Item key="lock">
+                  <Menu.Item key="modifyPassword">
                     <Link to="/device-lockList">修改密码</Link>
                   </Menu.Item>
 
-                  <Menu.Item key="lock">
+                  <Menu.Item key="modifyMobile">
                     <Link to="/device-lockList">修改手机</Link>
                   </Menu.Item>
-                </Menu.SubMenu>
+                </Menu.SubMenu> */}
               </Menu>
             </Layout.Sider> : null
           }

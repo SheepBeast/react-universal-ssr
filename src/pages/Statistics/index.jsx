@@ -338,7 +338,7 @@ class Statistics extends Component {
           <h3 style={{ marginBottom: 20 }} className="fs-18"><b>消息提醒</b></h3>
 
           <div className="message-cards">
-            <Card title={<span><Avatar icon="shop" size="small" style={{ backgroundColor: '#0084E3' }} />  <small>&nbsp;&nbsp;租赁消息</small></span>}>
+            <Card className="mb-20" title={<span><Avatar icon="shop" size="small" style={{ backgroundColor: '#0084E3' }} />  <small>&nbsp;&nbsp;租赁消息</small></span>}>
               <h4>租户“林晓”租赁了“远洋公寓”&nbsp;&nbsp;&nbsp;6栋ABC2406房</h4>
               <br />
               <h4>租赁时间：<span className="message-detail">2018年5月16日</span></h4>
@@ -346,7 +346,7 @@ class Statistics extends Component {
               <h4>租赁负责人：<span className="message-detail">王大川</span></h4>
             </Card>
 
-            <Card title={<span><Avatar icon="shop" size="small" style={{ backgroundColor: 'orangered' }} />  <small>&nbsp;&nbsp;门锁报警</small></span>}>
+            <Card className="mb-20" title={<span><Avatar icon="shop" size="small" style={{ backgroundColor: 'orangered' }} />  <small>&nbsp;&nbsp;门锁报警</small></span>}>
               <h4>租户“林晓”租赁了“远洋公寓”&nbsp;&nbsp;&nbsp;6栋ABC2406房</h4>
               <br />
               <h4>租赁时间：<span className="message-detail">2018年5月16日</span></h4>
@@ -354,7 +354,7 @@ class Statistics extends Component {
               <h4>租赁负责人：<span className="message-detail">王大川</span></h4>
             </Card>
 
-            <Card title={<span><Avatar icon="shop" size="small" style={{ backgroundColor: 'greenyellow' }} />  <small>&nbsp;&nbsp;租客反馈</small></span>}>
+            <Card className="mb-20" title={<span><Avatar icon="shop" size="small" style={{ backgroundColor: 'greenyellow' }} />  <small>&nbsp;&nbsp;租客反馈</small></span>}>
               <h4>租户“林晓”租赁了“远洋公寓”&nbsp;&nbsp;&nbsp;6栋ABC2406房</h4>
               <br />
               <h4>租赁时间：<span className="message-detail">2018年5月16日</span></h4>
@@ -362,7 +362,7 @@ class Statistics extends Component {
               <h4>租赁负责人：<span className="message-detail">王大川</span></h4>
             </Card>
 
-            <Card title={<span><Avatar icon="shop" size="small" style={{ backgroundColor: 'greenyellow' }} />  <small>&nbsp;&nbsp;租客反馈</small></span>}>
+            <Card className="mb-20" title={<span><Avatar icon="shop" size="small" style={{ backgroundColor: 'greenyellow' }} />  <small>&nbsp;&nbsp;租客反馈</small></span>}>
               <h4>租户“林晓”租赁了“远洋公寓”&nbsp;&nbsp;&nbsp;6栋ABC2406房</h4>
               <br />
               <h4>租赁时间：<span className="message-detail">2018年5月16日</span></h4>

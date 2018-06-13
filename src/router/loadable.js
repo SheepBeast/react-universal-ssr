@@ -90,6 +90,10 @@ var loadable = __TERMINAL__ === 'browser' ? {
   LoadableRegister: Loadable({
     loader: () => import ('../pages/Register/index'),
     loading
+  }),
+  LoadableForgetPassword: Loadable({
+    loader: ()=>import('../pages/ForgetPassword/index'),
+    loading
   })
 } : {
     LoadableStatistics: require('../pages/Statistics/index').default,
@@ -118,7 +122,8 @@ var loadable = __TERMINAL__ === 'browser' ? {
 
     // LoadableTenant: require('../pages/Tenant/index').default
 
-    LoadableRegister: require('../pages/Register/index').default
+    LoadableRegister: require('../pages/Register/index').default,
+    LoadableForgetPassword: require('../pages/ForgetPassword/index').default
   }
 
 module.exports = loadable

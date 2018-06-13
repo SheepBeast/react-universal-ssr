@@ -1,4 +1,4 @@
-import { SET_DEVICE_LIST, SET_LOCK_LIST, SET_LOCK_STATISTICS, SET_GATEWAY_LIST, SET_LOCK_DETAIL, SET_LOCK_KEY_LIST, SET_LOCK_APP_KEY_LIST } from "../constants/action-types";
+import { SET_DEVICE_LIST, SET_LOCK_LIST, SET_LOCK_STATISTICS, SET_GATEWAY_LIST, SET_LOCK_DETAIL, SET_LOCK_KEY_LIST, SET_LOCK_APP_KEY_LIST, SET_LOCK_LOG_LIST } from "../constants/action-types";
 
 export const deviceList = (state = [], action) => {
   switch (action.type) {
@@ -54,10 +54,19 @@ export const lockKeyList = (state = [], action) => {
   }
 }
 
-export const lockAppKeyList = (state=[],action) => {
-  switch(action.type){
+export const lockAppKeyList = (state = [], action) => {
+  switch (action.type) {
     case SET_LOCK_APP_KEY_LIST:
       return action.lockAppKeyListData || []
+    default:
+      return state
+  }
+}
+
+export const lockLogList = (state = [], action) => {
+  switch (action.type) {
+    case SET_LOCK_LOG_LIST:
+      return action.lockLogListData || []
     default:
       return state
   }

@@ -22,14 +22,15 @@ import {
     AddNews,
     AuditNews,
     CheckNews,
-    // Tenant
+    // Tenant,
+    ForgetPassword
 } from './wrapped'
 import Register from '../pages/Register';
 
 export default function getRoutes() {
     return (
         <div style={{ minWidth: 1563, maxWidth: 1563 }}>
-            <Route path="/" component={Register} exact />
+            <Route path="/" component={Lock} exact />
 
             <Route path="/statistics" component={Statistics} />
 
@@ -61,6 +62,7 @@ export default function getRoutes() {
             <Route path="/register" component={Register} />
 
             <Route path="/login" component={Login} />
+            <Route path="/forget-password" component={ForgetPassword} />
         </div>
 
     )

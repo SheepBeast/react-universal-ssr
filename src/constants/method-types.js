@@ -1,4 +1,4 @@
-export const BUSSINESS_REGISTER = 'bussinessRegister'
+export const BUSSINESS_REGISTER = 'businessRegister'
 export const APP_SMS_INFO = 'appSmsInfo'
 export const BUSINESS_WEB_LOGIN = 'businessWebLogin'
 export const BUSINESS_LOGOUT = 'businessLogout'
@@ -59,6 +59,7 @@ export const BUSINESS_USER_RELATE_ROLE = 'businessUserRelateRole'
 export const BUSINESS_USER_RELATE_HOUSE = 'businessUserRelateHouse'
 export const BUSINESS_DEVICE_LIST = 'businessDeviceList'
 export const BUSINESS_UNBIND_DEVICE = 'businessUnbindDevice'
+export const BUSINESS_DELETE_DEVICE = 'businessDeleteDevice'
 
 export const BUSINESS_LOCK_LIST = 'businessLockList'
 export const BUSINESS_LOCK_DETAIL = 'businessLockDetail'
@@ -83,7 +84,7 @@ export const BUSINESS_SEND_NEWS = 'businessSendNews'
 export const BUSINESS_RENT_STATICSTICS = 'businessRentStatistics'
 export const BUSINESS_DEVICE_STATICSTICS = 'businessDeviceStatistics'
 export const BUSINESS_GATEWAY_LIST = 'businessGatewayList'
-
+export const BUSINESS_GATEWAY_DELETE = 'businessGatewayDelete'
 
 export const BUSINESS_MENU_PERMISSION_LIST = 'businessMenuPermissionList'
 export const BUSINESS_LOCK_KEY_LIST = 'businessLockKeyList'

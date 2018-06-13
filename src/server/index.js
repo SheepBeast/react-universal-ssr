@@ -62,6 +62,35 @@ server.get('/test', function (req, res) {
   res.send('ok 123')
 })
 
+
+/**
+ * 加密流程
+ */
+/******************************************/
+var rsaKey = new NodeRSA(publicKey, 'pkcs8-public-pem')
+rsaKey.setOptions({
+  encryptionScheme: 'pkcs1',
+  signingScheme: 'pkcs1',
+  mode: 'ecb'
+})
+
+var encrypt = (text) => {
+  var md5 = crypto.createHash('md5')
+
+  md5.update(text)
+
+  var md5Sign = md5.digest('hex').toUpperCase()
+
+  console.log('md5 -->', md5Sign)
+
+  var encrypted = rsaKey.encrypt(md5Sign, 'base64')
+
+  console.log('rsa -->', encrypted)
+
+  return encrypted
+}
+/******************************************/
+
 server.get('/', function (req, res) {
   var html = renderToString(
     <StaticRouter location={req.url} context={{}}>
@@ -88,42 +117,76 @@ server.get('/Statistics', function (req, res) {
 
 
 
-server.post('/login', (req, res) => {
-  // console.log('headers -->', req.headers)
-  console.log('login -->', req.body)
+// server.post('/login', (req, res) => {
+//   // console.log('headers -->', req.headers)
+//   console.log('login -->', req.body)
 
-  var { method, data: { accountName, password } } = req.body
+//   var { method, data: { accountName, password } } = req.body
 
-  var md5 = crypto.createHash('md5')
+//   var encrypted = encrypt(password)
 
-  md5.update(password)
+//   var ret = api.fetch(method, { accountName, password: encrypted }, {
+//     url: __REMOTE_SERVER__
+//   }).then(r => {
+//     console.log('r -->', r.data)
+//     res.send(r.data)
+//   }).catch(e => {
+//     console.log('e -->', e)
+//   })
+// })
 
-  var md5Sign = md5.digest('hex').toUpperCase()
+// server.post('/register', (req, res) => {
+//   console.log('/regsder -->', req.headers)
+//   console.log('register -->', req.body)
 
-  console.log('md5 -->', md5Sign)
+//   var { method, data: { accountName, password, phoneNo, code } } = req.body
 
+//   var encrypted = encrypt(password)
 
-  let rsaKey = new NodeRSA(publicKey, 'pkcs8-public-pem')
+//   var ret = api.fetch(method, { accountName, password: encrypted, phoneNo, code }, {
+//     url: __REMOTE_SERVER__
+//   }).then(r => {
+//     console.log('register r -->', r.data)
+//     res.send(r.data)
+//   }).catch(e => {
+//     console.log('register e -->', e)
+//   })
+// })
 
-  rsaKey.setOptions({
-    encryptionScheme: 'pkcs1',
-    signingScheme: 'pkcs1',
-    mode: 'ecb'
-  })
+// server.post('/forget-password', (req, res) => {
+//   var { method, data: { accountName, password, phoneNo, code } } = req.body
 
-  let encrypted = rsaKey.encrypt(md5Sign, 'base64')
+//   var encrypted = encrypt(password)
 
-  console.log('rsa -->', encrypted)
+//   var ret = api.fetch(method, { accountName, password: encrypted, phoneNo, code }, {
+//     url: __REMOTE_SERVER__
+//   }).then(r => {
+//     console.log('forget password r -->', r.data)
+//     res.send(r.data)
+//   }).catch(e => {
+//     console.log('forget password e -->', e)
+//   })
+// })
 
-  let ret = api.fetch(method, { accountName, password: encrypted }, {
+var commons_middleware = (req, res, next) => {
+  var { method, data: { accountName, password, phoneNo, code } } = req.body
+
+  var encrypted = encrypt(password)
+
+  var ret = api.fetch(method, { accountName, password: encrypted, phoneNo, code }, {
     url: __REMOTE_SERVER__
   }).then(r => {
-    console.log('r -->', r.data)
+    console.log('common r -->', r.data)
     res.send(r.data)
   }).catch(e => {
-    console.log('e -->', e)
+    console.log('common e -->', e)
   })
-})
+}
+
+server.post('/login', commons_middleware)
+server.post('/register', commons_middleware)
+server.post('/forget-password', commons_middleware)
+// server.post('/modify-password', commons_middleware)
 
 var port = process.env.NODE_ENV === "production" ? 1501 : 8081
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-
-import { Form, Table, Button, Input, Radio, Icon } from 'antd'
+import { Link } from 'react-router-dom'
+import { Form, Table, Button, Input, Radio, Icon, Row, Col, Tooltip } from 'antd'
 
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
@@ -9,37 +9,78 @@ const RadioButton = Radio.Button
 const Search = Input.Search
 
 import './index.less'
-import { fetchGatewayListData } from '../../actions/device';
+import { fetchGatewayListData, deleteGateway } from '../../actions/device';
+
+const gatewayTypeRefers = {
+  1: '有线网关',
+  2: '无线网关'
+}
+
+const stateRefers = {
+  0: '异常',
+  1: '正常',
+  2: '低电量',
+  3: '挟持告警',
+  4: '离线'
+}
+
+
+
 
 class Gateway extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      startNum: 0
+    }
+  }
+
   componentWillMount() {
     this.props.fetchGatewayList()
   }
 
-  onSearch(e) {
-    var params = {
-      findName: 'F'
+  fetch(state, search) {
+    var options = {}
+
+    if (!state) {
+      state = this.props.form.getFieldValue('state')
     }
 
-    this.props.fetchGatewayList(params)
+    if (state != '-1') {
+      options.state = parseInt(state)
+    }
+
+    if (search) {
+      options.findName = search
+    }
+
+    console.log('options -->', options)
+
+    this.props.fetchGatewayList(options)
+  }
+
+  onSearch(e) {
+    this.fetch(null, e)
+  }
+
+  onChange(e) {
+    this.fetch(e.target.value)
+  }
+
+  deleteGateway(params) {
+    this.props.deleteGateway(params)
   }
 
   render() {
-    const gatewayTypeRefers = {
-      1: '有线网关',
-      2: '无线网关'
-    }
+    console.log('device list -->', this.props.deviceList)
 
-    const stateRefers = {
-      0: '异常',
-      1: '正常',
-      2: '低电量',
-      3: '挟持告警',
-      4: '离线'
-    }
-
-    const dataSource = this.props.gatewayList.map(({ deviceId, deviceName, gatewayType, hardwareVersion, mac, roomName, floorName, buildingName, houseName, state, softwareVersion }) => {
+    const dataSource = this.props.gatewayList.map(({ deviceId, deviceName, gatewayId, gatewayType, hardwareVersion, mac, roomName, floorName, buildingName, houseName, state, softwareVersion }) => {
       let installationSite = `${houseName || ''}${buildingName ? buildingName + '栋' : ''}${floorName ? floorName + '层' : ''}${roomName || ''}`
+
+      if (installationSite) {
+        installationSite += '：'
+      }
+
       let _gatewayType = gatewayTypeRefers[gatewayType]
 
       return {
@@ -47,9 +88,11 @@ class Gateway extends React.Component {
         mac,
         installationSite,
         gatewayType: _gatewayType,
-        deviceName: deviceName || `${installationSite}：${_gatewayType}`,
+        deviceName: deviceName || `${installationSite}${_gatewayType}`,
         state,
-        actions: deviceId,
+        actions: {
+          gatewayId
+        },
         hardwareVersion,
         softwareVersion
       }
@@ -94,33 +137,81 @@ class Gateway extends React.Component {
       title: '操作',
       key: 'actions',
       dataIndex: 'actions',
-      render: () => {
+      render: ({ gatewayId }) => {
+        const url = `/device-lockDetail?lockId=${encodeURIComponent(gatewayId)}`
         return (
           <span>
-            <Icon type="file-text" className="mr-20 fs-16 br-50" style={{ backgroundColor: '#D5D5D5', color: '#fff', padding: 6 }} />
-            <Icon type="paper-clip" className="mr-20 fs-16 br-50" style={{ backgroundColor: '#D5D5D5', color: '#fff', padding: 6 }} />
-            <Icon type="shop" className="fs-16 br-50" style={{ backgroundColor: '#D5D5D5', color: '#fff', padding: 6 }} />
+            <Link to={url} className="mr-20">
+              <Tooltip title="详情">
+
+                <Icon type="file-text" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
+              </Tooltip>
+
+            </Link>
+            <a className="mr-20" onClick={
+              () => {
+                // this.setState({
+                //   deviceName,
+                //   mac
+                // })
+                // pipe.openModal()
+              }
+            }>
+              <Tooltip title="关联">
+
+                <Icon type="paper-clip" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
+
+
+              </Tooltip>
+            </a>
+
+            <a className="mr-20" onClick={this.deleteGateway.bind(this, { gatewayId })}>
+              <Tooltip title="删除">
+                <Icon type="shop" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
+              </Tooltip>
+            </a>
           </span>
         )
       }
     }]
+
+    const { getFieldDecorator } = this.props.form
+
     return (
       <div id="Gateway" className="container">
         <Form className="mb-20">
           <FormItem label="房间状态" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
-            <RadioGroup className="custom-radio-button-group" defaultValue="0">
-              <RadioButton value="0">全部</RadioButton>
-              <RadioButton value="1">正常</RadioButton>
-              <RadioButton value="2">异常</RadioButton>
-            </RadioGroup>
+            {
+              getFieldDecorator('state', {
+                initialValue: "-1",
+              })(
+                <RadioGroup className="custom-radio-button-group" onChange={this.onChange.bind(this)}>
+                  <RadioButton value="-1">全部</RadioButton>
+                  <RadioButton value="1">正常</RadioButton>
+                  <RadioButton value="0">异常</RadioButton>
+                </RadioGroup>
+              )
+            }
           </FormItem>
 
-          <FormItem wrapperCol={{ span: 8 }}>
-            <Search style={{ height: 32 }} enterButton="搜索" placeholder="请输入设备名称/设备MAC/安装关联位置" onSearch={this.onSearch.bind(this)}></Search>
+          <FormItem>
+            <Row>
+              <Col span={8}>
+                {
+                  getFieldDecorator('search')(
+                    <Search style={{ height: 32 }} enterButton="搜索" placeholder="请输入设备名称/设备MAC/安装关联位置" onSearch={this.onSearch.bind(this)}></Search>
+                  )
+                }
+              </Col>
+              <Col className="tr">
+                <Button type="primary">批量删除</Button>
+              </Col>
+            </Row>
+
           </FormItem>
         </Form>
 
-        <Table dataSource={dataSource} columns={columns} rowSelection={{}}></Table>
+        <Table dataSource={dataSource} columns={columns} rowSelection={{}} pagination={false}></Table>
       </div>
     )
   }
@@ -131,8 +222,9 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => {
   return {
-    fetchGatewayList: params => dispatch(fetchGatewayListData(params))
+    fetchGatewayList: params => dispatch(fetchGatewayListData(params)),
+    deleteGateway: params => dispatch(deleteGateway(params))
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Gateway)
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(Gateway))

@@ -6,7 +6,7 @@ import { BUSINESS_WEB_LOGIN } from '../../constants/method-types'
 import createApiOptions from '../../utils/createApiOptions'
 
 type format = {
-  userName: string,
+  accountName: string,
   password: string
 }
 

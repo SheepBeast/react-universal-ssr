@@ -34,6 +34,8 @@ export const fetchHouseListData = params => async dispatch => {
   } else {
     console.log('house list  error -->', ret)
   }
+
+  return ret
 }
 
 export const fetchBuildingListData = params => async dispatch => {
@@ -46,6 +48,7 @@ export const fetchBuildingListData = params => async dispatch => {
   } else {
     console.log('building list  error -->', ret)
   }
+  return ret
 }
 
 export const fetchFloorListData = params => async dispatch => {
@@ -58,6 +61,7 @@ export const fetchFloorListData = params => async dispatch => {
   } else {
     console.log('floor list  error -->', ret)
   }
+  return ret
 }
 
 export const fetchRoomListData = params => async dispatch => {
@@ -70,4 +74,5 @@ export const fetchRoomListData = params => async dispatch => {
   } else {
     console.log('Room list  error -->', ret)
   }
+  return ret
 }

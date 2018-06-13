@@ -12,4 +12,4 @@ type format = {
   password: string
 }
 
-export default (data: format, tokenId: string, requestOptions: object): Promise => base(createApiOptions(BUSINESS_FORGET_PASSWORD, data, tokenId))
+export default (data: format, tokenId: string, requestOptions: object): Promise => base(createApiOptions(BUSINESS_FORGET_PASSWORD, data, tokenId, requestOptions))

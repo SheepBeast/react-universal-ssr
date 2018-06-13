@@ -24,7 +24,8 @@ import {
   LoadableAuditNews,
   LoadableCheckNews,
   // LoadableTenant,
-  LoadableRegister
+  LoadableRegister,
+  LoadableForgetPassword
 
 } from './loadable'
 
@@ -153,6 +154,13 @@ class Register extends React.Component {
     return <LoadableRegister />
   }
 }
+
+class ForgetPassword extends React.Component {
+  render(){
+    return <LoadableForgetPassword />
+  }
+}
+
 module.exports = {
   Statistics,
   Property,
@@ -174,5 +182,6 @@ module.exports = {
   AuditNews,
   CheckNews,
   // Tenant,
-  Register
+  Register,
+  ForgetPassword
 }

@@ -1,29 +1,24 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
-
-import { Form, Input, Button, Row, Col, Select } from 'antd'
-import { fetchCaptchaData, register, login } from '../../actions/common';
+import { forgetPassword, fetchCaptchaData } from '../../actions/common'
 import isRequestSuccess from '../../utils/isRequestSuccess';
 import { isMobile } from '../../constants/regexp'
+import { Form, Input, Button, Row, Col, Select } from 'antd'
+
+import './index.less'
 
 const FormItem = Form.Item
 const InputGroup = Input.Group
 const Option = Select.Option
 
-import './index.less'
-
-
-
-class Register extends React.Component {
+class ForgetPassword extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       captcha: null
     }
   }
-
-
 
   fetchCaptcha() {
     this.props.form.validateFields(['accountName', 'password', 'rePassword', 'phoneNo'], (err, val) => {
@@ -32,7 +27,7 @@ class Register extends React.Component {
 
       if (!err) {
         this.props.fetchCaptcha({
-          flag: 4,
+          flag: 7,
           phoneNo: val.phoneNo
         }).then(ret => {
           if (isRequestSuccess(ret)) {
@@ -64,26 +59,14 @@ class Register extends React.Component {
 
       if (!err) {
         let { accountName, password, phoneNo, captcha } = val
-        this.props.register({
+        this.props.forgetPassword({
           accountName,
           password,
           phoneNo,
           code: captcha
         }).then(ret => {
           if (isRequestSuccess(ret)) {
-            console.log('submit ret -->', ret)
-            console.log('login form -->', accountName, password)
-            this.props.autoLogin({
-              accountName,
-              password
-            }).then(res => {
-              console.log('submit res -->', res)
-              if (isRequestSuccess(res)) {
-                this.props.history.push('/')
-              } else {
-                console.log('auto login fail -->', res.data.reason)
-              }
-            })
+            this.props.history.push('/login')
           } else {
             this.props.form.setFields({
               result: {
@@ -100,18 +83,20 @@ class Register extends React.Component {
     })
   }
 
+
   render() {
     let { getFieldDecorator, getFieldValue, validateFields } = this.props.form
 
     return (
-      <div id="Register">
+      <div id="ForgetPassword">
         <div style={{ width: 430, backgroundColor: 'rgba(255,255,255,0.2)', padding: 30, borderRadius: 4, margin: 'auto' }}>
           <div className="tc mb-20">
             <img src="" alt="" style={{ width: 200, height: 40 }} />
           </div>
           <p>
-            <b>注册</b>
+            <b>忘记密码</b>
           </p>
+
           <Form onSubmit={this.onSubmit.bind(this)}>
             <FormItem>
               {
@@ -160,7 +145,7 @@ class Register extends React.Component {
                   }],
                   initialValue: 'asd751011568'
                 })(
-                  <Input placeholder="确认密码"></Input>
+                  <Input placeholder="确认新密码"></Input>
                 )
               }
             </FormItem>
@@ -214,19 +199,12 @@ class Register extends React.Component {
               </Row>
             </FormItem>
             <FormItem>
-              <Row>
-                <Col span={12}>
-                  {
-                    getFieldDecorator('result')(
-                      <Button type="primary" style={{ width: 176 }} htmlType="submit">注 册</Button>
-                    )
-                  }
+              {
+                getFieldDecorator('result')(
+                  <Button type="primary" className="w-100" htmlType="submit">确认</Button>
+                )
+              }
 
-                </Col>
-                <Col span={12} className="tr">
-                  <Link to="/login">使用已有账户登录</Link>
-                </Col>
-              </Row>
             </FormItem>
           </Form>
         </div>
@@ -239,9 +217,8 @@ const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => {
   return {
     fetchCaptcha: params => dispatch(fetchCaptchaData(params)),
-    register: params => dispatch(register(params)),
-    autoLogin: params => dispatch(login(params))
+    forgetPassword: params => dispatch(forgetPassword(params)),
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(Register)))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(ForgetPassword)))

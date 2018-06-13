@@ -1,8 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Row, Col, Form, Select, Button, Table, Divider, Modal, Radio, Input, Icon, Checkbox } from 'antd'
-import { fetchLockListData, fetchLockStatisticsData } from '../../actions/device';
+import { Row, Col, Form, Select, Button, Table, Divider, Radio, Input, Icon, Checkbox, Tooltip } from 'antd'
+import { fetchLockListData, fetchLockStatisticsData, deleteDevice } from '../../actions/device';
+
+import pipe from './pipe'
+import Modal_Device_X_Room from './Modal_Device_X_Room'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -10,11 +13,28 @@ const RadioGroup = Radio.Group
 const RadioButton = Radio.Button
 const Search = Input.Search
 
+
+const lockTypeRefers = {
+  1: '网关锁',
+  2: 'WIFI锁',
+  3: '蓝牙锁 ',
+  4: 'NB锁'
+}
+
+const stateRefers = {
+  0: '异常',
+  1: '正常',
+  2: '低电量',
+  3: '挟持告警',
+  4: '离线'
+}
+
 class Lock extends React.Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
-      visible: false
+      deviceName: null,
+      mac: null
     }
   }
 
@@ -23,15 +43,79 @@ class Lock extends React.Component {
     this.props.fetchLockList()
   }
 
-  toggleModal() {
-    this.setState({
-      visible: !this.state.visible
-    })
+  fetch(state, search) {
+    var options = {}
+
+    if (!state) {
+      state = this.props.form.getFieldValue('state')
+    }
+
+    if (state != '-1') {
+      options.state = parseInt(state)
+    }
+
+    if (search) {
+      options.findName = search
+    }
+
+    console.log('options -->', options)
+
+    this.props.fetchLockList(options)
   }
 
+  onSearch(e) {
+    this.fetch(null, e)
+  }
+
+  onChange(e) {
+    this.fetch(e.target.value)
+  }
+
+  deleteLock(params) {
+    // 门锁类型
+    params.deviceType = 2
+
+    this.props.deleteLock(params)
+  }
 
   render() {
     let lockStatistics = this.props.lockStatistics
+
+    const dataSource = this.props.lockList.map(({
+      deviceId,
+      deviceName,
+      mac,
+      lockType,
+      state,
+      roomName,
+      floorName,
+      buildingName,
+      houseName
+    }) => {
+      let installationSite = `${houseName || ''}${buildingName ? buildingName + '栋' : ''}${floorName ? floorName + '层' : ''}${roomName || ''}`
+
+      if (installationSite) {
+        installationSite += '：'
+      }
+
+      let _lockType = lockTypeRefers[lockType]
+
+      deviceName = deviceName || `${installationSite}${_lockType}`
+
+      return {
+        key: deviceId,
+        mac,
+        installationSite,
+        lockType: _lockType,
+        deviceName,
+        state,
+        actions: {
+          deviceId,
+          deviceName,
+          mac
+        }
+      }
+    })
 
     const columns = [{
       title: '设备名称',
@@ -62,51 +146,46 @@ class Lock extends React.Component {
       title: '操作',
       key: 'actions',
       dataIndex: 'actions',
-      render: (lockId) => {
-        const url = `/device-lockDetail?lockId=${encodeURIComponent(lockId)}`
+      render: ({ deviceId, deviceName, mac }) => {
+        const url = `/device-lockDetail?lockId=${encodeURIComponent(deviceId)}`
         return (
           <span>
-            <Link to={url}>
-              <Icon type="file-text" className="mr-20 fs-16 br-50" style={{ backgroundColor: '#D5D5D5', color: '#fff', padding: 6 }} />
+            <Link to={url} className="mr-20">
+              <Tooltip title="详情">
+
+                <Icon type="file-text" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
+              </Tooltip>
+
             </Link>
-            <Icon type="paper-clip" className="mr-20 fs-16 br-50" style={{ backgroundColor: '#D5D5D5', color: '#fff', padding: 6 }} />
-            <Icon type="shop" className="fs-16 br-50" style={{ backgroundColor: '#D5D5D5', color: '#fff', padding: 6 }} />
+            <a className="mr-20" onClick={() => {
+              this.setState({
+                deviceName,
+                mac
+              })
+              pipe.openModal()
+            }}>
+              <Tooltip title="关联">
+
+                <Icon type="paper-clip" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
+
+
+              </Tooltip>
+            </a>
+
+            <a className="mr-20" onClick={this.deleteLock.bind(this, { deviceId })}>
+              <Tooltip title="删除">
+                <Icon type="shop" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
+              </Tooltip>
+            </a>
+
           </span>
         )
       }
     }];
 
-    const lockTypeRefers = {
-      1: '网关锁',
-      2: 'WIFI锁',
-      3: '蓝牙锁 ',
-      4: 'NB锁'
-    }
+    let { deviceName, mac } = this.state
 
-    const stateRefers = {
-      0: '异常',
-      1: '正常',
-      2: '低电量',
-      3: '挟持告警',
-      4: '离线'
-    }
-    const dataSource = this.props.lockList.map(({ deviceId, deviceName, mac, lockType, state, roomName, floorName, buildingName, houseName }) => {
-      let installationSite = `${houseName || ''}${buildingName ? buildingName + '栋' : ''}${floorName ? floorName + '层' : ''}${roomName || ''}`
-      let _lockType = lockTypeRefers[lockType]
-
-      return {
-        key: deviceId,
-        mac,
-        installationSite,
-        lockType: _lockType,
-        deviceName: deviceName || `${installationSite}：${_lockType}`,
-        state,
-        actions: deviceId
-      }
-    })
-
-    const rowSelection = {};
-
+    const { getFieldDecorator } = this.props.form
 
     return (
       <div id="Lock">
@@ -116,14 +195,14 @@ class Lock extends React.Component {
               <span className="fs-14">在线门锁</span>
               <br />
               <span className="fs-24">
-                <b>{lockStatistics.onlineNum}</b>
+                <b className="health">{lockStatistics.onlineNum}</b>
               </span>
             </Col>
             <Col span={12}>
               <span className="fs-14">异常门锁</span>
               <br />
-              <span className="fs-24" style={{ color: 'red' }}>
-                <b>{lockStatistics.exceptionNum}</b>
+              <span className="fs-24">
+                <b className="danger">{lockStatistics.exceptionNum}</b>
               </span>
             </Col>
           </Row>
@@ -131,123 +210,42 @@ class Lock extends React.Component {
 
         <div className="container">
           <Form>
-            <FormItem label="房产" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
-              <Row gutter={20}>
-                <Col span={2}>
-                  <Select defaultValue="0">
-                    <Option value="0">全部房产</Option>
-                  </Select>
-                </Col>
-                <Col span={2}>
+            <FormItem label="设备状态" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
+              {
+                getFieldDecorator('state', {
+                  initialValue: "-1",
+                })(
+                  <RadioGroup className="custom-radio-button-group" onChange={this.onChange.bind(this)}>
+                    <RadioButton value="-1">全部</RadioButton>
+                    <RadioButton value="1">正常</RadioButton>
+                    <RadioButton value="0">异常</RadioButton>
+                  </RadioGroup>
+                )
+              }
+            </FormItem>
 
-                  <Select defaultValue="0">
-                    <Option value="0">全部楼栋</Option>
-                  </Select>
+            <FormItem>
+              <Row>
+                <Col span={8}>
+                  {
+                    getFieldDecorator('search')(
+                      <Search style={{ height: 32 }} enterButton="搜索" placeholder="请输入设备名称/设备MAC/安装关联位置" onSearch={this.onSearch.bind(this)}></Search>
+                    )
+                  }
                 </Col>
-                <Col span={2}>
-                  <Select defaultValue="0">
-                    <Option value="0">全部楼层</Option>
-                  </Select>
-
-                </Col>
-                <Col span={2}>
-
-                  <Select defaultValue="0">
-                    <Option value="0">全部房间</Option>
-                  </Select>
+                <Col className="tr">
+                  <Button type="primary">批量删除</Button>
                 </Col>
               </Row>
             </FormItem>
-
-            <FormItem label="设备状态" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
-              <RadioGroup className="custom-radio-button-group" defaultValue="0">
-                <RadioButton value="0">全部</RadioButton>
-                <RadioButton value="1">正常</RadioButton>
-                <RadioButton value="2">异常</RadioButton>
-              </RadioGroup>
-            </FormItem>
-
-            <FormItem wrapperCol={{ span: 8 }}>
-              <Search style={{ height: 32 }} enterButton="搜索" placeholder="请输入设备名称/设备MAC/安装关联位置"></Search>
-            </FormItem>
           </Form>
 
-          <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} pagination={false}></Table>
+          <Table dataSource={dataSource} columns={columns} rowSelection={{}} pagination={false}></Table>
 
         </div>
 
 
-        <Modal
-          title={
-            <h3 className="tc" style={{ marginBottom: 0, position: 'relative' }}>
-              <span>设备关联房间</span>
-              <div className="pos-a" style={{ width: 55, height: 55, top: -16, right: -24 }} onClick={this.toggleModal.bind(this)} >
-                <Icon type="close-circle-o" style={{ lineHeight: '55px', color: '#adadad' }} />
-              </div>
-            </h3>
-          }
-          visible={false}
-          destroyOnClose={true}
-          closable={false}
-          footer={null}
-        >
-          <Form>
-            <Row>
-              <Col span={10} style={{
-                height: 188,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-around'
-              }}>
-                <FormItem label="设备名称" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} style={{ marginBottom: 0 }}>
-                  <span>门锁1</span>
-                </FormItem>
-                <FormItem label="设备MAC" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} style={{ marginBottom: 0 }}>
-                  123: 423:321:121
-              </FormItem>
-              </Col>
-              <Col span={6} className="tc">
-                <Icon type="paper-clip" className="fs-30" style={{
-                  height: 188,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center'
-                }} />
-              </Col>
-              <Col span={8}>
-                <Select defaultValue="0" className="mb-20">
-                  <Option value="0">全部房产</Option>
-                </Select>
-
-                <Select defaultValue="0" className="mb-20">
-                  <Option value="0">全部楼栋</Option>
-                </Select>
-
-                <Select defaultValue="0" className="mb-20">
-                  <Option value="0">全部楼层</Option>
-                </Select>
-
-                <Select defaultValue="0">
-                  <Option value="0">全部房间</Option>
-                </Select>
-              </Col>
-            </Row>
-
-            <FormItem wrapperCol={{ span: 24 }}>
-              <Checkbox defaultChecked>自动重命名设备</Checkbox>
-              <br />
-              <Input placeholder="请先选择房间"></Input>
-              <br />
-              <p style={{ color: 'red' }}>与已有设备名称重复，请修改</p>
-            </FormItem>
-          </Form>
-
-          <br />
-          <div className="tc">
-            <Button className="mr-30" style={{ width: 84 }}>取消</Button>
-            <Button type="primary" style={{ width: 84 }}>确定</Button>
-          </div>
-        </Modal>
+        <Modal_Device_X_Room deviceName={deviceName} mac={mac}></Modal_Device_X_Room>
       </div >
     )
   }
@@ -263,8 +261,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => {
   return {
     fetchLockList: params => dispatch(fetchLockListData(params)),
-    fetchLocStatistics: params => dispatch(fetchLockStatisticsData(params))
+    fetchLocStatistics: params => dispatch(fetchLockStatisticsData(params)),
+    deleteLock: params => dispatch(deleteDevice(params))
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Lock)
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(Lock))

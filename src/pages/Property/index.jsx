@@ -12,6 +12,16 @@ const Option = Select.Option
 import './index.less'
 import { fetchHouseListData, fetchBuildingListData, fetchFloorListData, fetchRoomListData } from '../../actions/property';
 
+const roomStateRefers = {
+  0: '失效',
+  1: '空净',
+  2: '入住',
+  3: '空脏',
+  4: '故障、无入住',
+  5: '故障、有人入住',
+  6: '未启用'
+}
+
 class Property extends Component {
   constructor() {
     super()
@@ -71,50 +81,43 @@ class Property extends Component {
       }],
     }];
 
-    const roomStateRefers = {
-      0: '失效',
-      1: '空净',
-      2: '入住',
-      3: '空脏',
-      4: '故障、无入住',
-      5: '故障、有人入住',
-      6: '未启用'
-    }
+
 
 
     return (
       <div id="Property">
-        <Form className="mb-20 container">
-          {
-            houseList.length > 0 ?
-              <FormItem label="公寓名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
-                <RadioGroup className="custom-radio-button-group" defaultValue={houseList[0].houseId}>
-                  {
-                    houseList.map(({ houseId, houseName }) => <RadioButton key={houseId} value={houseId}>{houseName}</RadioButton>)
-                  }
-                </RadioGroup>
-              </FormItem> : null
-          }
-          {
-            buildingList.length > 0 ?
-              <FormItem label="楼栋名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
-                <RadioGroup className="custom-radio-button-group" defaultValue={buildingList[0].buildingId}>
-                  {
-                    buildingList.map(({ buildingId, buildingName }) => <RadioButton value={buildingId} key={buildingId}>{buildingName}</RadioButton>)
-                  }
-                </RadioGroup>
-              </FormItem> : null
-          }
+        <div className="mb-20 container">
+          <Form>
+            {
+              houseList.length > 0 ?
+                <FormItem label="公寓名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
+                  <RadioGroup className="custom-radio-button-group" defaultValue={houseList[0].houseId}>
+                    {
+                      houseList.map(({ houseId, houseName }) => <RadioButton key={houseId} value={houseId}>{houseName}</RadioButton>)
+                    }
+                  </RadioGroup>
+                </FormItem> : null
+            }
+            {
+              buildingList.length > 0 ?
+                <FormItem label="楼栋名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
+                  <RadioGroup className="custom-radio-button-group" defaultValue={buildingList[0].buildingId}>
+                    {
+                      buildingList.map(({ buildingId, buildingName }) => <RadioButton value={buildingId} key={buildingId}>{buildingName}</RadioButton>)
+                    }
+                  </RadioGroup>
+                </FormItem> : null
+            }
 
-          {
-            floorList.length > 0 ?
-              <FormItem label="楼层名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
-                <RadioGroup className="custom-radio-button-group" defaultValue={floorList[0].floorId}>
-                  {
-                    floorList.map(({ floorId, floorName }) => <RadioButton value={floorId} key={floorId}>{floorName}</RadioButton>)
-                  }
-                </RadioGroup>
-                {/* <div className="radio-group-pagination">
+            {
+              floorList.length > 0 ?
+                <FormItem label="楼层名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
+                  <RadioGroup className="custom-radio-button-group" defaultValue={floorList[0].floorId}>
+                    {
+                      floorList.map(({ floorId, floorName }) => <RadioButton value={floorId} key={floorId}>{floorName}</RadioButton>)
+                    }
+                  </RadioGroup>
+                  {/* <div className="radio-group-pagination">
               <span className="prev-button">
                 <Icon type="left" />
               </span>
@@ -130,12 +133,12 @@ class Property extends Component {
               </span>
             </div> */}
 
-              </FormItem> : null
-          }
+                </FormItem> : null
+            }
 
 
 
-          {/* <FormItem label="房间状态" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
+            {/* <FormItem label="房间状态" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
             <RadioGroup className="custom-radio-button-group" defaultValue="0">
               <RadioButton value="0">全部</RadioButton>
               <RadioButton value="1">入住</RadioButton>
@@ -150,7 +153,9 @@ class Property extends Component {
               <RadioButton value="2">异常</RadioButton>
             </RadioGroup>
           </FormItem> */}
-        </Form>
+          </Form>
+        </div>
+
 
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center' }}>
