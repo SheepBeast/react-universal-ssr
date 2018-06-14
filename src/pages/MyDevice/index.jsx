@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { Form, Table, Button, Input, Radio, Icon, Row, Col, Tooltip } from 'antd'
+import { Form, Table, Button, Input, Radio, Icon, Row, Col, Tooltip, message } from 'antd'
 
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
@@ -37,7 +37,9 @@ class MyDevice extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      startNum: 0
+      startNum: 0,
+      selectedRowKeys: [],
+      selectedRows: []
     }
   }
 
@@ -75,6 +77,35 @@ class MyDevice extends React.Component {
 
   deleteDevice(params) {
     this.props.deleteDevice(params)
+  }
+
+  batchDelete(e) {
+    e && e.stopPropagation()
+    let rows = this.state.selectedRows
+
+    if (rows.length == 0) {
+      return
+    }
+
+    let type = rows[0].actions.deviceType
+    let difference = false
+
+    for (let i = 1, l = rows.length; i < l; i++) {
+      if (type != rows[i].actions.deviceType) {
+        difference = true
+        break
+      }
+    }
+
+    if (difference) {
+      // 提示不允许删除不同类型的设备
+      message.error('不允许同时批量删除不同类型的设备')
+    } else {
+      this.deleteDevice({
+        deviceType: type,
+        deviceId: this.state.selectedRowKeys
+      })
+    }
   }
 
   render() {
@@ -140,31 +171,37 @@ class MyDevice extends React.Component {
         const url = `/device-lockDetail?lockId=${encodeURIComponent(deviceId)}`
         return (
           <span>
-            <Link to={url} className="mr-20">
-              <Tooltip title="详情">
+            {
+              deviceType == 2 ?
+                <span>
+                  <Link to={url} className="mr-20">
+                    <Tooltip title="详情">
 
-                <Icon type="file-text" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-              </Tooltip>
+                      <Icon type="file-text" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
+                    </Tooltip>
 
-            </Link>
-            <a className="mr-20" onClick={
-              () => {
-                // this.setState({
-                //   deviceName,
-                //   mac
-                // })
-                // pipe.openModal()
-              }
-            }>
-              <Tooltip title="关联">
+                  </Link>
+                  <a className="mr-20" onClick={
+                    () => {
+                      // this.setState({
+                      //   deviceName,
+                      //   mac
+                      // })
+                      // pipe.openModal()
+                    }
+                  }>
+                    <Tooltip title="关联">
 
-                <Icon type="paper-clip" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
+                      <Icon type="paper-clip" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
 
 
-              </Tooltip>
-            </a>
+                    </Tooltip>
+                  </a>
 
-            <a className="mr-20" onClick={this.deleteDevice.bind(this, { deviceId, deviceType })}>
+                </span> : null
+            }
+
+            <a className="mr-20" onClick={this.deleteDevice.bind(this, { deviceId: [deviceId], deviceType })}>
               <Tooltip title="删除">
                 <Icon type="shop" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
               </Tooltip>
@@ -176,6 +213,16 @@ class MyDevice extends React.Component {
 
 
     const { getFieldDecorator } = this.props.form
+
+    const rowSelection = {
+      onChange: (selectedRowKeys, selectedRows) => {
+        // console.log(selectedRowKeys, selectedRows)
+        this.setState({
+          selectedRowKeys,
+          selectedRows
+        })
+      }
+    }
 
     return (
       <div id="MyDevice" className="container">
@@ -204,14 +251,14 @@ class MyDevice extends React.Component {
                 }
               </Col>
               <Col className="tr">
-                <Button type="primary">批量删除</Button>
+                <Button type="primary" onClick={this.batchDelete.bind(this)}>批量删除</Button>
               </Col>
             </Row>
 
           </FormItem>
         </Form>
 
-        <Table dataSource={dataSource} columns={columns} rowSelection={{}} pagination={false}></Table>
+        <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} pagination={false}></Table>
       </div>
     )
   }

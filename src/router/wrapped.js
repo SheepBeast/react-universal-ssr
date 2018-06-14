@@ -16,8 +16,11 @@ import {
   LoadableUser,
   LoadableAddUser,
   LoadableEditUser,
+
   LoadableRole,
   LoadableAddRole,
+  LoadableEditRole,
+
   LoadableLogin,
   LoadableNews,
   LoadableAddNews,
@@ -113,6 +116,12 @@ class AddRole extends React.Component {
   }
 }
 
+class EditRole extends React.Component {
+  render(){
+    return <LoadableEditRole />
+  }
+}
+
 class Login extends React.Component {
   render(){
     return <LoadableLogin />
@@ -176,6 +185,7 @@ module.exports = {
   EditUser,
   Role,
   AddRole,
+  EditRole,
   Login,
   News,
   AddNews,

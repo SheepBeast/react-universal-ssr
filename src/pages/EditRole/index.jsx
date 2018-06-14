@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import qs from 'querystring'
 import { Divider, Checkbox, Row, Col, Form, Input, Button, Radio, Icon } from 'antd'
 
 const CheckboxGroup = Checkbox.Group
@@ -10,7 +11,7 @@ const TextArea = Input.TextArea
 const RadioGroup = Radio.Group
 const RadioButton = Radio.Button
 
-import { addRoleData, fetchRoleListData, fetchMenuPermissionListData, fetchRoleDetailData } from '../../actions/role';
+import { addRoleData, fetchRoleListData, fetchMenuPermissionListData, fetchRoleDetailData, editRole } from '../../actions/role';
 import { api } from '../../api'
 import { BUSINESS_MENU_PERMISSION_LIST } from '../../constants/method-types'
 
@@ -23,8 +24,9 @@ const checkbox = {
 }
 
 let initialStateActions = null
+let currentRoleId = null
 
-class AddRole extends React.Component {
+class EditRole extends React.Component {
   constructor(props) {
     super(props)
 
@@ -32,23 +34,53 @@ class AddRole extends React.Component {
   }
 
   componentWillMount() {
+    // 先解析roleId并赋值currentRoleId，用于下文RadioGroup设置defaultValue
+    let params = this.parseQueryToParams()
+    let roleId = params.roleId
 
-    // if (!this.props.roleList) {
-    //   this.props.fetchRoleList({ state: 1 })
-    // }
+    console.log('role id -->', params)
 
-    this.props.fetchRoleList({ state: 1, flag: 'role-add' })
+    currentRoleId = roleId
+
+    // 角色列表
+    let p1 = this.props.fetchRoleList({ state: 1, flag: 'role-add' })
 
     // 重要：页面加载前执行，时机必须是componentWillMount
-    this.props.fetchMenuPermissionList().then(permissionList => {
-      // console.log('permissionList -->', permissionList)
+    let p2 = this.props.fetchMenuPermissionList()
+    // .then(permissionList => {
+    //   console.log('permissionList -->', permissionList)
+    // })
+
+    Promise.all([p1, p2]).then(ret => {
+      console.log('all -->', ret)
 
       // 将permissionList设置到state
-      this.setPermissionListToState(permissionList)
+      let permission = ret[1]
+      this.setPermissionListToState(permission, 0, () => {
+        // 角色详情
+        this.props.fetchRoleDetail({
+          roleId: [roleId]
+        }).then(ret => {
+          console.log('radio group change -->', ret)
+
+          this.resetStateActions(() => {
+            this.setActionsToState(ret.actions)
+          })
+        })
+      })
     })
   }
 
+  parseQueryToParams() {
+    let search = this.props.location.search.replace('?', ''), k, params = {}
+    search = qs.parse(search)
 
+    for (k in search) {
+      params[k] = decodeURIComponent(search[k])
+    }
+
+    return params
+  }
 
   goBack() {
     this.props.history.goBack()
@@ -82,19 +114,20 @@ class AddRole extends React.Component {
 
         let options = {
           roleName,
-          actionId
+          actionId,
+          roleId: currentRoleId
         }
 
         if (remark) {
           options.remark = remark
         }
 
-        this.props.addRole(options)
+        this.props.editRole(options)
       }
     })
   }
 
-  setPermissionListToState(permissionList = [], count = 0) {
+  setPermissionListToState(permissionList = [], count = 0, callback) {
     let l = permissionList.length
 
     if (count < l) {
@@ -111,38 +144,67 @@ class AddRole extends React.Component {
           value: []
         }
       }, () => {
-        this.setPermissionListToState(permissionList, ++count)
+        this.setPermissionListToState(permissionList, ++count, callback)
       })
     } else {
       // 将只包含actions的state另存，用于重置所有actions
       initialStateActions = Object.assign({}, this.state)
+
+      callback && callback()
     }
   }
 
   setActionsToState(actions = [], count = 0) {
+    console.log('actions -->', actions)
     let l = actions.length
 
-    if (count < l) {
-      let a = actions[count]
+    let state = this.state
 
-      let main = a.actionId
+    console.log('state -->', state)
+    let temp = {}
 
-      let _ = this.state[main]
+    actions.forEach(({
+      actionId,
+      lowerActions = []
+    }) => {
+      let checked = state[actionId].allList.length == 0 || state[actionId].allList.length == lowerActions.length
+      let indeterminate = !checked && lowerActions.length > 0
+      let value = lowerActions.map(({ actionId }) => actionId)
 
-      let assigned = Object.assign({}, _, {
-        checked: true,
-        indeterminate: false,
-        value: _.allList
-      })
+      temp[actionId] = {
+        checked,
+        indeterminate,
+        value
+      }
+    })
 
-      console.log('assigned -->', assigned)
+    console.log('temp -->', temp)
 
-      this.setState({
-        [main]: assigned
-      }, () => {
-        this.setActionsToState(actions, ++count)
-      })
-    }
+    let assigned = Object.assign({}, state, temp)
+
+    this.setState(assigned)
+
+    // if (count < l) {
+    //   let a = actions[count]
+
+    //   let main = a.actionId
+
+    //   let _ = this.state[main]
+
+    //   let assigned = Object.assign({}, _, {
+    //     checked: true,
+    //     indeterminate: false,
+    //     value: _.allList
+    //   })
+
+    //   console.log('assigned -->', assigned)
+
+    //   this.setState({
+    //     [main]: assigned
+    //   }, () => {
+    //     this.setActionsToState(actions, ++count)
+    //   })
+    // }
   }
 
   resetStateActions(callback) {
@@ -160,7 +222,7 @@ class AddRole extends React.Component {
     this.props.fetchRoleDetail({
       roleId: [value]
     }).then(ret => {
-      console.log('radio group change -->', ret.actions)
+      console.log('radio group change -->', ret)
 
       this.resetStateActions(() => {
         this.setActionsToState(ret.actions)
@@ -214,7 +276,7 @@ class AddRole extends React.Component {
     const { getFieldDecorator } = this.props.form
 
     return (
-      <div id="AddRole" className="container">
+      <div id="EditRole" className="container">
         <Row>
           <Col span={12}>
             <h3>
@@ -238,7 +300,6 @@ class AddRole extends React.Component {
                       required: true,
                       message: '角色名称不能为空'
                     }]
-
                   })(
                     <Input placeholder="管理员" />
                   )
@@ -256,10 +317,23 @@ class AddRole extends React.Component {
               {
                 roleList.length > 0 ?
                   <FormItem label="权限" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} style={{ marginBottom: 0 }}>
-                    <RadioGroup defaultValue="0" onChange={this.onRadioGroupChange.bind(this)}>
+                    <RadioGroup defaultValue={currentRoleId} onChange={this.onRadioGroupChange.bind(this)}>
                       {
-                        roleList.map(role =>
-                          <RadioButton key={role.roleId} value={role.roleId} className="mb-20" style={{ width: 'auto' }}>{role.roleName}</RadioButton>
+                        roleList.map(role => {
+                          let { roleId, roleName } = role
+
+                          return (
+                            <RadioButton
+                              key={roleId}
+                              value={roleId}
+                              className="mb-20"
+                              style={{ width: 'auto' }}
+                            >
+                              {roleName}
+                            </RadioButton>
+                          )
+                        }
+
                         )
                       }
                     </RadioGroup>
@@ -342,7 +416,8 @@ const mapDispatchToProps = dispatch => ({
   addRole: params => dispatch(addRoleData(params)),
   fetchRoleList: params => dispatch(fetchRoleListData(params)),
   fetchMenuPermissionList: params => dispatch(fetchMenuPermissionListData(params)),
-  fetchRoleDetail: params => dispatch(fetchRoleDetailData(params))
+  fetchRoleDetail: params => dispatch(fetchRoleDetailData(params)),
+  editRole: params => dispatch(editRole(params))
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(AddRole)))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(EditRole)))

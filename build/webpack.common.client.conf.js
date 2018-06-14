@@ -6,7 +6,12 @@ module.exports = {
     path: path.resolve(__dirname, '../dist')
   },
   resolve: {
-    extensions: ['.jsx', '.js', '.json']
+    extensions: ['.jsx', '.js', '.json'],
+    alias: {
+      actions: path.resolve(__dirname, '../src/actions/'),
+      constants: path.resolve(__dirname, '../src/constants/'),
+      api: path.resolve(__dirname, '../src/api/')
+    }
   },
   externals: {
     'react': 'React',

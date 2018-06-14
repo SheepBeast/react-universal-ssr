@@ -31,7 +31,8 @@ class Gateway extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      startNum: 0
+      startNum: 0,
+      selectedRowKeys: []
     }
   }
 
@@ -71,10 +72,22 @@ class Gateway extends React.Component {
     this.props.deleteGateway(params)
   }
 
+  batchDelete() {
+    let keys = this.state.selectedRowKeys
+
+    if (keys.length == 0) {
+      return
+    }
+
+    this.deleteGateway({
+      gatewayId: keys
+    })
+  }
+
   render() {
     console.log('device list -->', this.props.deviceList)
 
-    const dataSource = this.props.gatewayList.map(({ deviceId, deviceName, gatewayId, gatewayType, hardwareVersion, mac, roomName, floorName, buildingName, houseName, state, softwareVersion }) => {
+    const dataSource = this.props.gatewayList.map(({ gatewayId, gatewayType, gatewayName, hardwareVersion, mac, roomName, floorName, buildingName, houseName, state, softwareVersion }) => {
       let installationSite = `${houseName || ''}${buildingName ? buildingName + '栋' : ''}${floorName ? floorName + '层' : ''}${roomName || ''}`
 
       if (installationSite) {
@@ -84,11 +97,11 @@ class Gateway extends React.Component {
       let _gatewayType = gatewayTypeRefers[gatewayType]
 
       return {
-        key: deviceId,
+        key: gatewayId,
         mac,
         installationSite,
         gatewayType: _gatewayType,
-        deviceName: deviceName || `${installationSite}${_gatewayType}`,
+        gatewayName,
         state,
         actions: {
           gatewayId
@@ -100,8 +113,8 @@ class Gateway extends React.Component {
 
     const columns = [{
       title: '设备名称',
-      dataIndex: 'deviceName',
-      key: 'deviceName'
+      dataIndex: 'gatewayName',
+      key: 'gatewayName'
     }, {
       title: '设备mac',
       dataIndex: 'mac',
@@ -140,42 +153,24 @@ class Gateway extends React.Component {
       render: ({ gatewayId }) => {
         const url = `/device-lockDetail?lockId=${encodeURIComponent(gatewayId)}`
         return (
-          <span>
-            <Link to={url} className="mr-20">
-              <Tooltip title="详情">
-
-                <Icon type="file-text" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-              </Tooltip>
-
-            </Link>
-            <a className="mr-20" onClick={
-              () => {
-                // this.setState({
-                //   deviceName,
-                //   mac
-                // })
-                // pipe.openModal()
-              }
-            }>
-              <Tooltip title="关联">
-
-                <Icon type="paper-clip" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-
-
-              </Tooltip>
-            </a>
-
-            <a className="mr-20" onClick={this.deleteGateway.bind(this, { gatewayId })}>
-              <Tooltip title="删除">
-                <Icon type="shop" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-              </Tooltip>
-            </a>
-          </span>
+          <a className="mr-20" onClick={this.deleteGateway.bind(this, { gatewayId: [gatewayId] })}>
+            <Tooltip title="删除">
+              <Icon type="shop" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
+            </Tooltip>
+          </a>
         )
       }
     }]
 
     const { getFieldDecorator } = this.props.form
+    const rowSelection = {
+      onChange: (selectedRowKeys) => {
+        // console.log('selected row keys -->' , selectedRowKeys)
+        this.setState({
+          selectedRowKeys
+        })
+      }
+    }
 
     return (
       <div id="Gateway" className="container">
@@ -204,15 +199,15 @@ class Gateway extends React.Component {
                 }
               </Col>
               <Col className="tr">
-                <Button type="primary">批量删除</Button>
+                <Button type="primary" onClick={this.batchDelete.bind(this)}>批量删除</Button>
               </Col>
             </Row>
 
           </FormItem>
         </Form>
 
-        <Table dataSource={dataSource} columns={columns} rowSelection={{}} pagination={false}></Table>
-      </div>
+        <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} pagination={false}></Table>
+      </div >
     )
   }
 }

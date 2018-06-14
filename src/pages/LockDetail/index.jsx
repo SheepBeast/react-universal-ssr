@@ -10,7 +10,7 @@ const FormItem = Form.Item
 const ButtonGroup = Button.Group
 
 import './index.less'
-import { fetchLockDetailData, fetchLockKeyListData, fetchLockAppKeyListData, updateLockFunctionConfig, fetchLockLogListData } from '../../actions/device';
+import { fetchLockDetailData, fetchLockKeyListData, fetchLockAppKeyListData, updateLockFunctionConfig, fetchLockLogListData, unbindDevice } from '../../actions/device';
 
 const lockTypeRefers = {
   1: '网关锁',
@@ -33,7 +33,7 @@ const stateRefers = {
 }
 
 const keyRefers = {
-  1: '指纹', 2: '密码', 4: '卡片', 8: '遥控器', 32: '机械钥匙', 128: 'APP远程' ,129: '微信授权'
+  1: '指纹', 2: '密码', 4: '卡片', 8: '遥控器', 32: '机械钥匙', 128: 'APP远程', 129: '微信授权'
 }
 
 
@@ -42,7 +42,10 @@ const keyRefers = {
 const lockCols = [{
   title: '门锁MAC',
   dataIndex: 'lockMac',
-  key: 'lockMac'
+  key: 'lockMac',
+  render: mac => {
+    return <div style={{ width: 200 }}>{mac}</div>
+  }
 }, {
   title: '门锁类型',
   dataIndex: 'lockType',
@@ -52,8 +55,11 @@ const lockCols = [{
 
 const gatewayCols = [{
   title: '网关MAC',
-  dataIndex: 'gatewayMAC',
-  key: 'gatewayMAC'
+  dataIndex: 'gatewayMac',
+  key: 'gatewayMac',
+  render: mac => {
+    return <div style={{ width: 200 }}>{mac}</div>
+  }
 }, {
   title: '网关类型',
   dataIndex: 'gatewayType',
@@ -146,6 +152,11 @@ class LockDetail extends React.Component {
     return params
   }
 
+  unbindDevice(params) {
+    console.log('unbind device -->', params)
+    this.props.unbindDevice(params)
+  }
+
   render() {
     console.log('lock detail -->', this.props.lockDetail)
     let {
@@ -153,10 +164,11 @@ class LockDetail extends React.Component {
       electricNum,
       // 门锁信号
       // 网关信号
+      lockId,
       lockMac,
       lockType,
       lockName,
-      gatewayMAC,
+      gatewayMac,
       gatewayType,
       roomId,
       roomName, floorName, buildingName, houseName,
@@ -185,7 +197,7 @@ class LockDetail extends React.Component {
 
     const gatewayData = [{
       key: 2,
-      gatewayMAC,
+      gatewayMac,
       gatewayType: gatewayTypeRefers[gatewayType]
     }]
 
@@ -224,7 +236,7 @@ class LockDetail extends React.Component {
       userName,
       beginTime,
       endTime
-    })=>{
+    }) => {
       return {
         APPID: lockKeyId,
         owner: userName,
@@ -294,11 +306,16 @@ class LockDetail extends React.Component {
             <div className="container">
               <h3>
                 <Row>
-                  <Col span={12} style={{ textAlign: 'left' }}>
+                  <Col span={12}>
                     <b>关联房间</b>
                   </Col>
-                  <Col span={12} style={{ textAlign: 'right' }}>
-                    <Button type="primary">解除关联</Button>
+                  <Col span={12} className="tr">
+                    <Button type="primary" onClick={
+                      this.unbindDevice.bind(this, {
+                        deviceType: 2,
+                        deviceId: [lockId]
+                      })
+                    }>解除关联</Button>
                   </Col>
                 </Row>
               </h3>
@@ -456,7 +473,8 @@ const mapDispatchToProps = dispatch => {
     fetchLockKeyList: params => dispatch(fetchLockKeyListData(params)),
     fetchLockAppKeyList: params => dispatch(fetchLockAppKeyListData(params)),
     updateLockFunction: params => dispatch(updateLockFunctionConfig(params)),
-    fetchLockLogList: params => dispatch(fetchLockLogListData(params))
+    fetchLockLogList: params => dispatch(fetchLockLogListData(params)),
+    unbindDevice: params => dispatch(unbindDevice(params))
   }
 }
 

@@ -63,6 +63,10 @@ var loadable = __TERMINAL__ === 'browser' ? {
     loader: () => import('../pages/AddRole/index'),
     loading
   }),
+  LoadableEditRole: Loadable({
+    loader: () => import('../pages/EditRole/index'),
+    loading
+  }),
   LoadableLogin: Loadable({
     loader: () => import ('../pages/Login/index'),
     loading
@@ -113,6 +117,8 @@ var loadable = __TERMINAL__ === 'browser' ? {
     LoadableEditUser: require('../pages/EditUser/index').default,
     LoadableRole: require('../pages/Role/index').default,
     LoadableAddRole: require('../pages/AddRole/index').default,
+    LoadableEditRole: require('../pages/EditRole/index').default,
+
     LoadableLogin: require('../pages/Login/index').default,
 
     LoadableNews: require('../pages/News/index').default,

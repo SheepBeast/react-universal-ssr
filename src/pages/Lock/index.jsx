@@ -34,7 +34,8 @@ class Lock extends React.Component {
     super(props)
     this.state = {
       deviceName: null,
-      mac: null
+      mac: null,
+      selectedRowKeys: []
     }
   }
 
@@ -76,6 +77,18 @@ class Lock extends React.Component {
     params.deviceType = 2
 
     this.props.deleteLock(params)
+  }
+
+  batchDelete() {
+    let keys = this.state.selectedRowKeys
+
+    if (keys.length == 0) {
+      return
+    }
+
+    this.deleteLock({
+      deviceId: keys
+    })
   }
 
   render() {
@@ -172,7 +185,7 @@ class Lock extends React.Component {
               </Tooltip>
             </a>
 
-            <a className="mr-20" onClick={this.deleteLock.bind(this, { deviceId })}>
+            <a className="mr-20" onClick={this.deleteLock.bind(this, { deviceId: [deviceId] })}>
               <Tooltip title="删除">
                 <Icon type="shop" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
               </Tooltip>
@@ -186,6 +199,14 @@ class Lock extends React.Component {
     let { deviceName, mac } = this.state
 
     const { getFieldDecorator } = this.props.form
+    const rowSelection = {
+      onChange: (selectedRowKeys ) => {
+        console.log('selected row keys -->', selectedRowKeys)
+        this.setState({
+          selectedRowKeys
+        })
+      }
+    }
 
     return (
       <div id="Lock">
@@ -234,13 +255,13 @@ class Lock extends React.Component {
                   }
                 </Col>
                 <Col className="tr">
-                  <Button type="primary">批量删除</Button>
+                  <Button type="primary" onClick={this.batchDelete.bind(this)}>批量删除</Button>
                 </Col>
               </Row>
             </FormItem>
           </Form>
 
-          <Table dataSource={dataSource} columns={columns} rowSelection={{}} pagination={false}></Table>
+          <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} pagination={false}></Table>
 
         </div>
 
