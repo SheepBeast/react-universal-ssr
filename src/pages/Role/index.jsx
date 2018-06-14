@@ -64,13 +64,13 @@ class Role extends Component {
       title: '操作',
       key: 'actions',
       dataIndex: 'actions',
-      render: ({ roleId, state }) => {
+      render: ({ roleId, state, roleName, remark }) => {
         if (state == 2) {
           return null
         } else {
           let opposite = state == 1 ? { text: '禁用', state: 0 } : { text: '启用', state: 1 }
 
-          const url = `/role-edit?roleId=${encodeURIComponent(roleId)}`
+          const url = `/role-edit?roleId=${encodeURIComponent(roleId)}&roleName=${encodeURIComponent(roleName)}&remark=${encodeURIComponent(remark)}`
           return (
             <span>
               <a className="mr-20" onClick={this.enableRole.bind(this, { roleId, state: opposite.state })}>
@@ -110,7 +110,9 @@ class Role extends Component {
       remark,
       actions: {
         roleId,
-        state
+        state,
+        remark,
+        roleName
       }
     }))
 

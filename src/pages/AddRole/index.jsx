@@ -28,14 +28,12 @@ class AddRole extends React.Component {
   constructor(props) {
     super(props)
 
-    this.state = {}
+    this.state = {
+      selectedRadioValue: null
+    }
   }
 
   componentWillMount() {
-
-    // if (!this.props.roleList) {
-    //   this.props.fetchRoleList({ state: 1 })
-    // }
 
     this.props.fetchRoleList({ state: 1, flag: 'role-add' })
 
@@ -94,55 +92,57 @@ class AddRole extends React.Component {
     })
   }
 
-  setPermissionListToState(permissionList = [], count = 0) {
-    let l = permissionList.length
+  setPermissionListToState(permissionList = [], callback) {
+    let state = this.state
+    let temp = {}
 
-    if (count < l) {
-      let p = permissionList[count]
-      let lowerActions = p.lowerActions
+    permissionList.forEach(({
+      actionId,
+      lowerActions = []
+    }) => {
+      let allList = lowerActions.map(({ actionId }) => actionId)
 
-      let value = (lowerActions || []).map(action => action.actionId)
+      temp[actionId] = {
+        checked: false,
+        indeterminate: false,
+        value: [],
+        allList
+      }
+    })
 
-      this.setState({
-        [p.actionId]: {
-          allList: value,
-          checked: false,
-          indeterminate: false,
-          value: []
-        }
-      }, () => {
-        this.setPermissionListToState(permissionList, ++count)
-      })
-    } else {
+    let assigned = Object.assign({}, state, temp)
+
+    this.setState(assigned, () => {
       // 将只包含actions的state另存，用于重置所有actions
       initialStateActions = Object.assign({}, this.state)
-    }
+
+      callback && callback()
+    })
   }
 
-  setActionsToState(actions = [], count = 0) {
-    let l = actions.length
+  setActionsToState(actions = [], callback) {
+    let state = this.state
+    let temp = {}
 
-    if (count < l) {
-      let a = actions[count]
+    actions.forEach(({
+      actionId,
+      lowerActions = []
+    }) => {
+      let checked = state[actionId].allList.length == 0 || state[actionId].allList.length == lowerActions.length
+      let indeterminate = !checked && lowerActions.length > 0
+      let value = lowerActions.map(({ actionId }) => actionId)
 
-      let main = a.actionId
+      temp[actionId] = {
+        checked,
+        indeterminate,
+        value,
+        allList: state[actionId].allList
+      }
+    })
 
-      let _ = this.state[main]
+    let assigned = Object.assign({}, state, temp)
 
-      let assigned = Object.assign({}, _, {
-        checked: true,
-        indeterminate: false,
-        value: _.allList
-      })
-
-      console.log('assigned -->', assigned)
-
-      this.setState({
-        [main]: assigned
-      }, () => {
-        this.setActionsToState(actions, ++count)
-      })
-    }
+    this.setState(assigned, callback)
   }
 
   resetStateActions(callback) {
@@ -152,7 +152,6 @@ class AddRole extends React.Component {
   }
 
   onRadioGroupChange(e) {
-    console.log('e -->', e)
     e.stopPropagation()
 
     let { checked, value } = e.target
@@ -160,21 +159,23 @@ class AddRole extends React.Component {
     this.props.fetchRoleDetail({
       roleId: [value]
     }).then(ret => {
-      console.log('radio group change -->', ret.actions)
-
       this.resetStateActions(() => {
-        this.setActionsToState(ret.actions)
+        this.setActionsToState(ret.actions, () => {
+          this.setState({
+            selectedRadioValue: value
+          })
+        })
       })
     })
   }
 
   onCheckBoxChange(e) {
-    // console.log('on change -->', e)
     e.stopPropagation()
 
     let { checked, value } = e.target
 
     let _ = this.state[value]
+
     let assigned = Object.assign({}, _, checked ? {
       checked: true,
       indeterminate: false,
@@ -184,13 +185,14 @@ class AddRole extends React.Component {
         indeterminate: false,
         value: []
       })
+
     this.setState({
-      [value]: assigned
+      [value]: assigned,
+      selectedRadioValue: null
     })
   }
 
   onCheckBoxGroupChange(main, group) {
-    // console.log('check box group change -->', main, group)
     let _ = this.state[main]
 
     let checked = group.length == _.allList.length
@@ -201,10 +203,9 @@ class AddRole extends React.Component {
       value: group
     })
 
-    // console.log('assigned -->', assigned)
-
     this.setState({
-      [main]: assigned
+      [main]: assigned,
+      selectedRadioValue: null
     })
   }
 
@@ -256,7 +257,7 @@ class AddRole extends React.Component {
               {
                 roleList.length > 0 ?
                   <FormItem label="权限" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} style={{ marginBottom: 0 }}>
-                    <RadioGroup defaultValue="0" onChange={this.onRadioGroupChange.bind(this)}>
+                    <RadioGroup value={this.state.selectedRadioValue} onChange={this.onRadioGroupChange.bind(this)}>
                       {
                         roleList.map(role =>
                           <RadioButton key={role.roleId} value={role.roleId} className="mb-20" style={{ width: 'auto' }}>{role.roleName}</RadioButton>
