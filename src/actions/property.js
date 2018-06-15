@@ -1,6 +1,6 @@
-import { SET_HOUSE_LIST, SET_ROOM_LIST, SET_BUILDING_LIST, SET_FLOOR_LIST } from "../constants/action-types";
+import { SET_HOUSE_LIST, SET_ROOM_LIST, SET_BUILDING_LIST, SET_FLOOR_LIST, SET_APARTMENT_LSIT } from "../constants/action-types";
 import { api } from "../api";
-import { BUSINESS_HOUSE_LIST, BUSINESS_ROOM_LIST, BUSINESS_BUILDING_LIST, BUSINESS_FLOOR_LIST } from "../constants/method-types";
+import { BUSINESS_HOUSE_LIST, BUSINESS_ROOM_LIST, BUSINESS_BUILDING_LIST, BUSINESS_FLOOR_LIST, BUSINESS_APARTMENT_LIST } from "../constants/method-types";
 import isRequestSuccess from "../utils/isRequestSuccess";
 
 export const setHouseList = houseListData => ({
@@ -23,6 +23,10 @@ export const setRoomList = roomListData => ({
   roomListData
 })
 
+export const setApartmentList = apartmentListData => ({
+  type: SET_APARTMENT_LSIT,
+  apartmentListData
+})
 
 export const fetchHouseListData = params => async dispatch => {
   let ret = await api.fetch(BUSINESS_HOUSE_LIST, params)
@@ -73,6 +77,20 @@ export const fetchRoomListData = params => async dispatch => {
     dispatch(setRoomList(ret.data.data.list))
   } else {
     console.log('Room list  error -->', ret)
+  }
+  return ret
+}
+
+
+export const fetchApartmentListData = params => async dispatch => {
+  let ret = await api.fetch(BUSINESS_APARTMENT_LIST, params)
+
+  console.log('apartment list data -->', ret)
+
+  if (isRequestSuccess(ret)) {
+    dispatch(setApartmentList(ret.data.data.houses))
+  } else {
+    console.log('apartment list  error -->', ret)
   }
   return ret
 }

@@ -1,4 +1,4 @@
-import { SET_HOUSE_LIST, SET_ROOM_LIST, SET_BUILDING_LIST, SET_FLOOR_LIST } from "../constants/action-types";
+import { SET_HOUSE_LIST, SET_ROOM_LIST, SET_BUILDING_LIST, SET_FLOOR_LIST, SET_APARTMENT_LSIT } from "../constants/action-types";
 
 export const houseList = (state = [], action) => {
   switch (action.type) {
@@ -31,6 +31,15 @@ export const roomList = (state = [], action) => {
   switch (action.type) {
     case SET_ROOM_LIST:
       return action.roomListData || []
+    default:
+      return state
+  }
+}
+
+export const apartmentList = (state = [], action) => {
+  switch (action.type) {
+    case SET_APARTMENT_LSIT:
+      return action.apartmentListData || []
     default:
       return state
   }

@@ -100,3 +100,5 @@ export const BUSINESS_UPDATE_lOCK_FUNCTION = 'businessUpdateLockFunction'
 // export const BUSINESS_WATER_METER_INFO ='businessWaterMeterInfo'
 // export const BUSINESS_ELECTRIC_METER_INFO ='businessElectricMeterInfo'
 // export const BUSINESS_DOOR_LOCK_FUNCTION_CONFIG ='businessDoorLockFunctionConfig'
+
+export const BUSINESS_APARTMENT_LIST = 'businessApartmentList'

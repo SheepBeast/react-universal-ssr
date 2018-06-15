@@ -1,9 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Table, Button, Modal, Row, Col, Icon, Tooltip } from 'antd'
+import { Table, Button, Modal, Form, Radio, Row, Col, Icon, Tooltip } from 'antd'
 
-import { fetchRoleListData, deleteRoleData } from '../../actions/role'
+import { fetchRoleListData, deleteRoleData, enableRole } from '../../actions/role'
+import './index.less'
+
+
+const FormItem = Form.Item
+const RadioGroup = Radio.Group
+const RadioButton = Radio.Button
 
 const stateRefers = {
   0: '停用', 1: '正常', 2: '删除'
@@ -21,8 +27,8 @@ class Role extends Component {
     this.props.fetchRoleList({ flag: 'role-list' })
   }
 
-  enableRole() {
-
+  enableRole(params) {
+    this.props.enableRole(params)
   }
 
   deleteRole(params) {
@@ -42,6 +48,20 @@ class Role extends Component {
     this.deleteRole({
       roleId: keys
     })
+  }
+
+  onChange(e) {
+    let { value } = e.target
+
+    let options = {
+      flag: 'role-list',
+    }
+
+    if (value != -1) {
+      options.state = value
+    }
+
+    this.props.fetchRoleList(options)
   }
 
   render() {
@@ -70,10 +90,10 @@ class Role extends Component {
         } else {
           let opposite = state == 1 ? { text: '禁用', state: 0 } : { text: '启用', state: 1 }
 
-          const url = `/role-edit?roleId=${encodeURIComponent(roleId)}&roleName=${encodeURIComponent(roleName)}&remark=${encodeURIComponent(remark)}`
+          const url = `/role-edit?roleId=${encodeURIComponent(roleId)}&roleName=${encodeURIComponent(roleName)}&remark=${encodeURIComponent(remark || '')}`
           return (
             <span>
-              <a className="mr-20" onClick={this.enableRole.bind(this, { roleId, state: opposite.state })}>
+              <a className="mr-20" onClick={this.enableRole.bind(this, { roleId: [roleId], enableType: opposite.state })}>
                 <Tooltip title={opposite.text}>
                   <Icon type="file-text" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
                 </Tooltip>
@@ -93,8 +113,6 @@ class Role extends Component {
             </span>
           )
         }
-
-
       }
     }]
 
@@ -126,23 +144,32 @@ class Role extends Component {
     }
     return (
       <div id="Role" className="container">
+        <h3>
+          <b>角色管理</b>
+        </h3>
         <Row>
-          <Col span={12}>
-            <h3>
-              <b>角色管理</b>
-            </h3>
+          <Col span={8}>
+            <Form>
+              <FormItem label="状态" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
+                <RadioGroup defaultValue="-1" onChange={this.onChange.bind(this)}>
+                  <RadioButton value="-1">全部</RadioButton>
+                  <RadioButton value="1">启用</RadioButton>
+                  <RadioButton value="0">禁用</RadioButton>
+                </RadioGroup>
+              </FormItem>
+            </Form>
           </Col>
-          <Col span={12} className="tr">
+          <Col offset={4} span={12} className="tr">
             <Link to="/role-add" className="mr-20">
               <Button icon="plus" type="primary">添加</Button>
             </Link>
             <Button type="primary" onClick={this.batchDelete.bind(this)}>批量删除</Button>
           </Col>
-        </Row>
+        </Row >
 
         <br />
         <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} pagination={false}></Table>
-      </div>
+      </div >
     )
   }
 }
@@ -152,7 +179,8 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
   fetchRoleList: params => dispatch(fetchRoleListData(params)),
-  deleteRole: params => dispatch(deleteRoleData(params))
+  deleteRole: params => dispatch(deleteRoleData(params)),
+  enableRole: params => dispatch(enableRole(params))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Role)

@@ -1,30 +1,35 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Divider, Form, Input, DatePicker, Switch, Select, Row, Col, Checkbox, Alert, Button, Radio } from 'antd'
+import { Link, withRouter } from 'react-router-dom'
+import { Divider, Form, Input, Row, Col, Button, Radio, Tree } from 'antd'
 
 const FormItem = Form.Item
-const Option = Select.Option
 const TextArea = Input.TextArea
-const CheckboxGroup = Checkbox.Group
+const TreeNode = Tree.TreeNode
+const RadioGroup = Radio.Group
 
 import './index.less'
 import { addUserData } from '../../actions/user';
+import { isMobile, isEmail } from '../../constants/regexp';
+import { fetchRoleListData } from '../../actions/role';
+import { fetchHouseListData, fetchBuildingListData, fetchFloorListData, fetchRoomListData, fetchApartmentListData } from '../../actions/property';
 
 class AddUser extends React.Component {
+  componentWillMount() {
+    this.props.fetchRoleList({
+      flag: 'role-list',
+      state: 1
+    })
 
-  onCheckBoxChange(e) {
-    e.stopPropagation()
-
-    let { checked } = e.target
-
-    e.nativeEvent.target.parentNode.parentNode.classList[!checked ? 'add' : 'remove']('checkbox-wrapper-unchecked')
+    this.props.fetchApartmentList()
   }
 
   render() {
-    const options = [
-      { label: '全选', value: '0' },
-      { label: '反选', value: '1' }
-    ];
+
+    const { getFieldDecorator } = this.props.form
+    const apartmentList = this.props.apartmentList
+
+    console.log('apartment list -->', apartmentList)
 
     return (
       <div id="AddUser" className="container">
@@ -34,137 +39,199 @@ class AddUser extends React.Component {
               <b>增加租客</b>
             </h3>
           </Col>
-          <Col style={{ textAlign: 'right' }} span={12}>
-            <Button type="primary">返回</Button>
+          <Col className="tr" span={12}>
+            <Button type="primary" onClick={this.props.history.goBack}>返回</Button>
           </Col>
         </Row>
 
         <br />
-        <Form className="form-shim" style={{ width: 540 }} onSubmit={this.props.submit}>
+        <Form className="form-shim" style={{ width: 620 }}>
           <FormItem label="姓名" labelCol={{ span: 3 }} wrapperCol={{ span: 15 }} >
-            <Input></Input>
+            {
+              getFieldDecorator('userName', {
+                rules: [{
+                  required: true,
+                  message: '姓名不能为空'
+                }]
+              })(
+                <Input placeholder="请输入员工姓名" />
+              )
+            }
           </FormItem>
 
           <FormItem label="手机号" labelCol={{ span: 3 }} wrapperCol={{ span: 15 }} >
-            <Input></Input>
+            {
+              getFieldDecorator('phoneNo', {
+                rules: [{
+                  required: true,
+                  message: '手机不能为空'
+                }, {
+                  validator: (rule, value, callback) => {
+                    if (!isMobile.test(value)) {
+                      callback('手机格式错误')
+                    }
+
+                    callback()
+                  }
+                }],
+                validateFirst: true
+              })(
+                <Input type="number" maxLength="11" placeholder="请输入员工手机号" />
+              )
+            }
           </FormItem>
 
           <FormItem label="邮箱" labelCol={{ span: 3 }} wrapperCol={{ span: 15 }} >
-            <Input></Input>
+            {
+              getFieldDecorator('email', {
+                rules: [{
+                  required: true,
+                  message: '邮箱不能为空'
+                }, {
+                  validator: (rule, value, callback) => {
+                    if (!isEmail.test(value)) {
+                      callback('邮箱格式错误')
+                    }
+
+                    callback()
+                  }
+                }],
+                validateFirst: true
+              })(
+                <Input placeholder="请输入员工邮箱" />
+              )
+            }
           </FormItem>
 
           <FormItem label="账号" labelCol={{ span: 3 }} wrapperCol={{ span: 15 }} >
-            <Input></Input>
+            {
+              getFieldDecorator('userAccount', {
+                rules: [{
+                  required: true,
+                  message: '账号不能为空'
+                }]
+              })(
+                <Input placeholder="请输入员工的账号，确认后不可修改" />
+              )
+            }
           </FormItem>
 
           <FormItem label="密码" labelCol={{ span: 3 }} wrapperCol={{ span: 15 }} >
-            <Input></Input>
+            {
+              getFieldDecorator('password', {
+                rules: [{
+                  required: true,
+                  message: '密码不能为空'
+                }, {
+                  min: 6,
+                  max: 16,
+                  message: '密码为6-16位'
+                }],
+                validateFirst: true
+              })(
+                <Input placeholder="请输入登录密码"></Input>
+              )
+            }
           </FormItem>
 
           <FormItem label="角色" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} >
-            <Radio.Group defaultChecked={1} >
-              <Radio value={1}>管理者</Radio>
-              <Radio value={2}>客服</Radio>
-              <Radio value={2}>客服</Radio>
-            </Radio.Group>
+            {
+              getFieldDecorator('role', {
+                rules: [{
+                  required: true,
+                  message: '必须选择一个角色'
+                }]
+              })(
+                <RadioGroup>
+                  {
+                    this.props.roleList.map(({ roleId, roleName }) => {
+                      <Radio key={roleId} value={roleId}>{roleName}</Radio>
+                    })
+                  }
+                </RadioGroup>
+              )
+            }
 
-            <Button type="primary" icon="plus" style={{ border: 'none' }} ghost>添加新角色</Button>
+            <Link to="role-add">
+              <Button type="primary" icon="plus" style={{ border: 'none' }} ghost>添加新角色</Button>
+            </Link>
           </FormItem>
 
           <FormItem label="房产权限" labelCol={{ span: 3 }} wrapperCol={{ span: 20 }} >
-            <Radio.Group defaultChecked={1} style={{ marginTop: 4 }} >
-              <Radio value={1}>全部房产</Radio>
-              <Radio value={2}>部分房产</Radio>
-              <Radio value={2}>无权限</Radio>
-            </Radio.Group>
+            {
+              getFieldDecorator('house', {
+                rules: [{
+                  required: true,
+                  message: '必须选择房产权限'
+                }],
+                initialValue: 1
+              })(
+                <RadioGroup style={{ marginTop: 4 }} >
+                  <Radio value={1}>全部房产</Radio>
+                  <Radio value={2}>部分房产</Radio>
+                  <Radio value={3}>无权限</Radio>
+                </RadioGroup>
+              )
+            }
           </FormItem>
 
-          <div className="container " style={{ maxHeight: 500, overflowY: 'scroll', border: '1px solid #ddd', width: 800 }}>
-            <Row>
-              <Col span={16}>
-                <Row gutter={8}>
-                  <Col span={8}>
-                    <Select defaultValue="0">
-                      <Option value="0">全部房产</Option>
-                    </Select>
-                  </Col>
-                  <Col span={8}>
-                    <Select defaultValue="0">
-                      <Option value="0">全部房产</Option>
-                    </Select>
-                  </Col>
-                  <Col span={8}>
-                    <Select defaultValue="0">
-                      <Option value="0">全部房产</Option>
-                    </Select>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={8}>
-                <CheckboxGroup options={options} style={{ float: 'right', marginTop: 4 }} />
-              </Col>
-            </Row>
-            <Divider></Divider>
+          {/* <div className="container" style={{ maxHeight: 500, overflowY: 'scroll', border: '1px solid #ddd', width: 800 }}>
 
-            <div className="add-user-room-list">
-              {
-                [1, 2, 3].map((num, idx) => (
-                  <div className="mb-30" key={idx}>
-                    <h3>
-                      <b>慧享公寓 {num}栋 {num}楼</b>
-                    </h3>
-                    <Row className="tc">
-                      {
-                        Array(Math.floor(Math.random() * 24) + 1).fill(1).map((val, key) => (
-                          <Col key={key} span={3}>
-                            {
-                              Math.random() > 0.5 ?
-                                <Checkbox value="1" onChange={this.onCheckBoxChange.bind(this)} defaultChecked={true}>AVC2314</Checkbox> :
-                                <Checkbox className="checkbox-wrapper-unchecked " value="1" onChange={this.onCheckBoxChange.bind(this)} defaultChecked={false}>AVC2314</Checkbox>
-                            }
+          </div> */}
+          {
+            apartmentList.length > 0 ?
+              <Row>
+                <Col offset={3}>
+                  <Tree checkable defaultExpandAll={true} >
+                    {
+                      apartmentList.map(({ houseId, houseName, buildings = [] }) =>
+                        <TreeNode title={houseName} key={houseId}>
+                          {
+                            buildings.map(({ buildingId, buildingName, floors = [] }) =>
+                              <TreeNode title={buildingName} key={buildingId}>
+                                {
+                                  floors.map(({ floorId, floorName, rooms = [] }) =>
+                                    <TreeNode className="custom-tree-parent-node" title={floorName} key={floorId}>
+                                      {
+                                        rooms.map(({ roomId, roomName }) =>
+                                          <TreeNode className="custom-tree-child-node" title={roomName} key={roomId} />
+                                        )
+                                      }
+                                    </TreeNode>
+                                  )
+                                }
+                              </TreeNode>
+                            )
+                          }
+                        </TreeNode>
+                      )
+                    }
+                  </Tree>
+                </Col>
+              </Row>
+              : null
+          }
 
-                          </Col>
-                        ))
-                      }
-
-                    </Row>
-                  </div>
-                ))
-              }
-            </div>
-
-          </div>
-
-          <FormItem wrapperCol={{ span: 24 }} >
-            <Row>
-              <Col span={10} offset={3}>
-                <Button type="primary" className="mr-20" htmlType="submit">保存</Button>
-                <Button>取消</Button>
-              </Col>
-            </Row>
-          </FormItem>
+          <Row>
+            <Col span={10} offset={3}>
+              <Button type="primary" className="mr-20" htmlType="submit">保存</Button>
+              <Button>取消</Button>
+            </Col>
+          </Row>
         </Form>
       </div >
     )
   }
 }
 
-const mapStateToProps = state => ({})
-const mapDispatchToProps = dispatch => {
-  return {
-    submit(e) {
-      e.preventDefault()
+const mapStateToProps = state => ({
+  roleList: state.roleList || [],
+  apartmentList: state.apartmentList || []
+})
+const mapDispatchToProps = dispatch => ({
+  addUser: params => dispatch(addUserData(params)),
+  fetchRoleList: params => dispatch(fetchRoleListData(params)),
+  fetchApartmentList: params => dispatch(fetchApartmentListData(params))
+})
 
-      var params = {
-        userAccount: 'dzh384925935',
-        userName: '糯米玩',
-        phoneNo: '13802402735',
-        password: 'asd751011568'
-      }
-
-      return dispatch(addUserData(params))
-    }
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddUser)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(AddUser)))

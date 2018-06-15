@@ -2,28 +2,21 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import qs from 'querystring'
-import { Divider, Checkbox, Row, Col, Form, Input, Button, Radio, Icon } from 'antd'
+import { Divider, Row, Col, Form, Input, Button, Radio, Icon, Tree } from 'antd'
 
-const CheckboxGroup = Checkbox.Group
 const FormItem = Form.Item
 const TextArea = Input.TextArea
-
+const TreeNode = Tree.TreeNode
 const RadioGroup = Radio.Group
 const RadioButton = Radio.Button
 
-import { addRoleData, fetchRoleListData, fetchMenuPermissionListData, fetchRoleDetailData, editRole } from '../../actions/role';
+import { fetchRoleListData, fetchMenuPermissionListData, fetchRoleDetailData, editRole } from '../../actions/role';
 import { api } from '../../api'
 import { BUSINESS_MENU_PERMISSION_LIST } from '../../constants/method-types'
 
 import './index.less'
 
-const checkbox = {
-  indeterminate: false,
-  checked: false,
-  value: []
-}
-
-let initialStateActions = null
+let initialKeys = {}
 let currentRoleId = null
 let currentRoleName = null
 let currentRemark = null
@@ -33,7 +26,11 @@ class EditRole extends React.Component {
     super(props)
 
     this.state = {
-      selectedRadioValue: null
+      selectedRadioValue: null,
+      checkedKeys: {
+        checked: [],
+        halfChecked: []
+      }
     }
   }
 
@@ -57,15 +54,18 @@ class EditRole extends React.Component {
 
       // 将permissionList设置到state
       let permission = ret[1]
-      this.setPermissionListToState(permission, () => {
-        // 角色详情
-        this.props.fetchRoleDetail({
-          roleId: [roleId]
-        }).then(ret => {
-          console.log('ret -->', ret)
-          this.resetStateActions(() => {
-            this.setActionsToState(ret.actions)
-          })
+
+      permission.forEach(({ actionId, lowerActions = [] }) => {
+        initialKeys[actionId] = lowerActions.map(({ actionId }) => actionId)
+      })
+
+      this.props.fetchRoleDetail({
+        roleId: [roleId]
+      }).then(ret => {
+        let checkedKeys = this.parseActionsToState(ret.actions)
+
+        this.setState({
+          checkedKeys
         })
       })
     })
@@ -92,28 +92,19 @@ class EditRole extends React.Component {
 
     this.props.form.validateFields((err, val) => {
       if (!err) {
-        let state = this.state
-        let key
-        let actionId = []
+        let { checked, halfChecked } = this.state.checkedKeys
 
-        for (key in state) {
-          let _ = state[key]
-
-          if (_.hasOwnProperty('allList')) {
-
-            actionId = [].concat(
-              actionId,
-              _.checked || _.indeterminate ? [key] : [],
-              _.value)
-          }
+        if (checked.length == 0 && halfChecked.length == 0) {
+          message.error('未选择权限')
+          return
         }
 
         let { roleName, remark } = val
 
         let options = {
+          roleId: currentRoleId,
           roleName,
-          actionId,
-          roleId: currentRoleId
+          actionId: [].concat(checked, halfChecked)
         }
 
         if (remark) {
@@ -125,128 +116,53 @@ class EditRole extends React.Component {
     })
   }
 
-  setPermissionListToState(permissionList = [], callback) {
-    let state = this.state
-    let temp = {}
 
-    permissionList.forEach(({
-      actionId,
-      lowerActions = []
-    }) => {
-      let allList = lowerActions.map(({ actionId }) => actionId)
+  onRadioGroupChange(e) {
+    e.stopPropagation()
 
-      temp[actionId] = {
-        checked: false,
-        indeterminate: false,
-        value: [],
-        allList
-      }
-    })
+    let { value } = e.target
 
-    let assigned = Object.assign({}, state, temp)
+    this.props.fetchRoleDetail({
+      roleId: [value]
+    }).then(({ actions }) => {
 
-    this.setState(assigned, () => {
-      // 将只包含actions的state另存，用于重置所有actions
-      initialStateActions = Object.assign({}, this.state)
+      let checkedKeys = this.parseActionsToState(actions)
 
-      callback && callback()
+      this.setState({
+        checkedKeys,
+        selectedRadioValue: value
+      })
     })
   }
 
-  setActionsToState(actions = [], callback) {
-    let state = this.state
-    let temp = {}
+  parseActionsToState(actions = []) {
+    let checked = [], halfChecked = []
 
     actions.forEach(({
       actionId,
       lowerActions = []
     }) => {
-      let checked = state[actionId].allList.length == 0 || state[actionId].allList.length == lowerActions.length
-      let indeterminate = !checked && lowerActions.length > 0
-      let value = lowerActions.map(({ actionId }) => actionId)
+      checked = checked.concat(lowerActions.map(({ actionId }) => actionId))
 
-      temp[actionId] = {
-        checked,
-        indeterminate,
-        value,
-        allList: state[actionId].allList
+      if (lowerActions.length == initialKeys[actionId].length) {
+        checked.push(actionId)
+      } else {
+        halfChecked.push(actionId)
       }
     })
 
-    let assigned = Object.assign({}, state, temp)
-
-    console.log('actions state -->', this.state)
-    console.log('assinged -->', assigned)
-
-    this.setState(assigned, callback)
-  }
-
-  resetStateActions(callback) {
-    if (initialStateActions) {
-      this.setState(initialStateActions, callback)
+    return {
+      checked,
+      halfChecked
     }
   }
 
-  onRadioGroupChange(e) {
-    e.stopPropagation()
-
-    let { checked, value } = e.target
-
-    console.log('radio value -->', value)
-
-    this.props.fetchRoleDetail({
-      roleId: [value]
-    }).then(ret => {
-
-
-      console.log('this state -->', this.state)
-
-      this.resetStateActions(() => {
-        this.setActionsToState(ret.actions, () => {
-          this.setState({
-            selectedRadioValue: value
-          })
-        })
-      })
-    })
-  }
-
-  onCheckBoxChange(e) {
-    e.stopPropagation()
-
-    let { checked, value } = e.target
-
-    let _ = this.state[value]
-
-    let assigned = Object.assign({}, _, checked ? {
-      checked: true,
-      indeterminate: false,
-      value: _.allList
-    } : {
-        checked: false,
-        indeterminate: false,
-        value: []
-      })
-
+  onCheck(checkedKeys, e) {
     this.setState({
-      [value]: assigned,
-      selectedRadioValue: null
-    })
-  }
-
-  onCheckBoxGroupChange(main, group) {
-    let _ = this.state[main]
-
-    let checked = group.length == _.allList.length
-
-    let assigned = Object.assign({}, _, {
-      checked: checked,
-      indeterminate: !checked && group.length > 0,
-      value: group
-    })
-
-    this.setState({
-      [main]: assigned,
+      checkedKeys: {
+        checked: checkedKeys,
+        halfChecked: e.halfCheckedKeys
+      },
       selectedRadioValue: null
     })
   }
@@ -336,54 +252,33 @@ class EditRole extends React.Component {
           {
             menuPermissionList.length > 0 ?
               <Row>
-                <Col span={8} offset={1}>
-                  {
-                    menuPermissionList.map(permission => {
-                      let lowerActions = permission.lowerActions ?
-                        permission.lowerActions.map(subPermit => ({
-                          label: subPermit.actionName.split('-')[1],
-                          value: subPermit.actionId
-                        }))
-                        : []
-
-
-                      let checked = (this.state[permission.actionId] || checkbox).checked
-                      let indeterminate = (this.state[permission.actionId] || checkbox).indeterminate
-                      let value = (this.state[permission.actionId] || checkbox).value
-
-                      // console.log('-----------------------')
-                      // console.log('action id -->', permission.actionId)
-                      // console.log('this state -->', this.state[permission.actionId])
-                      // console.log('checked -->', checked)
-                      // console.log('indeterminate -->', indeterminate)
-                      // console.log('value -->', value)
-
-                      return (
-                        <div key={permission.actionId} className="mb-20">
-                          <div>
-                            <Icon type="down" className="mr-10"></Icon>
-                            <Checkbox
-                              value={permission.actionId}
-                              onChange={this.onCheckBoxChange.bind(this)}
-                              checked={checked}
-                              indeterminate={indeterminate}
-                            >
-                              {permission.actionName}
-                            </Checkbox>
-                          </div>
-
-                          <div className="pl-50">
-                            <CheckboxGroup options={lowerActions} value={value} onChange={(group) => {
-                              this.onCheckBoxGroupChange(permission.actionId, group)
-                            }} />
-                          </div>
-                        </div>
-                      )
-                    })
-                  }
+                <Col offset={1}>
+                  <Tree
+                    checkable
+                    defaultExpandAll={true}
+                    onCheck={this.onCheck.bind(this)}
+                    checkedKeys={this.state.checkedKeys}
+                  >
+                    {
+                      menuPermissionList.map(({ actionId, actionName, lowerActions }) => (
+                        <TreeNode title={actionName} key={actionId} className="custom-tree-parent-node">
+                          {
+                            lowerActions ?
+                              lowerActions.map(({ actionId, actionName }) => (
+                                <TreeNode title={actionName.split('-')[1].substring(0, 4)} key={actionId} className="custom-tree-child-node" />
+                              ))
+                              : null
+                          }
+                        </TreeNode>
+                      ))
+                    }
+                  </Tree>
                 </Col>
-              </Row> : null
+              </Row>
+              : null
+
           }
+
           <br />
           <Row>
             <Col span={8} offset={2}>
@@ -403,7 +298,6 @@ const mapStateToProps = state => ({
   // roleDetail: state.roleDetail || {}
 })
 const mapDispatchToProps = dispatch => ({
-  addRole: params => dispatch(addRoleData(params)),
   fetchRoleList: params => dispatch(fetchRoleListData(params)),
   fetchMenuPermissionList: params => dispatch(fetchMenuPermissionListData(params)),
   fetchRoleDetail: params => dispatch(fetchRoleDetailData(params)),

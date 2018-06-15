@@ -1,12 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Divider, Checkbox, Row, Col, Form, Input, Button, Radio, Icon } from 'antd'
+import { Divider, Row, Col, Form, Input, Button, Radio, Icon, Tree } from 'antd'
 
-const CheckboxGroup = Checkbox.Group
 const FormItem = Form.Item
 const TextArea = Input.TextArea
-
+const TreeNode = Tree.TreeNode
 const RadioGroup = Radio.Group
 const RadioButton = Radio.Button
 
@@ -16,20 +15,18 @@ import { BUSINESS_MENU_PERMISSION_LIST } from '../../constants/method-types'
 
 import './index.less'
 
-const checkbox = {
-  indeterminate: false,
-  checked: false,
-  value: []
-}
-
-let initialStateActions = null
+const initialKeys = {}
 
 class AddRole extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      selectedRadioValue: null
+      selectedRadioValue: null,
+      checkedKeys: {
+        checked: [],
+        halfChecked: []
+      }
     }
   }
 
@@ -38,15 +35,12 @@ class AddRole extends React.Component {
     this.props.fetchRoleList({ state: 1, flag: 'role-add' })
 
     // 重要：页面加载前执行，时机必须是componentWillMount
-    this.props.fetchMenuPermissionList().then(permissionList => {
-      // console.log('permissionList -->', permissionList)
-
-      // 将permissionList设置到state
-      this.setPermissionListToState(permissionList)
+    this.props.fetchMenuPermissionList().then(permission => {
+      permission.forEach(({ actionId, lowerActions = [] }) => {
+        initialKeys[actionId] = lowerActions.map(({ actionId }) => actionId)
+      })
     })
   }
-
-
 
   goBack() {
     this.props.history.goBack()
@@ -58,29 +52,18 @@ class AddRole extends React.Component {
 
     this.props.form.validateFields((err, val) => {
       if (!err) {
-        let state = this.state
-        let key
-        let actionId = []
+        let { checked, halfChecked } = this.state.checkedKeys
 
-        for (key in state) {
-          let _ = state[key]
-
-          if (_.hasOwnProperty('allList')) {
-
-            actionId = [].concat(
-              actionId,
-              _.checked || _.indeterminate ? [key] : [],
-              _.value)
-          }
+        if (checked.length == 0 && halfChecked.length == 0) {
+          message.error('未选择权限')
+          return
         }
-
-        console.log('role id -->', actionId)
 
         let { roleName, remark } = val
 
         let options = {
           roleName,
-          actionId
+          actionId: [].concat(checked, halfChecked)
         }
 
         if (remark) {
@@ -92,119 +75,52 @@ class AddRole extends React.Component {
     })
   }
 
-  setPermissionListToState(permissionList = [], callback) {
-    let state = this.state
-    let temp = {}
+  onRadioGroupChange(e) {
+    e.stopPropagation()
 
-    permissionList.forEach(({
-      actionId,
-      lowerActions = []
-    }) => {
-      let allList = lowerActions.map(({ actionId }) => actionId)
+    let { value } = e.target
 
-      temp[actionId] = {
-        checked: false,
-        indeterminate: false,
-        value: [],
-        allList
-      }
-    })
+    this.props.fetchRoleDetail({
+      roleId: [value]
+    }).then(({ actions }) => {
 
-    let assigned = Object.assign({}, state, temp)
+      let checkedKeys = this.parseActionsToState(actions)
 
-    this.setState(assigned, () => {
-      // 将只包含actions的state另存，用于重置所有actions
-      initialStateActions = Object.assign({}, this.state)
-
-      callback && callback()
+      this.setState({
+        checkedKeys,
+        selectedRadioValue: value
+      })
     })
   }
 
-  setActionsToState(actions = [], callback) {
-    let state = this.state
-    let temp = {}
+  parseActionsToState(actions = []) {
+    let checked = [], halfChecked = []
 
     actions.forEach(({
       actionId,
       lowerActions = []
     }) => {
-      let checked = state[actionId].allList.length == 0 || state[actionId].allList.length == lowerActions.length
-      let indeterminate = !checked && lowerActions.length > 0
-      let value = lowerActions.map(({ actionId }) => actionId)
+      checked = checked.concat(lowerActions.map(({ actionId }) => actionId))
 
-      temp[actionId] = {
-        checked,
-        indeterminate,
-        value,
-        allList: state[actionId].allList
+      if (lowerActions.length == initialKeys[actionId].length) {
+        checked.push(actionId)
+      } else {
+        halfChecked.push(actionId)
       }
     })
 
-    let assigned = Object.assign({}, state, temp)
-
-    this.setState(assigned, callback)
-  }
-
-  resetStateActions(callback) {
-    if (initialStateActions) {
-      this.setState(initialStateActions, callback)
+    return {
+      checked,
+      halfChecked
     }
   }
 
-  onRadioGroupChange(e) {
-    e.stopPropagation()
-
-    let { checked, value } = e.target
-
-    this.props.fetchRoleDetail({
-      roleId: [value]
-    }).then(ret => {
-      this.resetStateActions(() => {
-        this.setActionsToState(ret.actions, () => {
-          this.setState({
-            selectedRadioValue: value
-          })
-        })
-      })
-    })
-  }
-
-  onCheckBoxChange(e) {
-    e.stopPropagation()
-
-    let { checked, value } = e.target
-
-    let _ = this.state[value]
-
-    let assigned = Object.assign({}, _, checked ? {
-      checked: true,
-      indeterminate: false,
-      value: _.allList
-    } : {
-        checked: false,
-        indeterminate: false,
-        value: []
-      })
-
+  onCheck(checkedKeys, e) {
     this.setState({
-      [value]: assigned,
-      selectedRadioValue: null
-    })
-  }
-
-  onCheckBoxGroupChange(main, group) {
-    let _ = this.state[main]
-
-    let checked = group.length == _.allList.length
-
-    let assigned = Object.assign({}, _, {
-      checked: checked,
-      indeterminate: !checked && group.length > 0,
-      value: group
-    })
-
-    this.setState({
-      [main]: assigned,
+      checkedKeys: {
+        checked: checkedKeys,
+        halfChecked: e.halfCheckedKeys
+      },
       selectedRadioValue: null
     })
   }
@@ -231,8 +147,8 @@ class AddRole extends React.Component {
 
         <Form className="form-shim" onSubmit={this.onSubmit.bind(this)}>
           <Row>
-            <Col span={13}>
-              <FormItem label="角色名称" labelCol={{ span: 3 }} wrapperCol={{ span: 16 }}>
+            <Col span={16}>
+              <FormItem label="角色名称" labelCol={{ span: 2 }} wrapperCol={{ span: 11 }}>
                 {
                   getFieldDecorator('roleName', {
                     rules: [{
@@ -246,7 +162,7 @@ class AddRole extends React.Component {
                 }
               </FormItem>
 
-              <FormItem label="备注" labelCol={{ span: 3 }} wrapperCol={{ span: 16 }}>
+              <FormItem label="备注" labelCol={{ span: 2 }} wrapperCol={{ span: 11 }}>
                 {
                   getFieldDecorator('remark')(
                     <TextArea placeholder="A公寓B栋管理负责人..." autosize={{ minRows: 6, maxRows: 6 }} />
@@ -256,7 +172,7 @@ class AddRole extends React.Component {
 
               {
                 roleList.length > 0 ?
-                  <FormItem label="权限" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} style={{ marginBottom: 0 }}>
+                  <FormItem label="权限" labelCol={{ span: 2 }} wrapperCol={{ span: 11 }} style={{ marginBottom: 0 }}>
                     <RadioGroup value={this.state.selectedRadioValue} onChange={this.onRadioGroupChange.bind(this)}>
                       {
                         roleList.map(role =>
@@ -270,56 +186,35 @@ class AddRole extends React.Component {
             </Col>
           </Row>
 
+
           {
             menuPermissionList.length > 0 ?
               <Row>
-                <Col span={8} offset={1}>
-                  {
-                    menuPermissionList.map(permission => {
-                      let lowerActions = permission.lowerActions ?
-                        permission.lowerActions.map(subPermit => ({
-                          label: subPermit.actionName.split('-')[1],
-                          value: subPermit.actionId
-                        }))
-                        : []
-
-
-                      let checked = (this.state[permission.actionId] || checkbox).checked
-                      let indeterminate = (this.state[permission.actionId] || checkbox).indeterminate
-                      let value = (this.state[permission.actionId] || checkbox).value
-
-                      // console.log('-----------------------')
-                      // console.log('action id -->', permission.actionId)
-                      // console.log('this state -->', this.state[permission.actionId])
-                      // console.log('checked -->', checked)
-                      // console.log('indeterminate -->', indeterminate)
-                      // console.log('value -->', value)
-
-                      return (
-                        <div key={permission.actionId} className="mb-20">
-                          <div>
-                            <Icon type="down" className="mr-10"></Icon>
-                            <Checkbox
-                              value={permission.actionId}
-                              onChange={this.onCheckBoxChange.bind(this)}
-                              checked={checked}
-                              indeterminate={indeterminate}
-                            >
-                              {permission.actionName}
-                            </Checkbox>
-                          </div>
-
-                          <div className="pl-50">
-                            <CheckboxGroup options={lowerActions} value={value} onChange={(group) => {
-                              this.onCheckBoxGroupChange(permission.actionId, group)
-                            }} />
-                          </div>
-                        </div>
-                      )
-                    })
-                  }
+                <Col offset={1}>
+                  <Tree
+                    checkable
+                    defaultExpandAll={true}
+                    onCheck={this.onCheck.bind(this)}
+                    checkedKeys={this.state.checkedKeys}
+                  >
+                    {
+                      menuPermissionList.map(({ actionId, actionName, lowerActions }) => (
+                        <TreeNode title={actionName} key={actionId} className="custom-tree-parent-node">
+                          {
+                            lowerActions ?
+                              lowerActions.map(({ actionId, actionName }) => (
+                                <TreeNode title={actionName.split('-')[1].substring(0, 4)} key={actionId} className="custom-tree-child-node" />
+                              ))
+                              : null
+                          }
+                        </TreeNode>
+                      ))
+                    }
+                  </Tree>
                 </Col>
-              </Row> : null
+              </Row>
+              : null
+
           }
           <br />
           <Row>

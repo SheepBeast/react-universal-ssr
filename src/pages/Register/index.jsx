@@ -119,8 +119,7 @@ class Register extends React.Component {
                   rules: [{
                     required: true,
                     message: '账号不能为空'
-                  }],
-                  initialValue: 'dzh384925931'
+                  }]
                 })(
                   <Input placeholder="账号"></Input>
                 )
@@ -137,7 +136,6 @@ class Register extends React.Component {
                     max: 16,
                     message: '密码为6-16位'
                   }],
-                  initialValue: 'asd751011568',
                   validateFirst: true
                 })(
                   <Input placeholder="6 - 16 位密码，区分大小写"></Input>
@@ -183,7 +181,6 @@ class Register extends React.Component {
                         callback()
                       }
                     }],
-                    initialValue: '13802402735',
                     validateFirst: true
                   })(
                     <Input style={{ width: '80%' }} placeholder="11位手机号"></Input>

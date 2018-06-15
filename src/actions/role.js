@@ -1,6 +1,6 @@
 
 import {
-  BUSINESS_ROLE_LIST, BUSINESS_ADD_ROLE, BUSINESS_MENU_PERMISSION_LIST, BUSINESS_DEL_ROLE, BUSINESS_ROLE_DETAIL, BUSINESS_UPDATE_ROLE
+  BUSINESS_ROLE_LIST, BUSINESS_ADD_ROLE, BUSINESS_MENU_PERMISSION_LIST, BUSINESS_DEL_ROLE, BUSINESS_ROLE_DETAIL, BUSINESS_UPDATE_ROLE, BUSINESS_ENABLE_ROLE
 } from '../constants/method-types'
 
 import {
@@ -118,5 +118,18 @@ export const editRole = params => async dispatch => {
 
   }else{
     console.log('edit role error -->', ret)
+  }
+}
+
+
+export const enableRole = params => async dispatch => {
+  let ret = await api.fetch(BUSINESS_ENABLE_ROLE, params)
+
+  console.log('enable role ret -->', ret)
+
+  if(isRequestSuccess(ret)){
+
+  }else{
+    console.log('enable role error -->', ret)
   }
 }

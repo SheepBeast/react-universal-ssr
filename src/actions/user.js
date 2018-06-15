@@ -1,7 +1,7 @@
 import {  SET_USER_LIST } from '../constants/action-types'
 
 import { api } from '../api'
-import { BUSINESS_USER_LIST, BUSINESS_ADD_USER } from '../constants/method-types';
+import { BUSINESS_USER_LIST, BUSINESS_ADD_USER, BUSINESS_ENABLE_USER, BUSINESS_DEL_USER } from '../constants/method-types';
 import isRequestSuccess from '../utils/isRequestSuccess';
 
 export const setUserListData = userListData => {
@@ -32,5 +32,29 @@ export const addUserData = params => async dispatch => {
 
   } else {
     console.log('add user data error -->', ret)
+  }
+}
+
+export const enableUser = params => async dispatch => {
+  let ret = await api.fetch(BUSINESS_ENABLE_USER, params)
+
+  console.log('enable User ret -->', ret)
+
+  if(isRequestSuccess(ret)){
+
+  }else{
+    console.log('enable User error -->', ret)
+  }
+}
+
+export const deleteUserData = params => async dispatch => {
+  let ret = await api.fetch(BUSINESS_DEL_USER, params)
+
+  console.log('del User data -->', ret)
+
+  if (isRequestSuccess(ret)) {
+    // dispatch(delUser)
+  } else {
+    console.log('del User error -->', ret)
   }
 }
