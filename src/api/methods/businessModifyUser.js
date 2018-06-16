@@ -2,17 +2,17 @@
 
 
 import base from './base'
-import { BUSINESS_ADD_USER } from '../../constants/method-types'
+import { BUSINESS_MODIFY_USER } from '../../constants/method-types'
 import createApiOptions from '../../utils/createApiOptions'
 
 type format = {
-  userAccount: string,
-  userName: string,
-  phoneNo: string,
-  password: string,
-  userSex?: string,
-  eMail?: string,
+  userId: string,
+  userName?: string,
+  phoneNo?: string,
+  userSex?: number,
   remark?: string,
+  roleId?: string,
+  eMail?: string,
   roleId?: string,
   houses?: {
     [number]: {
@@ -36,4 +36,4 @@ type format = {
   }
 }
 
-export default (data: format, tokenId: string, requestOptions: object): Promise => base(createApiOptions(BUSINESS_ADD_USER, data, tokenId, requestOptions))
+export default (data: format, tokenId: string, requestOptions: object): Promise => base(createApiOptions(BUSINESS_MODIFY_USER, data, tokenId))

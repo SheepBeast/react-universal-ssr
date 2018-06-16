@@ -132,13 +132,13 @@ class User extends Component {
       title: '操作',
       key: 'actions',
       dataIndex: 'actions',
-      render: ({ userId, state, userName }) => {
+      render: ({ userId, roleId, state, userName }) => {
         if (state == 2) {
           return null
         } else {
           let opposite = state == 1 ? { text: '禁用', state: 0 } : { text: '启用', state: 1 }
 
-          const url = `/user-edit?userId=${encodeURIComponent(userId)}&userName=${encodeURIComponent(userName)}`
+          const url = `/user-edit?userId=${encodeURIComponent(userId)}&roleId=${encodeURIComponent(roleId)}`
           return (
             <span>
               <a className="mr-20" onClick={this.enableUser.bind(this, { userId: [userId], state: opposite.state })}>
@@ -165,7 +165,7 @@ class User extends Component {
     }]
 
 
-    var dataSource = this.props.userList.map(({ userId, userAccount, userName, state, phoneNo, roleName, createTime }) => ({
+    var dataSource = this.props.userList.map(({ userId, roleId, userAccount, userName, state, phoneNo, roleName, createTime }) => ({
       key: userId,
       roleName,
       userName,
@@ -175,6 +175,7 @@ class User extends Component {
       state,
       actions: {
         userId,
+        roleId,
         state,
         userName
 

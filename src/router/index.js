@@ -31,7 +31,7 @@ import Register from '../pages/Register';
 export default function getRoutes() {
     return (
         <div style={{ minWidth: 1563, maxWidth: 1563 }}>
-            <Route path="/" component={AddUser} exact />
+            <Route path="/" component={News} exact />
 
             <Route path="/statistics" component={Statistics} />
 
@@ -47,7 +47,7 @@ export default function getRoutes() {
 
             <Route path="/user-list" component={User} />
             <Route path="/user-add" component={AddUser} />
-            <Route path="/user-edit" component={EditRole} />
+            <Route path="/user-edit" component={EditUser} />
 
             <Route path="/role-list" component={Role} />
             <Route path="/role-add" component={AddRole} />

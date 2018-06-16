@@ -60,6 +60,7 @@ export const BUSINESS_USER_RELATE_HOUSE = 'businessUserRelateHouse'
 export const BUSINESS_DEVICE_LIST = 'businessDeviceList'
 export const BUSINESS_UNBIND_DEVICE = 'businessUnbindDevice'
 export const BUSINESS_DELETE_DEVICE = 'businessDeleteDevice'
+export const BUSINESS_MODIFY_USER = 'businessModifyUser'
 
 export const BUSINESS_LOCK_LIST = 'businessLockList'
 export const BUSINESS_LOCK_DETAIL = 'businessLockDetail'

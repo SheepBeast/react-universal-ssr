@@ -187,6 +187,44 @@ server.post('/login', commons_middleware)
 server.post('/register', commons_middleware)
 server.post('/forget-password', commons_middleware)
 // server.post('/modify-password', commons_middleware)
+server.post('/user-add', function (req, res, next) {
+  let {
+    method,
+    tokenId,
+    data: {
+      userAccount,
+      userName,
+      phoneNo,
+      password,
+      eMail,
+      roleId,
+      houses
+    }
+  } = req.body
+
+  var encrypted = encrypt(password)
+
+  console.log('cipher -->', encrypted)
+
+
+  api.tokenId = tokenId
+  var ret = api.fetch(method, {
+    userAccount,
+    userName,
+    phoneNo,
+    password: encrypted,
+    eMail,
+    roleId,
+    houses
+  }, {
+      url: __REMOTE_SERVER__
+    }).then(r => {
+      console.log('common r -->', r.data)
+      res.send(r.data)
+    }).catch(e => {
+      console.log('common e -->', e)
+    })
+})
 
 var port = process.env.NODE_ENV === "production" ? 1501 : 8081
 

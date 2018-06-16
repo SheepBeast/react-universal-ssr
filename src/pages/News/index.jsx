@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Form, Row, Col, Radio, DatePicker, Button, Table, Icon } from 'antd'
+import { Form, Row, Col, Radio, DatePicker, Button, Table, Icon, Tooltip } from 'antd'
 
 const FormItem = Form.Item
 const RadioButton = Radio.Button
@@ -9,38 +9,51 @@ const RadioGroup = Radio.Group
 
 import { fetchNewsListData } from '../../actions/news'
 
+const newsStateRefers = {
+  0: '草稿',
+  1: '审核中',
+  2: '待发送',
+  3: '审核不通过',
+  4: '已发送',
+  5: '删除',
+  6: '平台审核中'
+}
+
+const newsPushTypeRefers = {
+  1: '员工',
+  2: '租客'
+}
+
 class News extends React.Component {
   componentWillMount() {
     this.props.fetchNewsList()
   }
 
   render() {
-    const newsStateRefers = {
-      0: '草稿',
-      1: '审核中',
-      2: '待发送',
-      3: '审核不通过',
-      4: '已发送',
-      5: '删除',
-      6: '平台审核中'
-    }
-
-    const newsPushTypeRefers = {
-      1: '员工',
-      2: '租客'
-    }
 
     console.log('news list -->', this.props.newsList)
 
-    let dataSource = this.props.newsList.map(({ newsTitle, pushType, userNames, state, createTime, userName, auditName, newsId }) => ({
+    let dataSource = this.props.newsList.map(({
+      newsTitle,
+      pushType,
+      userNames,
+      state,
+      createTime,
+      userName,
+      auditName,
+      newsId
+    }) => ({
       newsTitle,
       pushType: newsPushTypeRefers[pushType],
       userNames,
       userName,
-      state: newsStateRefers[state],
+      state,
       auditName,
       createTime,
-      actions: newsId
+      actions: {
+        newsId,
+        state
+      }
     }))
 
     let columns = [{
@@ -71,21 +84,59 @@ class News extends React.Component {
     {
       title: '状态',
       key: 'state',
-      dataIndex: 'state'
+      dataIndex: 'state',
+      render: state => {
+        return (
+          <span>{newsStateRefers[state]}</span>
+        )
+      }
     }, {
       title: '操作',
       key: 'actions',
       dataIndex: 'actions',
-      render: (newsId) => {
+      render: ({ newsId, state }) => {
         var url = `/news-check?newsId=${encodeURIComponent(newsId)}`
 
         return (
           <span>
-            <Link to={url}>
-              <Icon type="file-text" className="mr-20 fs-16 br-50" style={{ backgroundColor: '#D5D5D5', color: '#fff', padding: 6 }} />
-            </Link>
+            {
+              state != 0 ?
+                <Link to={url}>
+                  <Tooltip title="查看">
+                    <Icon type="file-text" className="mr-20 fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
+                  </Tooltip>
+                </Link>
+                : null
+            }
+            {
+              state == 0 || state == 3 ?
+                <Link to={url}>
+                  <Tooltip title="编辑">
+                    <Icon type="file-text" className="mr-20 fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
 
-            <Icon type="paper-clip" className="fs-16 br-50" style={{ backgroundColor: '#D5D5D5', color: '#fff', padding: 6 }} />
+                  </Tooltip>
+                </Link> : null
+            }
+
+            {
+              state == 2 ?
+                <Link to={url}>
+                  <Tooltip title="发送">
+                    <Icon type="file-text" className="mr-20 fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
+
+                  </Tooltip>
+                </Link> : null
+            }
+
+            {
+              state == 0 ?
+                <Link to={url}>
+                  <Tooltip title="删除">
+                    <Icon type="file-text" className="mr-20 fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
+
+                  </Tooltip>
+                </Link> : null
+            }
           </span>
         )
       }
