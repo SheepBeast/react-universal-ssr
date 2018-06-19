@@ -23,6 +23,7 @@ import {
 
   LoadableLogin,
   LoadableNews,
+  LoadableAudittingNews,
   LoadableAddNews,
   LoadableAuditNews,
   LoadableCheckNews,
@@ -134,6 +135,12 @@ class News extends React.Component {
   }
 }
 
+class AudittingNews extends React.Component {
+  render(){
+    return <LoadableAudittingNews />
+  }
+}
+
 class AddNews extends React.Component {
   render(){
     return <LoadableAddNews />
@@ -188,6 +195,7 @@ module.exports = {
   EditRole,
   Login,
   News,
+  AudittingNews,
   AddNews,
   AuditNews,
   CheckNews,

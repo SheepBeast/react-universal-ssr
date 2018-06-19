@@ -3,11 +3,12 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Form, Row, Col, Radio, DatePicker, Button, Table, Icon, Tooltip } from 'antd'
 
+
 const FormItem = Form.Item
 const RadioButton = Radio.Button
 const RadioGroup = Radio.Group
 
-import { fetchNewsListData } from '../../actions/news'
+import { fetchNewsListData, deleteNews, sendNews } from '../../actions/news'
 
 const newsStateRefers = {
   0: '草稿',
@@ -27,6 +28,14 @@ const newsPushTypeRefers = {
 class News extends React.Component {
   componentWillMount() {
     this.props.fetchNewsList()
+  }
+
+  deleteNews(params) {
+    this.props.deleteNews(params)
+  }
+
+  sendNews(params) {
+    this.props.sendNews(params)
   }
 
   render() {
@@ -120,22 +129,23 @@ class News extends React.Component {
 
             {
               state == 2 ?
-                <Link to={url}>
+                <a>
                   <Tooltip title="发送">
-                    <Icon type="file-text" className="mr-20 fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
+                    <Icon type="file-text" onClick={this.sendNews.bind(this, {newsId})} className="mr-20 fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
 
                   </Tooltip>
-                </Link> : null
+                </a> : null
             }
 
             {
               state == 0 ?
-                <Link to={url}>
+                <a>
                   <Tooltip title="删除">
-                    <Icon type="file-text" className="mr-20 fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-
+                    <Icon type="file-text" onClick={this.deleteNews.bind(this, { newsId })} className="mr-20 fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
                   </Tooltip>
-                </Link> : null
+                </a>
+
+                : null
             }
           </span>
         )
@@ -175,17 +185,15 @@ class News extends React.Component {
                 <DatePicker style={{ width: '100%' }} placeholder="请选择日期"></DatePicker>
               </FormItem>
             </Col>
+            <Col span={6} className="tr">
+              <Link to="/news-add">
+                <Button type="primary" >新建</Button>
+              </Link>
+            </Col>
           </Row>
         </Form>
 
-        <div className="tr mb-20">
-          <Link to="/news-add">
-            <Button type="primary" >新建</Button>
-
-          </Link>
-        </div>
-
-        <Table dataSource={dataSource} columns={columns}></Table>
+        <Table dataSource={dataSource} columns={columns} pagination={false}></Table>
       </div>
     )
   }
@@ -195,7 +203,9 @@ const mapStateToProps = state => ({
   newsList: state.newsList || []
 })
 const mapDispatchToProps = dispatch => ({
-  fetchNewsList: params => dispatch(fetchNewsListData(params))
+  fetchNewsList: params => dispatch(fetchNewsListData(params)),
+  deleteNews: params => dispatch(deleteNews(params)),
+  sendNews: params => dispatch(sendNews(params))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(News)

@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
+import { Link } from 'react-router-dom'
+
 import { Radio, Form, Icon, Button, Avatar, Row, Col, Input, InputNumber, Select, Switch, Upload, Modal, Checkbox, Card, Divider, Cascader, Tooltip } from 'antd'
 
 const FormItem = Form.Item
@@ -26,7 +28,10 @@ class Property extends Component {
   constructor() {
     super()
     this.state = {
-      visible: false
+      roomId: null,
+      buildingId: null,
+      floorId: null,
+      roomId: null
     }
   }
 
@@ -40,12 +45,6 @@ class Property extends Component {
     this.props.fetchRoomList(params)
   }
 
-  toggleModal() {
-    this.setState({
-      visible: !this.state.visible
-    })
-  }
-
 
   onCheckBoxChange(e) {
     e.stopPropagation()
@@ -53,6 +52,103 @@ class Property extends Component {
     let { checked } = e.target
 
     e.nativeEvent.target.parentNode.parentNode.classList[!checked ? 'add' : 'remove']('checkbox-wrapper-unchecked')
+  }
+
+  linkedFetchBuildingList(params) {
+    this.props.fetchBuildingList(params).then(ret => {
+      console.log('building list -->', ret)
+
+      var buildingList = ret.data.data && ret.data.data.list
+
+      if (!buildingList || buildingList.length == 0) {
+        return
+      }
+
+      var params = {
+        buildingId: buildingList[0].buildingId,
+        state: 1
+      }
+
+      this.linkedFetchFloorList(params)
+    })
+  }
+
+  linkedFetchFloorList(params) {
+    this.props.fetchFloorList(params).then(ret => {
+      console.log('floor list -->', ret)
+
+      var floorList = ret.data.data && ret.data.data.list
+
+      if (!floorList || floorList.length) {
+        return
+      }
+
+      var params = {
+        floorId: floorList[0].floorId,
+        state: 1
+      }
+
+      this.setState({
+        floorId: params.floorId
+      })
+
+      this.linkedFetchRoomList(params)
+    })
+  }
+
+  linkedFetchRoomList(params) {
+    this.setState({
+      roomId: params.roomId
+    })
+    this.props.fetchRoomList(params).then(ret => {
+      console.log('room list -->', ret)
+    })
+  }
+  /*********************************/
+  onHouseListChange(e) {
+    e.stopPropagation()
+
+    var params = {
+      houseId: e.target.value,
+      state: 1
+    }
+
+    this.setState({
+      houseId: params.houseId
+    })
+
+    this.linkedFetchBuildingList(params)
+  }
+
+
+  onBuildingListChange(e) {
+    e.stopPropagation()
+
+    var params = {
+      buildingId: e.target.value,
+      state: 1
+    }
+
+    this.setState({
+      buildingId: params.buildingId
+    })
+
+    this.linkedFetchFloorList(params)
+  }
+
+  onFloorListChange(e) {
+    e.stopPropagation()
+
+    var params = {
+      floorId: e.target.value,
+      state: 1
+    }
+
+    this.setState({
+      floorId: params.floorId
+    })
+
+    this.linkedFetchRoomList(params)
   }
 
   render() {
@@ -81,7 +177,7 @@ class Property extends Component {
       }],
     }];
 
-
+    let { houseId, buildingId, floorId, roomId } = this.state
 
 
     return (
@@ -91,9 +187,11 @@ class Property extends Component {
             {
               houseList.length > 0 ?
                 <FormItem label="公寓名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
-                  <RadioGroup className="custom-radio-button-group" defaultValue={houseList[0].houseId}>
+                  <RadioGroup className="custom-radio-button-group" defaultValue={houseList[0].houseId} value={houseId || houseList[0].houseId} onChange={this.onHouseListChange.bind(this)}>
                     {
-                      houseList.map(({ houseId, houseName }) => <RadioButton key={houseId} value={houseId}>{houseName}</RadioButton>)
+                      houseList.map(({ houseId, houseName }) =>
+                        <RadioButton key={houseId} value={houseId}>{houseName}</RadioButton>
+                      )
                     }
                   </RadioGroup>
                 </FormItem> : null
@@ -101,9 +199,11 @@ class Property extends Component {
             {
               buildingList.length > 0 ?
                 <FormItem label="楼栋名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
-                  <RadioGroup className="custom-radio-button-group" defaultValue={buildingList[0].buildingId}>
+                  <RadioGroup className="custom-radio-button-group" defaultValue={buildingList[0].buildingId} value={buildingId || buildingList[0].buildingId} onChange={this.onBuildingListChange.bind(this)}>
                     {
-                      buildingList.map(({ buildingId, buildingName }) => <RadioButton value={buildingId} key={buildingId}>{buildingName}</RadioButton>)
+                      buildingList.map(({ buildingId, buildingName }) =>
+                        <RadioButton value={buildingId} key={buildingId}>{buildingName}</RadioButton>
+                      )
                     }
                   </RadioGroup>
                 </FormItem> : null
@@ -112,47 +212,15 @@ class Property extends Component {
             {
               floorList.length > 0 ?
                 <FormItem label="楼层名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
-                  <RadioGroup className="custom-radio-button-group" defaultValue={floorList[0].floorId}>
+                  <RadioGroup className="custom-radio-button-group" defaultValue={floorList[0].floorId} value={floorId || floorList[0].floorId} onChange={this.onFloorListChange.bind(this)}>
                     {
-                      floorList.map(({ floorId, floorName }) => <RadioButton value={floorId} key={floorId}>{floorName}</RadioButton>)
+                      floorList.map(({ floorId, floorName }) =>
+                        <RadioButton value={floorId} key={floorId}>{floorName}</RadioButton>
+                      )
                     }
                   </RadioGroup>
-                  {/* <div className="radio-group-pagination">
-              <span className="prev-button">
-                <Icon type="left" />
-              </span>
-              <div className="radio-group-container">
-                <RadioGroup className="custom-radio-button-group" defaultValue={floorList[0].floorId}>
-                  {
-                    floorList.map(({ floorId, floorName }) => <RadioButton value={floorId} key={floorId}>{floorName}</RadioButton>)
-                  }
-                </RadioGroup>
-              </div>
-              <span className="next-button">
-                <Icon type="right" />
-              </span>
-            </div> */}
-
                 </FormItem> : null
             }
-
-
-
-            {/* <FormItem label="房间状态" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
-            <RadioGroup className="custom-radio-button-group" defaultValue="0">
-              <RadioButton value="0">全部</RadioButton>
-              <RadioButton value="1">入住</RadioButton>
-              <RadioButton value="2">闲置</RadioButton>
-            </RadioGroup>
-          </FormItem>
-
-          <FormItem label="楼栋名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
-            <RadioGroup className="custom-radio-button-group" defaultValue="0">
-              <RadioButton value="0">全部</RadioButton>
-              <RadioButton value="1">正常</RadioButton>
-              <RadioButton value="2">异常</RadioButton>
-            </RadioGroup>
-          </FormItem> */}
           </Form>
         </div>
 
@@ -166,38 +234,67 @@ class Property extends Component {
               <h3>
                 <b>慧享公寓</b>
               </h3>
-              <span style={{ color: 'gray' }}>已租--套&nbsp;&nbsp;闲置--套</span>
+              <span className="gray">已租--套&nbsp;&nbsp;闲置--套</span>
             </div>
             <div style={{ width: 210 }} >
-              <Button type="primary" className="mr-30">添加账号</Button>
+              <Button type="primary" className="mr-30">添加房产</Button>
               <Button type="primary">删除房产</Button>
             </div>
           </div>
           <Divider></Divider>
           <Row gutter={8}>
             {
-              roomList.map(({ roomId, roomName, state }) => (
-                <Col key={roomId} span={4} className="mb-20" >
-                  <Card actions={
-                    [
-                      { iconType: 'file-text', tooltip: '房间详情' },
-                      { iconType: 'form', tooltip: '编辑' },
-                      { iconType: 'select', tooltip: '关联设备' },
-                      { iconType: 'tag-o', tooltip: '标记' }
-                    ].map((item) => (
-                      <Tooltip key={item.iconType} title={item.tooltip}>
-                        <Icon type={item.iconType} />
-                      </Tooltip>
-                    ))
-                  }>
-                    <div className="tc">
-                      <Avatar style={{ width: 100, height: 100, borderRadius: '50%' }} src="http://cdn.duitang.com/uploads/item/201405/27/20140527173845_dk8uY.jpeg" className="mb-20"></Avatar>
-                      <h3 className="mb-20">{roomName}</h3>
-                      <h3 className={state === 1 ? 'health' : 'danger'}>{roomStateRefers[state]}</h3>
-                    </div>
-                  </Card>
-                </Col>
-              ))
+              roomList.map(({ roomId, roomName, state }) => {
+                var url = `/property-room-detail?roomId=${encodeURIComponent(roomId)}`
+                return (
+                  <Col key={roomId} span={4} className="mb-20" >
+                    <Card actions={
+                      // [
+                      //   { iconType: 'file-text', tooltip: '房间详情' },
+                      //   { iconType: 'form', tooltip: '编辑' },
+                      //   { iconType: 'select', tooltip: '关联设备' },
+                      //   { iconType: 'tag-o', tooltip: '标记' }
+                      // ].map((item) => (
+                      //   <Tooltip key={item.iconType} title={item.tooltip}>
+                      //     <Icon type={item.iconType} />
+                      //   </Tooltip>
+                      // ))
+
+                      [
+                        <Link to={url}>
+                          <Tooltip title="房间详情">
+                            <Icon type="file-text" />
+                          </Tooltip>
+                        </Link>,
+
+                        <Link to={url}>
+                          <Tooltip title="编辑">
+                            <Icon type="form" />
+                          </Tooltip>
+                        </Link>,
+
+                        <Link to={url}>
+                          <Tooltip title="关联设备">
+                            <Icon type="select" />
+                          </Tooltip>
+                        </Link>,
+
+                        <Link to={url}>
+                          <Tooltip title="标记">
+                            <Icon type="tag-o" />
+                          </Tooltip>
+                        </Link>
+                      ]
+                    }>
+                      <div className="tc">
+                        <Avatar style={{ width: 100, height: 100, borderRadius: '50%' }} src="http://cdn.duitang.com/uploads/item/201405/27/20140527173845_dk8uY.jpeg" className="mb-20"></Avatar>
+                        <h3 className="mb-20">{roomName}</h3>
+                        <h3 className={state === 1 ? 'health' : 'danger'}>{roomStateRefers[state]}</h3>
+                      </div>
+                    </Card>
+                  </Col>
+                )
+              })
             }
           </Row>
         </div>

@@ -75,6 +75,10 @@ var loadable = __TERMINAL__ === 'browser' ? {
     loader: ()=> import('../pages/News/index'),
     loading
   }),
+  LoadableAudittingNews: Loadable({
+    loader: ()=> import('../pages/AudittingNews/index'),
+    loading
+  }),
   LoadableAddNews: Loadable({
     loader: ()=> import('../pages/AddNews/index'),
     loading
@@ -122,6 +126,7 @@ var loadable = __TERMINAL__ === 'browser' ? {
     LoadableLogin: require('../pages/Login/index').default,
 
     LoadableNews: require('../pages/News/index').default,
+    LoadableAudittingNews: require('../pages/AudittingNews/index').default,
     LoadableAddNews: require('../pages/AddNews/index').default,
     LoadableAuditNews: require('../pages/AuditNews/index').default,
     LoadableCheckNews: require('../pages/CheckNews/index').default,

@@ -85,7 +85,7 @@ class SideBar extends React.Component {
                     <Link to="/news-list">消息列表</Link>
                   </Menu.Item>
                   <Menu.Item key="checkNews">
-                    <Link to="/news-audit">消息审核</Link>
+                    <Link to="/news-list-auditting">消息审核</Link>
                   </Menu.Item>
                 </Menu.SubMenu>
 

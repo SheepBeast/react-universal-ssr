@@ -11,11 +11,26 @@ const BreadcrumbItem = Breadcrumb.Item
 const confirm = Modal.confirm
 
 class RoomDetail extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       visible: false
     }
+  }
+
+  componentWillMount(){
+
+  }
+
+  parseQueryToParams() {
+    let search = this.props.location.search.replace('?', ''), k, params = {}
+    search = qs.parse(search)
+
+    for (k in search) {
+      params[k] = decodeURIComponent(search[k])
+    }
+
+    return params
   }
 
   showConfirm() {

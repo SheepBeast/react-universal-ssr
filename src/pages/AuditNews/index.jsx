@@ -2,11 +2,33 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import qs from 'querystring'
-import { Form, Button, Input, Row, Col } from 'antd'
+import { Form, Button, Input, Row, Col, Tag } from 'antd'
 import { auditNewsData, fetchNewsDetailData } from '../../actions/news';
 
 const FormItem = Form.Item
 const TextArea = Input.TextArea
+
+
+const auditUserTypeRefers = {
+  1: '超级管理员',
+  2: '慧享平台',
+  3: '公寓方'
+}
+
+const newsPushTypeRefers = {
+  1: '员工',
+  2: '租客'
+}
+
+const newsStateRefers = {
+  0: '草稿',
+  1: '审核中',
+  2: '待发送',
+  3: '审核不通过',
+  4: '已发送',
+  5: '删除',
+  6: '平台审核中'
+}
 
 class AuditNews extends React.Component {
   componentWillMount() {
@@ -32,15 +54,21 @@ class AuditNews extends React.Component {
   }
 
   audit(state) {
-    if(!state) {
+    if (!state) {
       return
     }
 
+    var auditRemark = this.props.form.getFieldValue('auditRemark').trim()
     var params = {
       newsId: this.props.newsDetail.newsId,
-      audit: state,
-      auditRemark: '审核回复~'
+      audit: state
     }
+
+    if (auditRemark) {
+      params.auditRemark = auditRemark
+    }
+
+    console.log('params -->', params)
 
     this.props.auditNews(params)
   }
@@ -48,26 +76,7 @@ class AuditNews extends React.Component {
   render() {
     let { auditName, auditUserType, newsAbstract, newsContent, newsTitle, pushType, state, auditRemark, userNames, newsId } = this.props.newsDetail
 
-    const auditUserTypeRefers = {
-      1: '超级管理员',
-      2: '慧享平台',
-      3: '公寓方'
-    }
-
-    const newsPushTypeRefers = {
-      1: '员工',
-      2: '租客'
-    }
-
-    const newsStateRefers = {
-      0: '草稿',
-      1: '审核中',
-      2: '待发送',
-      3: '审核不通过',
-      4: '已发送',
-      5: '删除',
-      6: '平台审核中'
-    }
+    const { getFieldDecorator } = this.props.form
 
     return (
       <div id="AuditNews">
@@ -85,7 +94,12 @@ class AuditNews extends React.Component {
 
           <Form className="form-shim" style={{ width: 600 }}>
             <FormItem label="审核回复" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
-              <TextArea placeholder="请进行审核回复" autosize={{ minRows: 6, maxRows: 6 }}></TextArea>
+              {
+                getFieldDecorator('auditRemark')(
+                  <TextArea placeholder="请进行审核回复" autosize={{ minRows: 6, maxRows: 6 }} />
+                )
+              }
+
             </FormItem>
 
             <Row>
@@ -118,9 +132,9 @@ class AuditNews extends React.Component {
                 <b>接收人：</b>
               </Col>
               <Col className="gray" span={21}>
-              {
-                (userNames || []).map(name => <Button type="primary" className="mr-20">{name}</Button>)
-              }
+                {
+                  (userNames || []).map((name, idx) => <Tag key={idx} className="mb-10" color="#2db7f5">{name}</Tag>)
+                }
               </Col>
             </Row>
 
@@ -142,7 +156,7 @@ class AuditNews extends React.Component {
               <Col span={3} className="tr">
                 <b>正文：</b>
               </Col>
-              <Col className="gray" span={21}>{newsContent}</Col>
+              <Col className="gray" span={21} dangerouslySetInnerHTML={{ __html: newsContent }} />
             </Row>
           </div>
 
@@ -160,4 +174,4 @@ const mapDispatchToProps = dispatch => ({
   fetchNewsDetail: params => dispatch(fetchNewsDetailData(params))
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AuditNews))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(AuditNews)))
