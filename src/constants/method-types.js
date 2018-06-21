@@ -61,6 +61,8 @@ export const BUSINESS_DEVICE_LIST = 'businessDeviceList'
 export const BUSINESS_UNBIND_DEVICE = 'businessUnbindDevice'
 export const BUSINESS_DELETE_DEVICE = 'businessDeleteDevice'
 export const BUSINESS_MODIFY_USER = 'businessModifyUser'
+export const BUSINESS_ROOM_TENANT_LIST = 'businessRoomTenantList'
+export const BUSINESS_ROOM_DEVICE_LIST = 'businessRoomDeviceList'
 
 export const BUSINESS_LOCK_LIST = 'businessLockList'
 export const BUSINESS_LOCK_DETAIL = 'businessLockDetail'
@@ -103,3 +105,8 @@ export const BUSINESS_UPDATE_lOCK_FUNCTION = 'businessUpdateLockFunction'
 // export const BUSINESS_DOOR_LOCK_FUNCTION_CONFIG ='businessDoorLockFunctionConfig'
 
 export const BUSINESS_APARTMENT_LIST = 'businessApartmentList'
+
+
+export const BUSINESS_PROVINCE_CITIES_AREAS_LIST = 'businessProvincesCitiesAreasList'
+
+export const BUSINESS_RELEASE_ALARM = 'businessReleaseAlarm'

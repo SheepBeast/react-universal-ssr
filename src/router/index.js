@@ -4,7 +4,7 @@ import Loadable from 'react-loadable'
 
 import {
     Statistics,
-    Property,
+    // Property,
     RoomDetail,
     AddRenter,
     Relet,
@@ -25,14 +25,14 @@ import {
     AuditNews,
     CheckNews,
     // Tenant,
-    ForgetPassword
+    ForgetPassword,
+    Register
 } from './wrapped'
-import Register from '../pages/Register';
 
 export default function getRoutes() {
     return (
         <div style={{ minWidth: 1563, maxWidth: 1563 }}>
-            <Route path="/" component={Property} exact />
+            <Route path="/" component={Lock} exact />
 
             <Route path="/statistics" component={Statistics} />
 

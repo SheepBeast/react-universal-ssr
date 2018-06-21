@@ -3,11 +3,11 @@ import { connect } from 'react-redux'
 import Highcharts from 'highcharts'
 import { Row, Col, Table, Card, Avatar, Layout, Divider, Icon } from 'antd'
 
-const { Content, Sider } = Layout
 
+import { fetchRentStatistics, fetchDeviceStatistics } from '../../actions/statistics'
 import './index.less'
 
-import { fetchRentStatisticsData, fetchDeviceStatisticsData } from '../../actions/statistics'
+const { Content, Sider } = Layout
 
 class Statistics extends Component {
   constructor(props) {
@@ -386,11 +386,11 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     fetchRentStatistics(params) {
-      return dispatch(fetchRentStatisticsData(params))
+      return dispatch(fetchRentStatistics(params))
     },
 
     fetchDeviceStatistics(params) {
-      return dispatch(fetchDeviceStatisticsData(params))
+      return dispatch(fetchDeviceStatistics(params))
     }
   }
 }

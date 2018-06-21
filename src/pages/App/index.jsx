@@ -7,18 +7,12 @@ import { Layout } from 'antd'
 import SideBar from '../../containers/SideBar/index'
 import Main from '../../containers/Main/index'
 
-import Login from '../Login/index'
+import Login from '../Common/Login/index'
 
 import './index.less'
 
 class App extends React.Component {
   componentWillMount() {
-    // let {tokenID } = this.props
-
-    // if(!tokenID) {
-    //   this.props.history.push('/login')
-    // }
-
     this.props.history.push('/login')
   }
 

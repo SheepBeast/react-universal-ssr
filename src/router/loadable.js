@@ -4,137 +4,156 @@ import Loadable from 'react-loadable'
 const loading = () => <div>loading...</div>
 
 var loadable = __TERMINAL__ === 'browser' ? {
+  // statistics
   LoadableStatistics: Loadable({
     loader: () => import('../pages/Statistics/index'),
     loading
   }),
 
+  // property
   LoadableProperty: Loadable({
-    loader: () => import('../pages/Property/index'),
+    loader: () => import('../pages/Property/Property/index'),
     loading
   }),
   LoadableRoomDetail: Loadable({
-    loader: () => import('../pages/RoomDetail/index'),
-    loading
-  }),
-  LoadableAddRenter: Loadable({
-    loader: () => import('../pages/AddRenter/index'),
+    loader: () => import('../pages/Property/RoomDetail/index'),
     loading
   }),
   LoadableRelet: Loadable({
-    loader: () => import('../pages/Relet/index'),
+    loader: () => import('../pages/Property/Relet/index'),
     loading
   }),
 
+  // tenant
+  LoadableAddRenter: Loadable({
+    loader: () => import('../pages/Tenant/AddRenter/index'),
+    loading
+  }),
+
+
+  // device
   LoadableMyDevice: Loadable({
-    loader: () => import('../pages/MyDevice/index'),
+    loader: () => import('../pages/Device/MyDevice/index'),
     loading
   }),
   LoadableGateway: Loadable({
-    loader: () => import('../pages/Gateway/index'),
+    loader: () => import('../pages/Device/Gateway/index'),
     loading
   }),
 
-  LoadableLock: Loadable({
-    loader: () => import('../pages/Lock/index'),
+  LoadableLockList: Loadable({
+    loader: () => import('../pages/Device/LockList/index'),
     loading
   }),
   LoadableLockDetail: Loadable({
-    loader: () => import('../pages/LockDetail/index'),
+    loader: () => import('../pages/Device/LockDetail/index'),
     loading
   }),
+
+  // user
   LoadableUser: Loadable({
-    loader: () => import('../pages/User/index'),
+    loader: () => import('../pages/User/User/index'),
     loading
   }),
   LoadableAddUser: Loadable({
-    loader: () => import('../pages/AddUser/index'),
+    loader: () => import('../pages/User/AddUser/index'),
     loading
   }),
   LoadableEditUser: Loadable({
-    loader: () => import('../pages/EditUser/index'),
+    loader: () => import('../pages/User/EditUser/index'),
     loading
   }),
+
+  // role
   LoadableRole: Loadable({
-    loader: () => import('../pages/Role/index'),
+    loader: () => import('../pages/Role/Role/index'),
     loading
   }),
   LoadableAddRole: Loadable({
-    loader: () => import('../pages/AddRole/index'),
+    loader: () => import('../pages/Role/AddRole/index'),
     loading
   }),
   LoadableEditRole: Loadable({
-    loader: () => import('../pages/EditRole/index'),
+    loader: () => import('../pages/Role/EditRole/index'),
     loading
   }),
+
+  // common
   LoadableLogin: Loadable({
-    loader: () => import ('../pages/Login/index'),
+    loader: () => import('../pages/Common/Login/index'),
     loading
   }),
-  LoadableNews: Loadable({
-    loader: ()=> import('../pages/News/index'),
-    loading
-  }),
-  LoadableAudittingNews: Loadable({
-    loader: ()=> import('../pages/AudittingNews/index'),
-    loading
-  }),
-  LoadableAddNews: Loadable({
-    loader: ()=> import('../pages/AddNews/index'),
-    loading
-  }),
-  LoadableAuditNews: Loadable({
-    loader:() => import('../pages/AuditNews/index'),
-    loading
-  }),
-  LoadableCheckNews: Loadable({
-    loader: ()=> import('../pages/CheckNews/index'),
-    loading
-  }),
-  // LoadableTenant: Loadable({
-  //   loader: ()=> import('../pages/Tenant/index'),
-  //   loading
-  // })
   LoadableRegister: Loadable({
-    loader: () => import ('../pages/Register/index'),
+    loader: () => import('../pages/Common/Register/index'),
     loading
   }),
   LoadableForgetPassword: Loadable({
-    loader: ()=>import('../pages/ForgetPassword/index'),
+    loader: () => import('../pages/Common/ForgetPassword/index'),
+    loading
+  }),
+
+  // news
+  LoadableNews: Loadable({
+    loader: () => import('../pages/News/News/index'),
+    loading
+  }),
+  LoadableAudittingNews: Loadable({
+    loader: () => import('../pages/News/AudittingNews/index'),
+    loading
+  }),
+  LoadableAddNews: Loadable({
+    loader: () => import('../pages/News/AddNews/index'),
+    loading
+  }),
+  LoadableAuditNews: Loadable({
+    loader: () => import('../pages/News/AuditNews/index'),
+    loading
+  }),
+  LoadableCheckNews: Loadable({
+    loader: () => import('../pages/News/CheckNews/index'),
     loading
   })
+
 } : {
+    // statistic
     LoadableStatistics: require('../pages/Statistics/index').default,
-    LoadableProperty: require('../pages/Property/index').default,
-    LoadableRoomDetail: require('../pages/RoomDetail/index').default,
-    LoadableAddRenter: require('../pages/AddRenter/index').default,
-    LoadableRelet: require('../pages/Relet/index').default,
 
-    LoadableMyDevice: require('../pages/MyDevice/index').default,
-    LoadableGateway: require('../pages/Gateway/index').default,
+    // property
+    LoadableProperty: require('../pages/Property/Property/index').default,
+    LoadableRoomDetail: require('../pages/Property/RoomDetail/index').default,
+    LoadableRelet: require('../pages/Property/Relet/index').default,
 
-    LoadableLock: require('../pages/Lock/index').default,
-    LoadableLockDetail: require('../pages/LockDetail/index').default,
 
-    LoadableUser: require('../pages/User/index').default,
-    LoadableAddUser: require('../pages/AddUser/index').default,
-    LoadableEditUser: require('../pages/EditUser/index').default,
-    LoadableRole: require('../pages/Role/index').default,
-    LoadableAddRole: require('../pages/AddRole/index').default,
-    LoadableEditRole: require('../pages/EditRole/index').default,
+    // tenant
+    LoadableAddRenter: require('../pages/Tenant/AddRenter/index').default,
 
-    LoadableLogin: require('../pages/Login/index').default,
+    // device
+    LoadableMyDevice: require('../pages/Device/MyDevice/index').default,
+    LoadableGateway: require('../pages/Device/Gateway/index').default,
+    LoadableLockList: require('../pages/Device/LockList/index').default,
+    LoadableLockDetail: require('../pages/Device/LockDetail/index').default,
 
-    LoadableNews: require('../pages/News/index').default,
-    LoadableAudittingNews: require('../pages/AudittingNews/index').default,
-    LoadableAddNews: require('../pages/AddNews/index').default,
-    LoadableAuditNews: require('../pages/AuditNews/index').default,
-    LoadableCheckNews: require('../pages/CheckNews/index').default,
+    // user
+    LoadableUser: require('../pages/User/User/index').default,
+    LoadableAddUser: require('../pages/User/AddUser/index').default,
+    LoadableEditUser: require('../pages/User/EditUser/index').default,
 
-    // LoadableTenant: require('../pages/Tenant/index').default
+    // role
+    LoadableRole: require('../pages/Role/Role/index').default,
+    LoadableAddRole: require('../pages/Role/AddRole/index').default,
+    LoadableEditRole: require('../pages/Role/EditRole/index').default,
 
-    LoadableRegister: require('../pages/Register/index').default,
-    LoadableForgetPassword: require('../pages/ForgetPassword/index').default
+    // common
+    LoadableLogin: require('../pages/Common/Login/index').default,
+    LoadableRegister: require('../pages/Common/Register/index').default,
+    LoadableForgetPassword: require('../pages/Common/ForgetPassword/index').default,
+
+    // news
+    LoadableNews: require('../pages/News/News/index').default,
+    LoadableAudittingNews: require('../pages/News/AudittingNews/index').default,
+    LoadableAddNews: require('../pages/News/AddNews/index').default,
+    LoadableAuditNews: require('../pages/News/AuditNews/index').default,
+    LoadableCheckNews: require('../pages/News/CheckNews/index').default
   }
 
 module.exports = loadable
