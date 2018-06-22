@@ -2,16 +2,17 @@ require('babel-register')
 
 var express = require('express')
 var path = require('path')
-var axios = require('axios')
 var crypto = require('crypto')
 var bodyParser = require('body-parser')
 var NodeRSA = require('node-rsa')
-var React = require('react')
-var { renderToString } = require('react-dom/server')
-var { StaticRouter } = require('react-router-dom')
 
-var configureStore = require('../store').default
-var App = require('../pages/App/index').default
+// var React = require('react')
+// var { renderToString } = require('react-dom/server')
+// var { StaticRouter } = require('react-router-dom')
+
+// var configureStore = require('../store').default
+// var App = require('../pages/App/index').default
+
 var API = require('../api').default
 
 var server = express()
@@ -58,11 +59,6 @@ server.use('/assets', express.static(__assets, {
   }
 }))
 
-server.get('/test', function (req, res) {
-  res.send('ok 123')
-})
-
-
 /**
  * 加密流程
  */
@@ -91,82 +87,19 @@ var encrypt = (text) => {
 }
 /******************************************/
 
-server.get('/', function (req, res) {
-  var html = renderToString(
-    <StaticRouter location={req.url} context={{}}>
-      <App />
-    </StaticRouter>
-  )
-  var store = configureStore()
+// server.get('/', function (req, res) {
+//   var html = renderToString(
+//     <StaticRouter location={req.url} context={{}}>
+//       <App />
+//     </StaticRouter>
+//   )
+//   var store = configureStore()
 
-  // console.log('req url -->', req.url, html)
+//   // console.log('req url -->', req.url, html)
 
-  res.render('index', { html, state: store.getState() })
-})
-
-server.get('/Statistics', function (req, res) {
-  var html = renderToString(
-    <StaticRouter location={req.url} context={{}}>
-      <App />
-    </StaticRouter>
-  )
-  var store = configureStore()
-
-  res.render('index', { html, state: store.getState() })
-})
-
-
-
-// server.post('/login', (req, res) => {
-//   // console.log('headers -->', req.headers)
-//   console.log('login -->', req.body)
-
-//   var { method, data: { accountName, password } } = req.body
-
-//   var encrypted = encrypt(password)
-
-//   var ret = api.fetch(method, { accountName, password: encrypted }, {
-//     url: __REMOTE_SERVER__
-//   }).then(r => {
-//     console.log('r -->', r.data)
-//     res.send(r.data)
-//   }).catch(e => {
-//     console.log('e -->', e)
-//   })
+//   res.render('index', { html, state: store.getState() })
 // })
 
-// server.post('/register', (req, res) => {
-//   console.log('/regsder -->', req.headers)
-//   console.log('register -->', req.body)
-
-//   var { method, data: { accountName, password, phoneNo, code } } = req.body
-
-//   var encrypted = encrypt(password)
-
-//   var ret = api.fetch(method, { accountName, password: encrypted, phoneNo, code }, {
-//     url: __REMOTE_SERVER__
-//   }).then(r => {
-//     console.log('register r -->', r.data)
-//     res.send(r.data)
-//   }).catch(e => {
-//     console.log('register e -->', e)
-//   })
-// })
-
-// server.post('/forget-password', (req, res) => {
-//   var { method, data: { accountName, password, phoneNo, code } } = req.body
-
-//   var encrypted = encrypt(password)
-
-//   var ret = api.fetch(method, { accountName, password: encrypted, phoneNo, code }, {
-//     url: __REMOTE_SERVER__
-//   }).then(r => {
-//     console.log('forget password r -->', r.data)
-//     res.send(r.data)
-//   }).catch(e => {
-//     console.log('forget password e -->', e)
-//   })
-// })
 
 var commons_middleware = (req, res, next) => {
   var { method, data: { accountName, password, phoneNo, code } } = req.body
