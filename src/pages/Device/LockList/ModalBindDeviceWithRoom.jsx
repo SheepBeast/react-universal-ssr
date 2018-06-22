@@ -37,8 +37,11 @@ class Modal_Device_X_Room extends React.Component {
   }
 
 
-  onOk(e) {
+  onOk() {
+    var form = {}
 
+    this.props.onOk(form)
+    this.hide()
   }
 
   componentWillMount() {

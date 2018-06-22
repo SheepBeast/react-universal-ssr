@@ -60,6 +60,7 @@ export const BUSINESS_USER_RELATE_HOUSE = 'businessUserRelateHouse'
 export const BUSINESS_DEVICE_LIST = 'businessDeviceList'
 export const BUSINESS_UNBIND_DEVICE = 'businessUnbindDevice'
 export const BUSINESS_DELETE_DEVICE = 'businessDeleteDevice'
+export const BUSINESS_DELETE_DIFF_TYPE_DEVICE = 'businessDeleteDiffTypeDevice'
 export const BUSINESS_MODIFY_USER = 'businessModifyUser'
 export const BUSINESS_ROOM_TENANT_LIST = 'businessRoomTenantList'
 export const BUSINESS_ROOM_DEVICE_LIST = 'businessRoomDeviceList'
@@ -68,12 +69,7 @@ export const BUSINESS_LOCK_LIST = 'businessLockList'
 export const BUSINESS_LOCK_DETAIL = 'businessLockDetail'
 export const BUSINESS_LOCK_STATISTICS = 'businessLockStatistics'
 export const DEVICE_CLEAR_ALARM = 'deviceClearAlarm'
-// export const BUSINESS_DEL_USER ='businessDelUser'
-// export const BUSINESS_ENABLE_USER ='businessEnableUser'
-// export const BUSINESS_USER_DETAIL ='businessUserDetail'
-// export const BUSINESS_RESET_PASSWORD ='businessResetPassword'
-// export const BUSINESS_USER_RELATE_ROLE ='businessUserRelateRole'
-// export const BUSINESS_USER_RELATE_HOME ='businessUserRelateHouse'
+
 export const BUSINESS_LOCK_LOG_LIST = 'businessLockLogList'
 export const BUSINESS_NEWS_LIST = 'businessNewsList'
 
@@ -94,18 +90,8 @@ export const BUSINESS_LOCK_KEY_LIST = 'businessLockKeyList'
 
 export const BUSINESS_LOCK_APP_KEY_LIST = 'businessLockAppKeyList'
 export const BUSINESS_UPDATE_lOCK_FUNCTION = 'businessUpdateLockFunction'
-// export const BUSINESS_DEVICE_LIST ='businessDeviceList'
-// export const BUSINESS_UNBIND_DEVICE ='businessUnbindDevice'
-// export const BUSINESS_UNBIND_DEVICE ='businessUnbindDevice'
-
-// export const BUSINESS_USER_INFO ='businessUserInfo'
-// export const BUSINESS_DOOR_LOCK_INFO ='businessDoorLockInfo'
-// export const BUSINESS_WATER_METER_INFO ='businessWaterMeterInfo'
-// export const BUSINESS_ELECTRIC_METER_INFO ='businessElectricMeterInfo'
-// export const BUSINESS_DOOR_LOCK_FUNCTION_CONFIG ='businessDoorLockFunctionConfig'
 
 export const BUSINESS_APARTMENT_LIST = 'businessApartmentList'
-
 
 export const BUSINESS_PROVINCE_CITIES_AREAS_LIST = 'businessProvincesCitiesAreasList'
 

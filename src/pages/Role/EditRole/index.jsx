@@ -290,10 +290,7 @@ class EditRole extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  roleList: state.usableRoleList || [],
-  menuPermissionList: state.menuPermissionList || []
-})
+const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   fetchRoleList: params => dispatch(fetchRoleList(params)),
   fetchMenuPermissionList: params => dispatch(fetchMenuPermissionList(params)),

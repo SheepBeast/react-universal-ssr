@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Form, Table, Button, Input, Radio, Icon, Row, Col, Tooltip, message } from 'antd'
-
-
-
-import { fetchDeviceList, deleteDevice } from '../../../actions/device';
+import { fetchDeviceList, deleteDevice, batchDeleteDevice, bindDevice } from '../../../actions/device';
+import { roomAddDevice } from '../../../actions/property'
+import isRequestSuccess from '../../../utils/isRequestSuccess';
+import ModalBindDeviceWithRoom from './ModalBindDeviceWithRoom'
 import './index.less'
 
 const FormItem = Form.Item
@@ -37,81 +37,157 @@ class MyDevice extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      startNum: 0,
       selectedRowKeys: [],
-      selectedRows: []
+      selectedRows: [],
+
+      deviceList: [],
+
+      options: {}
     }
+
+    this.modal = {}
   }
 
   componentWillMount() {
-    this.props.fetchDeviceList()
+    this.props.fetchDeviceList().then(ret => {
+      if (isRequestSuccess(ret)) {
+        let deviceList = ret.data.data.list || []
+
+        this.setState({ deviceList })
+      }
+    })
   }
 
-  fetch(state, search) {
-    var options = {}
+  filteredFetchDeviceList() {
+    var params = {}
 
-    if (!state) {
-      state = this.props.form.getFieldValue('state')
-    }
+    var { state, findName } = this.props.form.getFieldsValue()
 
     if (state != '-1') {
-      options.state = parseInt(state)
+      params.state = state
     }
 
-    if (search) {
-      options.findName = search
+    if (findName) {
+      params.findName = findName
     }
 
-    console.log('options -->', options)
+    console.log('params -->', params)
 
-    this.props.fetchDeviceList(options)
-  }
+    this.props.fetchDeviceList(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        let deviceList = ret.data.data.list || []
 
-  onSearch(e) {
-    this.fetch(null, e)
-  }
-
-  onChange(e) {
-    this.fetch(e.target.value)
+        this.setState({
+          deviceList
+        })
+      }
+    })
   }
 
   deleteDevice(params) {
-    this.props.deleteDevice(params)
+    this.props.deleteDevice(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success('删除设备成功')
+        this.filteredFetchDeviceList()
+      } else {
+        message.error(`删除设备失败，${ret.data.reason}`)
+      }
+    })
   }
 
-  batchDelete(e) {
-    e && e.stopPropagation()
+  batchDeleteDevice(e) {
     let rows = this.state.selectedRows
+
+    console.log('rows -->', rows)
 
     if (rows.length == 0) {
       return
     }
 
-    let type = rows[0].actions.deviceType
-    let difference = false
+    let list = rows.map(row => {
+      var { deviceId, deviceType } = row
 
-    for (let i = 1, l = rows.length; i < l; i++) {
-      if (type != rows[i].actions.deviceType) {
-        difference = true
-        break
+      return { deviceId, deviceType }
+    })
+
+    let params = { list }
+
+    console.log('params -->', params)
+
+    this.props.batchDeleteDevice(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success('批量删除设备成功')
+        this.filteredFetchDeviceList()
+      } else {
+        message.error(`批量删除设备失败，${ret.data.reason}`)
       }
+    })
+  }
+
+  bindDevice(options) {
+    this.setState({ options }, this.callModalBindDeviceWithRoom)
+  }
+
+
+  onModalBindDeviceWithRoomInit(modal) {
+    this.modal.bindDeviceWithRoom = modal
+  }
+
+  onModalBindDeviceWithRoomOk(form) {
+    console.log('form -->', form)
+
+    let { houseId, buildingId, floorId, roomId, rename, deviceId, deviceType } = form
+    let params = {
+      deviceType,
+      deviceId,
+      deviceName: rename
     }
 
-    if (difference) {
-      // 提示不允许删除不同类型的设备
-      message.error('不允许同时批量删除不同类型的设备')
+    if (roomId) {
+      params.level = 4
+      params.id = roomId
+    } else if (floorId) {
+      params.level = 3
+      params.id = floorId
+    } else if (buildingId) {
+      params.level = 2
+      params.id = buildingId
+    } else if (houseId) {
+      params.level = 1
+      params.id = houseId
     } else {
-      this.deleteDevice({
-        deviceType: type,
-        deviceId: this.state.selectedRowKeys
-      })
+      message.error('设备关联失败，id值不能为空')
+      return
     }
+
+    this.props.bindDevice(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success('设备关联成功')
+      } else {
+        message.success(`设备关联失败，${ret.data.reason}`)
+      }
+    })
+
+  }
+
+  callModalBindDeviceWithRoom() {
+    this.modal.bindDeviceWithRoom.show()
   }
 
   render() {
-    console.log('device list -->', this.props.deviceList)
+    let { deviceList } = this.state
 
-    const dataSource = this.props.deviceList.map(({ deviceId, deviceName, mac, deviceType, state, roomName, floorName, buildingName, houseName }) => {
+    const dataSource = deviceList.map(({
+      deviceId,
+      deviceName,
+      mac,
+      deviceType,
+      state,
+      roomName,
+      floorName,
+      buildingName,
+      houseName
+    }) => {
       let installationSite = `${houseName || ''}${buildingName ? buildingName + '栋' : ''}${floorName ? floorName + '层' : ''}${roomName || ''}`
       let _deviceType = deviceTypeRefers[deviceType]
 
@@ -125,9 +201,10 @@ class MyDevice extends React.Component {
         key: deviceId,
         mac,
         installationSite,
-        deviceType: _deviceType,
+        deviceType,
         deviceName,
         state,
+        deviceId,
         actions: {
           deviceId,
           deviceName,
@@ -153,7 +230,8 @@ class MyDevice extends React.Component {
     {
       title: '设备类型',
       dataIndex: 'deviceType',
-      key: 'deviceType'
+      key: 'deviceType',
+      render: deviceType => (<span>{deviceTypeRefers[deviceType]}</span>)
     },
     {
       title: '状态',
@@ -174,38 +252,11 @@ class MyDevice extends React.Component {
             {
               deviceType == 2 ?
                 <span>
-                  <Link to={url} className="mr-20">
-                    <Tooltip title="详情">
-
-                      <Icon type="file-text" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-                    </Tooltip>
-
-                  </Link>
-                  <a className="mr-20" onClick={
-                    () => {
-                      // this.setState({
-                      //   deviceName,
-                      //   mac
-                      // })
-                      // pipe.openModal()
-                    }
-                  }>
-                    <Tooltip title="关联">
-
-                      <Icon type="paper-clip" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-
-
-                    </Tooltip>
-                  </a>
-
+                  <Link to={url} className="mr-20">详情</Link>
+                  <a className="mr-20" onClick={this.bindDevice.bind(this, { deviceId, deviceName, deviceType, mac })}>关联</a>
                 </span> : null
             }
-
-            <a className="mr-20" onClick={this.deleteDevice.bind(this, { deviceId: [deviceId], deviceType })}>
-              <Tooltip title="删除">
-                <Icon type="shop" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-              </Tooltip>
-            </a>
+            <a onClick={this.deleteDevice.bind(this, { deviceId: [deviceId], deviceType })}>删除</a>
           </span>
         )
       }
@@ -216,7 +267,7 @@ class MyDevice extends React.Component {
 
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
-        // console.log(selectedRowKeys, selectedRows)
+        console.log('selected rows -->', selectedRows)
         this.setState({
           selectedRowKeys,
           selectedRows
@@ -232,7 +283,7 @@ class MyDevice extends React.Component {
               getFieldDecorator('state', {
                 initialValue: "-1",
               })(
-                <RadioGroup className="custom-radio-button-group" onChange={this.onChange.bind(this)}>
+                <RadioGroup className="custom-radio-button-group" onChange={this.filteredFetchDeviceList.bind(this)}>
                   <RadioButton value="-1">全部</RadioButton>
                   <RadioButton value="1">正常</RadioButton>
                   <RadioButton value="0">异常</RadioButton>
@@ -245,13 +296,13 @@ class MyDevice extends React.Component {
             <Row>
               <Col span={8}>
                 {
-                  getFieldDecorator('search')(
-                    <Search style={{ height: 32 }} enterButton="搜索" placeholder="请输入设备名称/设备MAC/安装关联位置" onSearch={this.onSearch.bind(this)}></Search>
+                  getFieldDecorator('findName')(
+                    <Search style={{ height: 32 }} enterButton="搜索" placeholder="请输入设备名称/设备MAC/安装关联位置" onSearch={this.filteredFetchDeviceList.bind(this)}></Search>
                   )
                 }
               </Col>
               <Col className="tr">
-                <Button type="primary" onClick={this.batchDelete.bind(this)}>批量删除</Button>
+                <Button type="primary" onClick={this.batchDeleteDevice.bind(this)}>批量删除</Button>
               </Col>
             </Row>
 
@@ -259,18 +310,20 @@ class MyDevice extends React.Component {
         </Form>
 
         <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} pagination={false}></Table>
+
+        <ModalBindDeviceWithRoom onInit={this.onModalBindDeviceWithRoomInit.bind(this)} onOk={this.onModalBindDeviceWithRoomOk.bind(this)} options={this.state.options} />
       </div>
     )
   }
 }
 
-const mapStateToProps = state => ({
-  deviceList: state.deviceList || []
-})
+const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => {
   return {
     fetchDeviceList: params => dispatch(fetchDeviceList(params)),
-    deleteDevice: params => dispatch(deleteDevice(params))
+    deleteDevice: params => dispatch(deleteDevice(params)),
+    batchDeleteDevice: params => dispatch(batchDeleteDevice(params)),
+    bindDevice: params => dispatch(roomAddDevice(params))
   }
 }
 

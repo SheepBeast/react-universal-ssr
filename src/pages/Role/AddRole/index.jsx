@@ -97,10 +97,7 @@ class AddRole extends React.Component {
             halfChecked: []
           }
         }, () => {
-          this.props.form.setFieldsValue({
-            roleName: '',
-            remark: ''
-          })
+          this.props.form.resetFields()
         })
       }
     })
@@ -190,8 +187,8 @@ class AddRole extends React.Component {
                     rules: [{
                       required: true,
                       message: '角色名称不能为空'
-                    }]
-
+                    }],
+                    initialValue: null
                   })(
                     <Input placeholder="管理员" />
                   )
@@ -200,7 +197,9 @@ class AddRole extends React.Component {
 
               <FormItem label="备注" labelCol={{ span: 2 }} wrapperCol={{ span: 11 }}>
                 {
-                  getFieldDecorator('remark')(
+                  getFieldDecorator('remark', {
+                    initialValue: null
+                  })(
                     <TextArea placeholder="A公寓B栋管理负责人..." autosize={{ minRows: 6, maxRows: 6 }} />
                   )
                 }
@@ -208,13 +207,20 @@ class AddRole extends React.Component {
               {
                 roleList.length > 0 ?
                   <FormItem label="权限" labelCol={{ span: 2 }} wrapperCol={{ span: 11 }} style={{ marginBottom: 0 }}>
-                    <RadioGroup value={this.state.selectedRadioValue} onChange={this.onRadioGroupChange.bind(this)}>
-                      {
-                        roleList.map(role =>
-                          <RadioButton key={role.roleId} value={role.roleId} className="mb-20" style={{ width: 'auto' }}>{role.roleName}</RadioButton>
-                        )
-                      }
-                    </RadioGroup>
+                    {
+                      getFieldDecorator('roleId', {
+                        initialValue: null
+                      })(
+                        <RadioGroup value={this.state.selectedRadioValue} onChange={this.onRadioGroupChange.bind(this)}>
+                          {
+                            roleList.map(role =>
+                              <RadioButton key={role.roleId} value={role.roleId} className="mb-20" style={{ width: 'auto' }}>{role.roleName}</RadioButton>
+                            )
+                          }
+                        </RadioGroup>
+                      )
+                    }
+
                   </FormItem> : null
               }
 
@@ -264,11 +270,7 @@ class AddRole extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  roleList: state.usableRoleList || [],
-  menuPermissionList: state.menuPermissionList || [],
-  // roleDetail: state.roleDetail || {}
-})
+const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   addRole: params => dispatch(addRole(params)),
   fetchRoleList: params => dispatch(fetchRoleList(params)),

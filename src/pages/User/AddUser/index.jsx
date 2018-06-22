@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
-import { Divider, Form, Input, Row, Col, Button, Radio, Tree } from 'antd'
+import { Divider, Form, Input, Row, Col, Button, Radio, Tree, message } from 'antd'
 
 
 import { addUser } from '../../../actions/user';
@@ -9,6 +9,7 @@ import { isMobile, isEmail } from '../../../constants/regexp';
 import { fetchRoleList } from '../../../actions/role';
 import { fetchApartmentList } from '../../../actions/property';
 import './index.less'
+import isRequestSuccess from '../../../utils/isRequestSuccess';
 
 
 const FormItem = Form.Item
@@ -23,30 +24,35 @@ class AddUser extends React.Component {
 
     this.state = {
       selectedKeys: [],
-      showHouseAuth: false
+      showHouseAuth: false,
+
+      roleList: [],
+      apartmentList: []
     }
   }
-  componentWillMount() {
-    this.props.fetchRoleList({
-      flag: 'role-add',
-      state: 1
-    })
 
-    this.props.fetchApartmentList()
+  componentWillMount() {
+    let p1 = this.props.fetchRoleList({ state: 1 }),
+      p2 = this.props.fetchApartmentList()
+
+    Promise.all([p1, p2]).then(ret => {
+      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1])) {
+        let roleList = ret[0].data.data.list || [],
+          apartmentList = ret[1].data.data.houses || []
+
+        this.setState({
+          roleList,
+          apartmentList
+        })
+      }
+    })
   }
 
-  onCheck(selectedKeys, e) {
-    console.log('keys -->', selectedKeys)
-    console.log('e -->', e)
-
-    this.setState({
-      selectedKeys
-    })
+  onTreeCheck(selectedKeys, e) {
+    this.setState({ selectedKeys })
   }
 
   onHouseAuthChange(e) {
-    console.log('e -->', e)
-
     this.setState({
       showHouseAuth: e.target.value == 2
     })
@@ -57,28 +63,32 @@ class AddUser extends React.Component {
 
     this.props.form.validateFields((err, val) => {
       if (!err) {
-        let { userName, phoneNo, email, userAccount, password, roleId, houseAuth } = val
+        let { userName, phoneNo, eMail, userAccount, password, roleId, houseAuth } = val
 
         console.log('val -->', val)
 
-        let options = {
+        let params = {
           userAccount,
           userName,
           phoneNo,
-          password
-
-        }
-
-        if (email) {
-          options.eMail = email
-        }
-
-        if (roleId) {
-          options.roleId = roleId
+          password,
+          eMail,
+          roleId
         }
 
         if (houseAuth == 2) {
           let keys = this.state.selectedKeys
+
+          if (keys.length == 0) {
+            this.props.form.setFields({
+              houseAuth: {
+                value: null,
+                errors: new Error('选择部分房产时，必须选择房间')
+              }
+            })
+
+            return
+          }
 
           let houses = []
 
@@ -106,24 +116,42 @@ class AddUser extends React.Component {
           })
 
           if (houses.length > 0) {
-            options.houses = houses
+            params.houses = houses
           }
+        } else {
+          params.houseAuth = houseAuth
         }
 
-        console.log('options -->', options)
+        console.log('params -->', params)
 
-        this.props.addUser(options)
+        this.props.addUser(params).then(ret => {
+          if (isRequestSuccess(ret)) {
+            message.success(`添加用户成功`)
+            this.reset()
+          } else {
+            message.success(`添加用户失败，${ret.data.reason}`)
+          }
+        })
 
       }
     })
   }
 
+  reset() {
+    this.props.form.resetFields()
+    this.setState({
+      selectedKeys: []
+    })
+  }
+
+  goBack() {
+    this.props.history.goBack()
+  }
+
   render() {
 
     const { getFieldDecorator } = this.props.form
-    const apartmentList = this.props.apartmentList
-
-    console.log('apartment list -->', apartmentList)
+    const { apartmentList, roleList } = this.state
 
     return (
       <div id="AddUser" className="container">
@@ -134,7 +162,7 @@ class AddUser extends React.Component {
             </h3>
           </Col>
           <Col className="tr" span={12}>
-            <Button type="primary" onClick={this.props.history.goBack}>返回</Button>
+            <Button type="primary" onClick={this.goBack.bind(this)}>返回</Button>
           </Col>
         </Row>
 
@@ -147,7 +175,7 @@ class AddUser extends React.Component {
                   required: true,
                   message: '姓名不能为空'
                 }],
-                initialValue: '邓展华'
+                initialValue: null
               })(
                 <Input placeholder="请输入员工姓名" />
               )
@@ -169,7 +197,7 @@ class AddUser extends React.Component {
                     callback()
                   }
                 }],
-                initialValue: '13802402735',
+                initialValue: null,
                 validateFirst: true
               })(
                 <Input type="number" maxLength="11" placeholder="请输入员工手机号" />
@@ -179,7 +207,7 @@ class AddUser extends React.Component {
 
           <FormItem label="邮箱" labelCol={{ span: 3 }} wrapperCol={{ span: 15 }} >
             {
-              getFieldDecorator('email', {
+              getFieldDecorator('eMail', {
                 rules: [{
                   required: true,
                   message: '邮箱不能为空'
@@ -192,7 +220,7 @@ class AddUser extends React.Component {
                     callback()
                   }
                 }],
-                initialValue: '384925935@qq.com',
+                initialValue: null,
                 validateFirst: true
               })(
                 <Input placeholder="请输入员工邮箱" />
@@ -207,7 +235,7 @@ class AddUser extends React.Component {
                   required: true,
                   message: '账号不能为空'
                 }],
-                initialValue: 'dzh384925935'
+                initialValue: null
               })(
                 <Input placeholder="请输入员工的账号，确认后不可修改" />
               )
@@ -225,7 +253,7 @@ class AddUser extends React.Component {
                   max: 16,
                   message: '密码为6-16位'
                 }],
-                initialValue: 'asd751011568',
+                initialValue: null,
                 validateFirst: true
               })(
                 <Input placeholder="请输入登录密码"></Input>
@@ -235,10 +263,12 @@ class AddUser extends React.Component {
 
           <FormItem label="角色" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} >
             {
-              getFieldDecorator('roleId')(
+              getFieldDecorator('roleId', {
+                initialValue: null
+              })(
                 <RadioGroup style={{ marginTop: 4 }}>
                   {
-                    this.props.roleList.map(({ roleId, roleName }) =>
+                    roleList.map(({ roleId, roleName }) =>
                       <Radio key={roleId} value={roleId}>{roleName}</Radio>
                     )
                   }
@@ -260,12 +290,12 @@ class AddUser extends React.Component {
                   required: true,
                   message: '必须选择房产权限'
                 }],
-                initialValue: 1
+                initialValue: null
               })(
                 <RadioGroup onChange={this.onHouseAuthChange.bind(this)} style={{ marginTop: 4 }} >
                   <Radio value={1}>全部房产</Radio>
                   <Radio value={2}>部分房产</Radio>
-                  <Radio value={3}>无权限</Radio>
+                  <Radio value={0}>无权限</Radio>
                 </RadioGroup>
               )
             }
@@ -277,7 +307,7 @@ class AddUser extends React.Component {
               <div className="container" style={{ maxHeight: 500, overflowY: 'scroll', border: '1px solid #ddd', width: 900, display: this.state.showHouseAuth ? 'block' : 'none' }}>
                 <Row>
                   <Col offset={1}>
-                    <Tree checkable defaultExpandAll={true} onCheck={this.onCheck.bind(this)}>
+                    <Tree checkable defaultExpandAll={true} onCheck={this.onTreeCheck.bind(this)}>
                       {
                         apartmentList.map(({ houseId, houseName, buildings = [] }) =>
                           <TreeNode title={houseName} key={houseId}>
@@ -304,16 +334,13 @@ class AddUser extends React.Component {
                     </Tree>
                   </Col>
                 </Row>
-              </div>
-
-              : null
+              </div> : null
           }
-
 
           <Row>
             <Col span={10} offset={3}>
               <Button type="primary" className="mr-20" htmlType="submit">保存</Button>
-              <Button>取消</Button>
+              <Button onClick={this.goBack.bind(this)}>取消</Button>
             </Col>
           </Row>
         </Form>
@@ -322,10 +349,7 @@ class AddUser extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  usableRoleList: state.usableRoleList || [],
-  apartmentList: state.apartmentList || []
-})
+const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   addUser: params => dispatch(addUser(params)),
   fetchRoleList: params => dispatch(fetchRoleList(params)),

@@ -99,6 +99,10 @@ class LockList extends React.Component {
     this.modal.bindDeviceWithRoom = modal
   }
 
+  onModalBindDeviceWithRoomOk(form) {
+    console.log('form -->', form)
+  }
+
 
   render() {
     let lockStatistics = this.props.lockStatistics
@@ -172,31 +176,9 @@ class LockList extends React.Component {
         const url = `/device-lockDetail?lockId=${encodeURIComponent(deviceId)}`
         return (
           <span>
-            <Link to={url} className="mr-20">
-              <Tooltip title="详情">
-
-                <Icon type="file-text" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-              </Tooltip>
-
-            </Link>
-            <a className="mr-20" onClick={this.bindDevice.bind(this, {
-              deviceName,
-              mac
-            })}>
-              <Tooltip title="关联">
-
-                <Icon type="paper-clip" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-
-
-              </Tooltip>
-            </a>
-
-            <a className="mr-20" onClick={this.deleteLock.bind(this, { deviceId: [deviceId] })}>
-              <Tooltip title="删除">
-                <Icon type="shop" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-              </Tooltip>
-            </a>
-
+            <Link to={url} className="mr-20">详情</Link>
+            <a className="mr-20" onClick={this.bindDevice.bind(this, { deviceName, mac })}>关联</a>
+            <a onClick={this.deleteLock.bind(this, { deviceId: [deviceId] })}>删除</a>
           </span>
         )
       }
@@ -274,7 +256,7 @@ class LockList extends React.Component {
         </div>
 
 
-        <ModalBindDeviceWithRoom options={options} onInit={this.onModalBindDeviceWithRoomInit.bind(this)} />
+        <ModalBindDeviceWithRoom options={options} onInit={this.onModalBindDeviceWithRoomInit.bind(this)} onOk={this.onModalBindDeviceWithRoomOk.bind(this)} />
       </div >
     )
   }

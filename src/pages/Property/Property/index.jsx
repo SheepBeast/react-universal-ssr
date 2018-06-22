@@ -435,11 +435,6 @@ class Property extends Component {
       selectedHouseId, selectedBuildingId, selectedFloorId, selectedRoomId
     } = this.state
 
-    // let firstHouseId = houseList[0] && houseList[0].houseId || null,
-    //   firstBuildingId = buildingList[0] && buildingList[0].buildingId || null,
-    //   firstFloorId = floorList[0] && floorList[0].floorId || null,
-    //   firstRoomId = roomList[0] && roomList[0].roomId || null
-
     return (
       <div id="Property">
         <div className="mb-20 container">

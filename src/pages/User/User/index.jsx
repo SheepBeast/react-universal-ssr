@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Table, Button, Modal, Form, Radio, Select, Row, Col, Icon, Tooltip } from 'antd'
+import { Table, Button, Form, Radio, Select, Row, Col, message } from 'antd'
 
 import { fetchUserList, enableUser, deleteUser } from '../../../actions/user';
 import { fetchRoleList } from '../../../actions/role';
-import './index.less'
+import isRequestSuccess from '../../../utils/isRequestSuccess';
 
-const confirm = Modal.confirm
 const FormItem = Form.Item
 const RadioButton = Radio.Button
 const RadioGroup = Radio.Group
@@ -24,76 +23,106 @@ class User extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      selectedRowKeys: []
+      selectedRowKeys: [],
+
+      selectedRoleId: null,
+      selectedState: -1,
+
+      userList: [],
+      roleList: []
     }
   }
 
   componentWillMount() {
-    this.props.fetchUserList()
-    this.props.fetchRoleList({
-      state: 1,
-      flag: 'role-list'
+    let p1 = this.props.fetchUserList(),
+      p2 = this.props.fetchRoleList()
+
+    Promise.all([p1, p2]).then(ret => {
+      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1])) {
+        let userList = ret[0].data.data.list,
+          roleList = ret[1].data.data.list
+
+        this.setState({
+          userList,
+          roleList
+        })
+      }
     })
   }
 
   enableUser(params) {
-    this.props.enableUser(params)
+    this.props.enableUser(params).then(ret => {
+      let action = userStateRefer[params.state]
+
+      if (isRequestSuccess(ret)) {
+        message.success(`${action}用户成功`)
+        this.filteredFetchUserList()
+      } else {
+        message.success(`${action}用户失败，${ret.data.reason}`)
+      }
+    })
   }
 
   deleteUser(params) {
-    this.props.deleteUser(params)
+    this.props.deleteUser(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success(`删除用户成功`)
+        this.filteredFetchUserList()
+      } else {
+        message.success(`删除用户失败，${ret.data.reason}`)
+      }
+    })
   }
 
   batchDelete() {
-    console.log('batch delete')
     let keys = this.state.selectedRowKeys
-
-    console.log('keys -->', keys)
 
     if (keys.length == 0) {
       return
     }
 
-    this.deleteUser({
-      userId: keys
+    this.deleteUser({ userId: keys })
+  }
+
+  onRadioGroupChange(e) {
+    this.setState({
+      selectedState: e.target.value
+    }, this.filteredFetchUserList)
+  }
+
+  onSelectChange(roleId) {
+    this.setState({
+      selectedRoleId: roleId
+    }, this.filteredFetchUserList)
+  }
+
+  filteredFetchUserList() {
+    let { selectedRoleId, selectedState } = this.state
+
+    var params = {}
+
+    if (selectedState != -1) {
+      params.state = selectedState
+    }
+
+    if (selectedRoleId) {
+      params.roleId = selectedRoleId
+    }
+
+    this.props.fetchUserList(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        let userList = ret.data.data.list || []
+
+        this.setState({ userList })
+      }
     })
   }
 
-  onChangeTofetchUserList(e) {
-    console.log('e -->', e)
-
-
-    let options = {
-      flag: 'user-list',
-    }
-
-    let { getFieldsValue } = this.props.form
-
-    let state, roleId
-
-    if (e.target) {
-      state = e.target.value
-      roleId = getFieldsValue(['roleId']).roleId
-    } else {
-      roleId = e
-      state = getFieldsValue(['state']).state
-    }
-
-    if (state != -1) {
-      options.state = state
-    }
-
-    if (roleId != -1) {
-      options.roleId = roleId
-    }
-
-    console.log('options -->', options)
-
-    this.props.fetchUserList(options)
-  }
-
-
   render() {
+    const { getFieldDecorator } = this.props.form
+
+    const { roleList, userList } = this.state
+
     var columns = [{
       title: '姓名',
       key: 'userName',
@@ -129,28 +158,17 @@ class User extends Component {
         if (state == 2) {
           return null
         } else {
-          let opposite = state == 1 ? { text: '禁用', state: 0 } : { text: '启用', state: 1 }
+          let opposite = state == 1 ? { text: '停用', state: 0 } : { text: '启用', state: 1 }
 
           const url = `/user-edit?userId=${encodeURIComponent(userId)}&roleId=${encodeURIComponent(roleId)}`
+
           return (
             <span>
-              <a className="mr-20" onClick={this.enableUser.bind(this, { userId: [userId], state: opposite.state })}>
-                <Tooltip title={opposite.text}>
-                  <Icon type="file-text" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-                </Tooltip>
-              </a>
+              <a className="mr-20" onClick={this.enableUser.bind(this, { userId: [userId], state: opposite.state })}>{opposite.text}</a>
 
-              <Link to={url} className="mr-20">
-                <Tooltip title="编辑">
-                  <Icon type="paper-clip" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-                </Tooltip>
-              </Link>
+              <Link to={url} className="mr-20">编辑</Link>
 
-              <a className="mr-20" onClick={this.deleteUser.bind(this, { userId: [userId] })}>
-                <Tooltip title="删除">
-                  <Icon type="shop" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-                </Tooltip>
-              </a>
+              <a onClick={this.deleteUser.bind(this, { userId: [userId] })}>删除</a>
             </span>
           )
         }
@@ -158,7 +176,7 @@ class User extends Component {
     }]
 
 
-    var dataSource = this.props.userList.map(({ userId, roleId, userAccount, userName, state, phoneNo, roleName, createTime }) => ({
+    var dataSource = userList.map(({ userId, roleId, userAccount, userName, state, phoneNo, roleName, createTime }) => ({
       key: userId,
       roleName,
       userName,
@@ -183,14 +201,14 @@ class User extends Component {
       }
     }
 
-    const { getFieldDecorator } = this.props.form
+
 
     return (
       <div id="User" className="container">
 
         <Row>
           <Col span={20}>
-            <Form className="form-shim">
+            <Form>
               <Row>
                 <Col span={8}>
                   <FormItem label="状态" labelCol={{ span: 3 }} wrapperCol={{ span: 20 }}>
@@ -198,10 +216,10 @@ class User extends Component {
                       getFieldDecorator('state', {
                         initialValue: '-1'
                       })(
-                        <RadioGroup defaultValue="-1" onChange={this.onChangeTofetchUserList.bind(this)}>
+                        <RadioGroup className="custom-radio-button-group" defaultValue="-1" onChange={this.onRadioGroupChange.bind(this)}>
                           <RadioButton value="-1">全部</RadioButton>
                           <RadioButton value="1">启用</RadioButton>
-                          <RadioButton value="0">禁用</RadioButton>
+                          <RadioButton value="0">停用</RadioButton>
                         </RadioGroup>
                       )
                     }
@@ -209,15 +227,12 @@ class User extends Component {
                   </FormItem>
                 </Col>
                 <Col span={8}>
-                  <FormItem label="角色" labelCol={{ span: 3 }} wrapperCol={{ span: 10 }}>
+                  <FormItem className="form-shim" label="角色" labelCol={{ span: 3 }} wrapperCol={{ span: 10 }}>
                     {
-                      getFieldDecorator('roleId', {
-                        initialValue: '-1'
-                      })(
-                        <Select onChange={this.onChangeTofetchUserList.bind(this)}>
-                          <Option value="-1">全部角色</Option>
+                      getFieldDecorator('roleId')(
+                        <Select placeholder="全部角色" onChange={this.onSelectChange.bind(this)}>
                           {
-                            this.props.roleList.map(({ roleId, roleName }) => (
+                            roleList.map(({ roleId, roleName }) => (
                               <Option key={roleId} value={roleId}>{roleName}</Option>
                             ))
                           }
@@ -230,23 +245,20 @@ class User extends Component {
 
             </Form>
           </Col>
-          <Col style={{ textAlign: 'right' }} span={4}>
+          <Col className="tr" span={4}>
             <Link to="/user-add">
               <Button type="primary">添加用户</Button>
             </Link>
           </Col>
         </Row >
 
-        <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} pagination={false}></Table>
+        <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} pagination={false} />
       </div >
     )
   }
 }
 
-const mapStateToProps = state => ({
-  userList: state.userList || [],
-  roleList: state.roleList || []
-})
+const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   fetchUserList: params => dispatch(fetchUserList(params)),
   enableUser: params => dispatch(enableUser(params)),
