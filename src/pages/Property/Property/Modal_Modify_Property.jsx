@@ -9,7 +9,6 @@ class Modal_Modify_Property extends React.Component {
     super(props)
     this.state = {
       loading: false,
-
       visible: false
     }
   }

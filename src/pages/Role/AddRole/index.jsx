@@ -1,10 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Divider, Row, Col, Form, Input, Button, Radio, Icon, Tree } from 'antd'
+import { Divider, Row, Col, Form, Input, Button, Radio, Icon, Tree, message } from 'antd'
 
 
 import { addRole, fetchRoleList, fetchMenuPermissionList, fetchRoleDetail } from '../../../actions/role';
+import isRequestSuccess from '../../../utils/isRequestSuccess';
 import './index.less'
 
 
@@ -25,24 +26,32 @@ class AddRole extends React.Component {
       checkedKeys: {
         checked: [],
         halfChecked: []
-      }
+      },
+      roleList: [],
+      menuPermissionList: []
     }
   }
 
   componentWillMount() {
 
-    this.props.fetchRoleList({ state: 1, flag: 'role-add' })
+    let p1 = this.props.fetchRoleList({ state: 1 }),
+      p2 = this.props.fetchMenuPermissionList()
 
-    // 重要：页面加载前执行，时机必须是componentWillMount
-    this.props.fetchMenuPermissionList().then(permission => {
-      permission.forEach(({ actionId, lowerActions = [] }) => {
-        initialKeys[actionId] = lowerActions.map(({ actionId }) => actionId)
-      })
+    Promise.all([p1, p2]).then(ret => {
+      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1])) {
+        let roleList = ret[0].data.data.list || [],
+          menuPermissionList = ret[1].data.data.actions || []
+
+        menuPermissionList.forEach(({ actionId, lowerActions = [] }) => {
+          initialKeys[actionId] = lowerActions.map(({ actionId }) => actionId)
+        })
+
+        this.setState({
+          roleList,
+          menuPermissionList
+        })
+      }
     })
-  }
-
-  goBack() {
-    this.props.history.goBack()
   }
 
   onSubmit(e) {
@@ -60,16 +69,39 @@ class AddRole extends React.Component {
 
         let { roleName, remark } = val
 
-        let options = {
+        let params = {
           roleName,
-          actionId: [].concat(checked, halfChecked)
+          actionId: [].concat(checked, halfChecked),
+          remark
         }
 
-        if (remark) {
-          options.remark = remark
-        }
+        this.props.addRole(params).then(ret => {
+          if (isRequestSuccess(ret)) {
+            message.success('添加角色成功')
+            this.reset()
+          } else {
+            message.error(`添加角色失败，${ret.data.reason}`)
+          }
+        })
+      }
+    })
+  }
 
-        this.props.addRole(options)
+  reset() {
+    this.props.fetchRoleList({ state: 1 }).then(ret => {
+      if (isRequestSuccess(ret)) {
+        this.setState({
+          roleList: ret.data.data.list,
+          checkedKeys: {
+            checked: [],
+            halfChecked: []
+          }
+        }, () => {
+          this.props.form.setFieldsValue({
+            roleName: '',
+            remark: ''
+          })
+        })
       }
     })
   }
@@ -81,7 +113,8 @@ class AddRole extends React.Component {
 
     this.props.fetchRoleDetail({
       roleId: [value]
-    }).then(({ actions }) => {
+    }).then(ret => {
+      let actions = ret.data.data.actions
 
       let checkedKeys = this.parseActionsToState(actions)
 
@@ -114,7 +147,7 @@ class AddRole extends React.Component {
     }
   }
 
-  onCheck(checkedKeys, e) {
+  onMenuCheck(checkedKeys, e) {
     this.setState({
       checkedKeys: {
         checked: checkedKeys,
@@ -124,8 +157,12 @@ class AddRole extends React.Component {
     })
   }
 
+  goBack() {
+    this.props.history.goBack()
+  }
+
   render() {
-    var { roleList, menuPermissionList } = this.props
+    var { roleList, menuPermissionList } = this.state
 
     const { getFieldDecorator } = this.props.form
 
@@ -168,7 +205,6 @@ class AddRole extends React.Component {
                   )
                 }
               </FormItem>
-
               {
                 roleList.length > 0 ?
                   <FormItem label="权限" labelCol={{ span: 2 }} wrapperCol={{ span: 11 }} style={{ marginBottom: 0 }}>
@@ -193,7 +229,7 @@ class AddRole extends React.Component {
                   <Tree
                     checkable
                     defaultExpandAll={true}
-                    onCheck={this.onCheck.bind(this)}
+                    onCheck={this.onMenuCheck.bind(this)}
                     checkedKeys={this.state.checkedKeys}
                   >
                     {
@@ -219,7 +255,7 @@ class AddRole extends React.Component {
           <Row>
             <Col span={8} offset={2}>
               <Button type="primary" className="mr-20" htmlType="submit">保存</Button>
-              <Button>取消</Button>
+              <Button onClick={this.goBack.bind(this)}>取消</Button>
             </Col>
           </Row>
         </Form>

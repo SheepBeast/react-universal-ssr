@@ -1,14 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-
 import { Link } from 'react-router-dom'
-
-import { Radio, Form, Icon, Button, Avatar, Row, Col,    Card, Divider, Tooltip } from 'antd'
-
-const FormItem = Form.Item
-const RadioGroup = Radio.Group
-const RadioButton = Radio.Button
-
+import { Radio, Form, Icon, Button, Avatar, Row, Col, Card, Divider, Tooltip, message } from 'antd'
 import { fetchHouseList, fetchBuildingList, fetchFloorList, fetchRoomList, addHouse, addBuilding, delRoom, roomAddDevice, updateRoomInfo } from '../../../actions/property';
 import Modal_Add_Property from './Modal_Add_Property'
 import Modal_Batch_Add_Property_1 from './Modal_Batch_Add_Property_1'
@@ -18,6 +11,11 @@ import Modal_Bind_Device from './Modal_Bind_Device'
 import Modal_Modify_Property from './Modal_Modify_Property'
 import isRequestSuccess from '../../../utils/isRequestSuccess';
 import './index.less'
+
+const FormItem = Form.Item
+const RadioGroup = Radio.Group
+const RadioButton = Radio.Button
+
 
 const roomStateRefers = {
   0: '失效',
@@ -31,24 +29,29 @@ const roomStateRefers = {
 
 
 class Property extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
-      houseId: null,
-      buildingId: null,
-      floorId: null,
-      roomId: null,
+      selectedHouseId: null,
+      selectedBuildingId: null,
+      selectedFloorId: null,
+      selectedRoomId: null,
 
-      currentHouseName: null,
+      selectedHouseName: null,
 
       addingHouseId: null,
       buildingNum: 0,
       count: 0,
 
-      floorList: [],
+      addingFloorList: [],
 
       bindingRoomId: null,
-      modifingRoomId: null
+      modifingRoomId: null,
+
+      houseList: [],
+      buildingList: [],
+      floorList: [],
+      roomList: []
     }
 
     this.modal = {}
@@ -56,32 +59,66 @@ class Property extends Component {
   }
 
   componentWillMount() {
-    this.props.fetchHouseList({ state: 1 }).then(ret => {
-      if (isRequestSuccess(ret)) {
-        let { houseId, houseName } = ret.data.data.list[0]
+    let p1 = this.props.fetchHouseList({ state: 1 }),
+      p2 = this.props.fetchBuildingList({ state: 1 }),
+      p3 = this.props.fetchFloorList({ state: 1 }),
+      p4 = this.props.fetchRoomList({ state: [1, 2, 3, 4, 5] })
+
+    let p = Promise.all([p1, p2, p3, p4]).then(ret => {
+      console.log('ret -->', ret)
+      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1]) && isRequestSuccess(ret[2]) && isRequestSuccess(ret[3])) {
+        let houseList = ret[0].data.data.list,
+          buildingList = ret[1].data.data.list,
+          floorList = ret[2].data.data.list,
+          roomList = ret[3].data.data.list
+
         this.setState({
-          houseId,
-          currentHouseName: houseName
+          houseList,
+          buildingList,
+          floorList,
+          roomList,
+
+          selectedHouseId: houseList[0].houseId,
+          selectedBuildingId: buildingList[0].buildingId,
+          selectedFloorId: floorList[0].floorId,
+          selectedRoomId: roomList[0].roomId,
+
+          selectedHouseName: houseList[0].houseName
         })
       }
     })
-    this.props.fetchBuildingList({ state: 1 })
-    this.props.fetchFloorList({ state: 1 })
-    this.props.fetchRoomList({ state: [1, 2, 3, 4, 5] })
   }
 
-  linkedFetchBuildingList(params) {
-    this.props.fetchBuildingList(params).then(ret => {
-      console.log('building list -->', ret)
 
-      var buildingList = ret.data.data && ret.data.data.list
+  /*********************************/
+  onHouseListChange(e) {
+    e.stopPropagation()
 
-      if (!buildingList || buildingList.length == 0) {
-        return
+    var houseId = e.target.value
+
+    this.setState({
+      selectedHouseId: houseId
+    }, () => {
+      var params = {
+        houseId,
+        state: 1
       }
 
+      this.linkedFetchBuildingList(params)
+    })
+  }
+
+
+  onBuildingListChange(e) {
+    e.stopPropagation()
+
+    var buildingId = e.target.value
+    this.setState({
+      selectedBuildingId: buildingId
+    }, () => {
+
       var params = {
-        buildingId: buildingList[0].buildingId,
+        buildingId,
         state: 1
       }
 
@@ -89,90 +126,85 @@ class Property extends Component {
     })
   }
 
-  linkedFetchFloorList(params) {
-    this.props.fetchFloorList(params).then(ret => {
-      console.log('floor list -->', ret)
+  onFloorListChange(e) {
+    e.stopPropagation()
 
-      var floorList = ret.data.data && ret.data.data.list
+    var floorId = e.target.value
 
-      if (!floorList || floorList.length) {
-        return
-      }
-
+    this.setState({
+      selectedFloorId: floorId
+    }, () => {
       var params = {
-        floorId: floorList[0].floorId,
+        floorId,
         state: [1, 2, 3, 4, 5]
       }
-
-      this.setState({
-        floorId: params.floorId
-      })
 
       this.linkedFetchRoomList(params)
     })
   }
 
+  ///////////////////////////////////
+  linkedFetchBuildingList(params) {
+    this.props.fetchBuildingList(params).then(ret => {
+      var buildingList = isRequestSuccess(ret) && ret.data.data.list || []
+
+      var firstId = buildingList[0] && buildingList[0].buildingId || null
+
+      this.setState({
+        buildingList,
+        selectedBuildingId: firstId
+      }, () => {
+        if (firstId) {
+          var params = {
+            buildingId: firstId,
+            state: 1
+          }
+
+          this.linkedFetchFloorList(params)
+        }
+      })
+    })
+  }
+
+  linkedFetchFloorList(params) {
+    this.props.fetchFloorList(params).then(ret => {
+      var floorList = isRequestSuccess(ret) && ret.data.data.list || []
+
+      var firstId = floorList[0] && floorList[0].floorId || []
+
+      this.setState({
+        floorList,
+        selectedFloorId: firstId
+      }, () => {
+        if (firstId) {
+          var params = {
+            floorId: firstId,
+            state: [1, 2, 3, 4, 5]
+          }
+
+          this.linkedFetchRoomList(params)
+        }
+      })
+    })
+  }
+
   linkedFetchRoomList(params) {
-    this.setState({
-      roomId: params.roomId
-    })
-
     this.props.fetchRoomList(params).then(ret => {
-      console.log('room list -->', ret)
+      var roomList = isRequestSuccess(ret) && ret.data.data.list || []
+
+      var firstId = roomList[0] && roomList[0].roomId || null
+
+      this.setState({
+        roomList,
+        selectedRoomId: firstId
+      })
     })
   }
-  /*********************************/
-  onHouseListChange(e) {
-    e.stopPropagation()
 
-    var params = {
-      houseId: e.target.value,
-      state: 1
-    }
-
-    this.setState({
-      houseId: params.houseId
-    })
-
-    this.linkedFetchBuildingList(params)
-  }
-
-
-  onBuildingListChange(e) {
-    e.stopPropagation()
-
-    var params = {
-      buildingId: e.target.value,
-      state: 1
-    }
-
-    this.setState({
-      buildingId: params.buildingId
-    })
-
-    this.linkedFetchFloorList(params)
-  }
-
-  onFloorListChange(e) {
-    e.stopPropagation()
-
-    var params = {
-      floorId: e.target.value,
-      state: [1, 2, 3, 4, 5]
-    }
-
-    this.setState({
-      floorId: params.floorId
-    })
-
-    this.linkedFetchRoomList(params)
-  }
-
+  /////////////////////////////////////////
   onRadioButtonClick(houseName) {
-    console.log('house name -->', houseName)
-
     this.setState({
-      currentHouseName: houseName
+      selectedHouseName: houseName
     })
   }
 
@@ -191,6 +223,8 @@ class Property extends Component {
     let { count, buildingNum } = this.state
     if (count < buildingNum) {
       this.modal.batchAddProperty2.show()
+    } else {
+      message.success('批量添加房产成功')
     }
   }
 
@@ -202,10 +236,13 @@ class Property extends Component {
   }
 
   onModalAddPropertyOk(form) {
-
-    console.log('form -->', form)
-
-    this.props.addHouse(form)
+    this.props.addHouse(form).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success('添加房产成功')
+      } else {
+        message.error(`添加房产失败，${ret.data.reason}`)
+      }
+    })
   }
 
   onModalAddPropertySwitchChange(checked) {
@@ -221,16 +258,14 @@ class Property extends Component {
   }
 
   onModalBatchAddProperty1Ok(form) {
-    // ...
-    console.log('batch 1 form -->', form)
-
     this.props.addHouse(form).then(ret => {
-      console.log('batch add property 1 ok ret -->', ret)
-
       if (isRequestSuccess(ret)) {
         let { buildingNum } = form
-        let params = Object.assign({ buildingNum }, ret.data.data)
-        this.startAddBuilding(params)
+        let { houseId } = ret.data.data
+
+        this.startAddBuilding({ buildingNum, houseId })
+      } else {
+        message.error(`批量添加房产失败，${ret.data.reason}`)
       }
     })
   }
@@ -241,16 +276,16 @@ class Property extends Component {
   }
 
   onModalBatchAddProperty2Ok(form) {
+    let { buildingName, batch, address, district, floorNum, roomNum, roomNamePrefix } = form
+
     let params = {
       houseId: this.state.addingHouseId,
-      buildingName: form.buildingName,
-      batch: form.batch ? 1 : 0,
-      area: form.address
+      buildingName,
+      batch: batch ? 1 : 0,
+      area: address
     }
 
-    if (form.district) {
-      let district = form.district
-
+    if (district) {
       if (district[0]) {
         params.provinceId = district[0]
       }
@@ -264,16 +299,16 @@ class Property extends Component {
       }
     }
 
-    if (form.floorNum) {
-      params.floorNum = form.floorNum
+    if (floorNum) {
+      params.floorNum = floorNum
     }
 
-    if (form.roomNum) {
-      params.roomNum = form.roomNum
+    if (roomNum) {
+      params.roomNum = roomNum
     }
 
-    if (form.roomNamePrefix) {
-      params.roomNamePrefix = form.roomNamePrefix
+    if (roomNamePrefix) {
+      params.roomNamePrefix = roomNamePrefix
     }
 
     console.log('add building params -->', params)
@@ -281,11 +316,12 @@ class Property extends Component {
     this.props.addBuilding(params).then(ret => {
       if (isRequestSuccess(ret)) {
         this.setState({
-          floorList: ret.data.data.floorList
+          addingFloorList: ret.data.data.floorList
         }, () => {
           this.modal.batchAddProperty3.show()
         })
-
+      } else {
+        message.error(`批量添加房产失败，${ret.data.reason}`)
       }
     })
   }
@@ -297,14 +333,15 @@ class Property extends Component {
   }
 
   onModalBatchAddProperty3Ok(form) {
-    form.level = 4
-    this.props.delRoom(form).then(ret => {
+    let params = { level: 4, ...form }
+
+    this.props.delRoom(params).then(ret => {
       if (isRequestSuccess(ret)) {
         this.setState({
           count: ++this.state.count
-        }, () => {
-          this.loopAddBuilding()
-        })
+        }, this.loopAddBuilding)
+      } else {
+        message.error(`批量添加房产失败，${ret.data.reason}`)
       }
     })
   }
@@ -316,16 +353,26 @@ class Property extends Component {
   }
 
   onModalBindDeviceOk(form) {
-    if(!form.deviceId) {
+    let { deviceId } = form
+
+    if (!deviceId) {
       return
     }
-    var params = Object.assign({
+
+    var params = {
       id: this.state.bindingRoomId,
       level: 4,
-      deviceType: 2
-    }, form)
+      deviceType: 2,
+      ...form
+    }
 
-    this.props.bindDevice(params)
+    this.props.bindDevice(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.error(`关联设备成功`)
+      } else {
+        message.error(`关联设备失败，${ret.data.reason}`)
+      }
+    })
   }
 
   // modify property
@@ -335,26 +382,41 @@ class Property extends Component {
   }
 
   onModalModifyPropertyOk(form) {
-    var params = Object.assign({
-      roomId: this.state.modifingRoomId
-    }, form)
+    var params = {
+      roomId: this.state.modifingRoomId,
+      ...form
+    }
 
-    this.props.modifyProperty(params)
+    this.props.modifyProperty(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.error(`修改房产信息成功`)
+      } else {
+        message.error(`修改房产信息失败，${ret.data.reason}`)
+      }
+    })
   }
 
   ////////////////////////////
 
   delHouse() {
-    this.props.delRoom({
-      id: [this.state.houseId],
+    var params = {
+      id: [this.state.selectedHouseId],
       level: 1
+    }
+
+    this.props.delRoom(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.error(`删除房产成功`)
+      } else {
+        message.error(`删除房产失败，${ret.data.reason}`)
+      }
     })
   }
 
   callModalModifyPropery(params) {
     this.setState({
       modifingRoomId: params.roomId
-    },()=>{
+    }, () => {
       this.modal.modifyProperty.show()
     })
   }
@@ -367,15 +429,16 @@ class Property extends Component {
     })
   }
 
-
-
-
   render() {
-    const { houseList, buildingList, floorList, roomList } = this.props
+    let {
+      houseList, buildingList, floorList, roomList,
+      selectedHouseId, selectedBuildingId, selectedFloorId, selectedRoomId
+    } = this.state
 
-
-    let { houseId, buildingId, floorId, roomId } = this.state
-
+    // let firstHouseId = houseList[0] && houseList[0].houseId || null,
+    //   firstBuildingId = buildingList[0] && buildingList[0].buildingId || null,
+    //   firstFloorId = floorList[0] && floorList[0].floorId || null,
+    //   firstRoomId = roomList[0] && roomList[0].roomId || null
 
     return (
       <div id="Property">
@@ -384,7 +447,7 @@ class Property extends Component {
             {
               houseList.length > 0 ?
                 <FormItem label="公寓名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
-                  <RadioGroup className="custom-radio-button-group" defaultValue={houseList[0].houseId} value={houseId || houseList[0].houseId} onChange={this.onHouseListChange.bind(this)}>
+                  <RadioGroup className="custom-radio-button-group" defaultValue={selectedHouseId} value={selectedHouseId} onChange={this.onHouseListChange.bind(this)}>
                     {
                       houseList.map(({ houseId, houseName }) =>
                         <RadioButton key={houseId} value={houseId} onClick={this.onRadioButtonClick.bind(this, houseName)}>{houseName}</RadioButton>
@@ -396,7 +459,7 @@ class Property extends Component {
             {
               buildingList.length > 0 ?
                 <FormItem label="楼栋名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
-                  <RadioGroup className="custom-radio-button-group" defaultValue={buildingList[0].buildingId} value={buildingId || buildingList[0].buildingId} onChange={this.onBuildingListChange.bind(this)}>
+                  <RadioGroup className="custom-radio-button-group" defaultValue={selectedBuildingId} value={selectedBuildingId} onChange={this.onBuildingListChange.bind(this)}>
                     {
                       buildingList.map(({ buildingId, buildingName }) =>
                         <RadioButton value={buildingId} key={buildingId}>{buildingName}</RadioButton>
@@ -409,7 +472,7 @@ class Property extends Component {
             {
               floorList.length > 0 ?
                 <FormItem label="楼层名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
-                  <RadioGroup className="custom-radio-button-group" defaultValue={floorList[0].floorId} value={floorId || floorList[0].floorId} onChange={this.onFloorListChange.bind(this)}>
+                  <RadioGroup className="custom-radio-button-group" defaultValue={selectedFloorId} value={selectedFloorId} onChange={this.onFloorListChange.bind(this)}>
                     {
                       floorList.map(({ floorId, floorName }) =>
                         <RadioButton value={floorId} key={floorId}>{floorName}</RadioButton>
@@ -429,7 +492,7 @@ class Property extends Component {
             </div>
             <div style={{ flexGrow: 1 }}>
               <h3>
-                <b>{this.state.currentHouseName || '--'}</b>
+                <b>{this.state.selectedHouseName || '--'}</b>
               </h3>
               <span className="gray">已租--套&nbsp;&nbsp;闲置--套</span>
             </div>
@@ -455,7 +518,7 @@ class Property extends Component {
                           </Tooltip>
                         </Link>,
 
-                        <a onClick={this.callModalModifyPropery.bind(this,{roomId})}>
+                        <a onClick={this.callModalModifyPropery.bind(this, { roomId })}>
                           <Tooltip title="修改">
                             <Icon type="form" />
                           </Tooltip>
@@ -475,7 +538,7 @@ class Property extends Component {
                       ]
                     }>
                       <div className="tc">
-                        <Avatar style={{ width: 100, height: 100, borderRadius: '50%' }} src="http://cdn.duitang.com/uploads/item/201405/27/20140527173845_dk8uY.jpeg" className="mb-20"></Avatar>
+                        <Avatar style={{ width: 100, height: 100, borderRadius: '50%' }} src="http://cdn.duitang.com/uploads/item/201405/27/20140527173845_dk8uY.jpeg" className="mb-20" />
                         <h3 className="mb-20">{roomName}</h3>
                         <h3 className={state === 1 ? 'health' : 'danger'}>{roomStateRefers[state]}</h3>
                       </div>
@@ -493,7 +556,7 @@ class Property extends Component {
 
         <Modal_Batch_Add_Property_2 onInit={this.onModalBatchAddProperty2Init.bind(this)} onOk={this.onModalBatchAddProperty2Ok.bind(this)} subTitle={`楼栋${this.state.count + 1}`} />
 
-        <Modal_Batch_Add_Property_3 onInit={this.onModalBatchAddProperty3Init.bind(this)} onOk={this.onModalBatchAddProperty3Ok.bind(this)} floorList={this.state.floorList} subTitle={`楼栋${this.state.count + 1}`} />
+        <Modal_Batch_Add_Property_3 onInit={this.onModalBatchAddProperty3Init.bind(this)} onOk={this.onModalBatchAddProperty3Ok.bind(this)} floorList={this.state.addingFloorList} subTitle={`楼栋${this.state.count + 1}`} />
 
         <Modal_Bind_Device onInit={this.onModalBindDeviceInit.bind(this)} onOk={this.onModalBindDeviceOk.bind(this)} />
 
@@ -505,12 +568,7 @@ class Property extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  houseList: state.houseList || [],
-  buildingList: state.buildingList || [],
-  floorList: state.floorList || [],
-  roomList: state.roomList || []
-})
+const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   fetchHouseList: params => dispatch(fetchHouseList(params)),
   fetchBuildingList: params => dispatch(fetchBuildingList(params)),
@@ -520,7 +578,7 @@ const mapDispatchToProps = dispatch => ({
   addBuilding: params => dispatch(addBuilding(params)),
   delRoom: params => dispatch(delRoom(params)),
   bindDevice: params => dispatch(roomAddDevice(params)),
-  modifyProperty: params=>dispatch(updateRoomInfo(params))
+  modifyProperty: params => dispatch(updateRoomInfo(params))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Property)

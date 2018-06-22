@@ -4,13 +4,13 @@ import Loadable from 'react-loadable'
 
 import {
     Statistics,
-    // Property,
+    Property,
     RoomDetail,
     AddRenter,
     Relet,
     Gateway,
     MyDevice,
-    Lock,
+    LockList,
     LockDetail,
     User,
     AddUser,
@@ -32,7 +32,7 @@ import {
 export default function getRoutes() {
     return (
         <div style={{ minWidth: 1563, maxWidth: 1563 }}>
-            <Route path="/" component={Lock} exact />
+            <Route path="/" component={Role} exact />
 
             <Route path="/statistics" component={Statistics} />
 
@@ -43,7 +43,7 @@ export default function getRoutes() {
 
             <Route path="/device-list" component={MyDevice} />
             <Route path="/device-gateway" component={Gateway} />
-            <Route path="/device-lockList" component={Lock} />
+            <Route path="/device-lockList" component={LockList} />
             <Route path="/device-lockDetail" component={LockDetail} />
 
             <Route path="/user-list" component={User} />

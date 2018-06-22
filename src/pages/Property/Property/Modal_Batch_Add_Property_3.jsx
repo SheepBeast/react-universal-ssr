@@ -7,9 +7,7 @@ class Modal_Batch_Add_Property_3 extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      loading: false,
       visible: false,
-
       unChecked: {}
     }
   }

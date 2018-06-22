@@ -2,11 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import qs from 'querystring'
-import { Divider, Row, Col, Form, Input, Button, Radio, Icon, Tree } from 'antd'
+import { Divider, Row, Col, Form, Input, Button, Radio, Icon, Tree, message } from 'antd'
 
 
 
 import { fetchRoleList, fetchMenuPermissionList, fetchRoleDetail, editRole } from '../../../actions/role';
+import parseQueryToParams from '../../../utils/parseQueryToParams'
+import isRequestSuccess from '../../../utils/isRequestSuccess'
 import './index.less'
 
 const FormItem = Form.Item
@@ -16,9 +18,6 @@ const RadioGroup = Radio.Group
 const RadioButton = Radio.Button
 
 let initialKeys = {}
-let currentRoleId = null
-let currentRoleName = null
-let currentRemark = null
 
 class EditRole extends React.Component {
   constructor(props) {
@@ -29,56 +28,44 @@ class EditRole extends React.Component {
       checkedKeys: {
         checked: [],
         halfChecked: []
-      }
+      },
+
+      roleList: [],
+      menuPermissionList: [],
+      roleDetail: {}
     }
   }
 
   componentWillMount() {
-    // 先解析roleId并赋值currentRoleId，用于下文RadioGroup设置defaultValue
-    let params = this.parseQueryToParams()
+    let params = parseQueryToParams(this.props.location.search)
     let { roleId, roleName, remark } = params
 
-    currentRoleId = roleId
-    currentRoleName = roleName
-    currentRemark = remark
+    let p1 = this.props.fetchRoleList({ state: 1 }),
+      p2 = this.props.fetchMenuPermissionList(),
+      p3 = this.props.fetchRoleDetail({ roleId: [roleId] })
 
-    // 角色列表
-    let p1 = this.props.fetchRoleList({ state: 1, flag: 'role-add' })
+    Promise.all([p1, p2, p3]).then(ret => {
+      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1]) && isRequestSuccess(ret[2])) {
+        let roleList = ret[0].data.data.list || [],
+          menuPermissionList = ret[1].data.data.actions || [],
+          roleDetail = ret[2].data.data || {}
 
-    // 重要：页面加载前执行，时机必须是componentWillMount
-    let p2 = this.props.fetchMenuPermissionList()
+        menuPermissionList.forEach(({ actionId, lowerActions = [] }) => {
+          initialKeys[actionId] = lowerActions.map(({ actionId }) => actionId)
+        })
 
-    Promise.all([p1, p2]).then(ret => {
-      console.log('all -->', ret)
-
-      // 将permissionList设置到state
-      let permission = ret[1]
-
-      permission.forEach(({ actionId, lowerActions = [] }) => {
-        initialKeys[actionId] = lowerActions.map(({ actionId }) => actionId)
-      })
-
-      this.props.fetchRoleDetail({
-        roleId: [roleId]
-      }).then(ret => {
-        let checkedKeys = this.parseActionsToState(ret.actions)
+        let checkedKeys = this.parseActionsToState(roleDetail.actions || [])
 
         this.setState({
+          roleList,
+          menuPermissionList,
+          roleDetail,
+
+          selectedRadioValue: roleList[0].roleId,
           checkedKeys
         })
-      })
+      }
     })
-  }
-
-  parseQueryToParams() {
-    let search = this.props.location.search.replace('?', ''), k, params = {}
-    search = qs.parse(search)
-
-    for (k in search) {
-      params[k] = decodeURIComponent(search[k])
-    }
-
-    return params
   }
 
   goBack() {
@@ -98,23 +85,26 @@ class EditRole extends React.Component {
           return
         }
 
-        let { roleName, remark } = val
+        let { roleId, roleName, remark } = val
 
-        let options = {
-          roleId: currentRoleId,
+        let params = {
+          roleId,
           roleName,
-          actionId: [].concat(checked, halfChecked)
+          actionId: [].concat(checked, halfChecked),
+          remark
         }
 
-        if (remark) {
-          options.remark = remark
-        }
-
-        this.props.editRole(options)
+        this.props.editRole(params).then(ret => {
+          if (isRequestSuccess(ret)) {
+            message.success('修改角色成功')
+            this.goBack()
+          } else {
+            message.error(`修改角色失败，${ret.data.reason}`)
+          }
+        })
       }
     })
   }
-
 
   onRadioGroupChange(e) {
     e.stopPropagation()
@@ -123,14 +113,17 @@ class EditRole extends React.Component {
 
     this.props.fetchRoleDetail({
       roleId: [value]
-    }).then(({ actions }) => {
+    }).then(ret => {
+      if (isRequestSuccess(ret)) {
+        let actions = ret.data.data.actions
 
-      let checkedKeys = this.parseActionsToState(actions)
+        let checkedKeys = this.parseActionsToState(actions)
 
-      this.setState({
-        checkedKeys,
-        selectedRadioValue: value
-      })
+        this.setState({
+          checkedKeys,
+          selectedRadioValue: value
+        })
+      }
     })
   }
 
@@ -156,7 +149,7 @@ class EditRole extends React.Component {
     }
   }
 
-  onCheck(checkedKeys, e) {
+  onMenuCheck(checkedKeys, e) {
     this.setState({
       checkedKeys: {
         checked: checkedKeys,
@@ -166,14 +159,10 @@ class EditRole extends React.Component {
     })
   }
 
-  componentDidMount() {
-    this.setState({
-      selectedRadioValue: currentRoleId
-    })
-  }
-
   render() {
-    var { roleList, menuPermissionList } = this.props
+    var { roleList, menuPermissionList, roleDetail } = this.state
+
+    var { roleId, roleName, remark } = roleDetail
 
     const { getFieldDecorator } = this.props.form
 
@@ -195,6 +184,16 @@ class EditRole extends React.Component {
         <Form className="form-shim" onSubmit={this.onSubmit.bind(this)}>
           <Row>
             <Col span={13}>
+              {
+                getFieldDecorator('roleId', {
+                  rules: [{
+                    required: true
+                  }],
+                  initialValue: roleId
+                })(
+                  <Input type="hidden" />
+                )
+              }
               <FormItem label="角色名称" labelCol={{ span: 3 }} wrapperCol={{ span: 16 }}>
                 {
                   getFieldDecorator('roleName', {
@@ -202,7 +201,7 @@ class EditRole extends React.Component {
                       required: true,
                       message: '角色名称不能为空'
                     }],
-                    initialValue: currentRoleName
+                    initialValue: roleName
                   })(
                     <Input placeholder="管理员" />
                   )
@@ -212,7 +211,7 @@ class EditRole extends React.Component {
               <FormItem label="备注" labelCol={{ span: 3 }} wrapperCol={{ span: 16 }}>
                 {
                   getFieldDecorator('remark', {
-                    initialValue: currentRemark
+                    initialValue: remark
                   })(
                     <TextArea placeholder="A公寓B栋管理负责人..." autosize={{ minRows: 6, maxRows: 6 }} />
                   )
@@ -222,7 +221,7 @@ class EditRole extends React.Component {
               {
                 roleList.length > 0 ?
                   <FormItem label="权限" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} style={{ marginBottom: 0 }}>
-                    <RadioGroup defaultValue={currentRoleId} value={this.state.selectedRadioValue} onChange={this.onRadioGroupChange.bind(this)}>
+                    <RadioGroup defaultValue={roleId} value={this.state.selectedRadioValue} onChange={this.onRadioGroupChange.bind(this)}>
                       {
                         roleList.map(role => {
                           let { roleId, roleName } = role
@@ -255,7 +254,7 @@ class EditRole extends React.Component {
                   <Tree
                     checkable
                     defaultExpandAll={true}
-                    onCheck={this.onCheck.bind(this)}
+                    onCheck={this.onMenuCheck.bind(this)}
                     checkedKeys={this.state.checkedKeys}
                   >
                     {
@@ -293,8 +292,7 @@ class EditRole extends React.Component {
 
 const mapStateToProps = state => ({
   roleList: state.usableRoleList || [],
-  menuPermissionList: state.menuPermissionList || [],
-  // roleDetail: state.roleDetail || {}
+  menuPermissionList: state.menuPermissionList || []
 })
 const mapDispatchToProps = dispatch => ({
   fetchRoleList: params => dispatch(fetchRoleList(params)),

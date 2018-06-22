@@ -10,10 +10,7 @@ class Modal_Batch_Add_Property_2 extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      loading: false,
-
       visible: false,
-
       options: []
     }
   }

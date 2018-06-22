@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Table, Button, Modal, Form, Radio, Row, Col, Icon, Tooltip } from 'antd'
+import { Table, Button, Form, Radio, Row, Col, Icon, message } from 'antd'
 
 import { fetchRoleList, deleteRole, enableRole } from '../../../actions/role'
-import './index.less'
+import isRequestSuccess from '../../../utils/isRequestSuccess';
 
 
 const FormItem = Form.Item
@@ -13,7 +13,7 @@ const RadioButton = Radio.Button
 
 const stateRefers = {
   0: '停用',
-  1: '正常',
+  1: '启用',
   2: '删除'
 }
 
@@ -21,20 +21,36 @@ class Role extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      selectedRowKeys: []
+      selectedRowKeys: [],
+      roleList: [],
+      state: null
     }
   }
 
   componentWillMount() {
-    this.props.fetchRoleList({ flag: 'role-list' })
+    this.fetchRoleList()
   }
 
   enableRole(params) {
-    this.props.enableRole(params)
+    this.props.enableRole(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success(`${stateRefers[params.enableType]}角色成功`)
+        this.fetchRoleList()
+      } else {
+        message.error(`${stateRefers[params.enableType]}角色失败，${ret.data.reason}`)
+      }
+    })
   }
 
   deleteRole(params) {
-    this.props.deleteRole(params)
+    this.props.deleteRole(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success('删除角色成功')
+        this.fetchRoleList()
+      } else {
+        message.error(`删除角色失败，${ret.data.reason}`)
+      }
+    })
   }
 
   batchDelete() {
@@ -52,18 +68,34 @@ class Role extends Component {
     })
   }
 
-  onChange(e) {
+  onRadioGroupChange(e) {
     let { value } = e.target
 
-    let options = {
-      flag: 'role-list',
-    }
+    var params = {}
 
     if (value != -1) {
-      options.state = value
+      params.state = value
     }
 
-    this.props.fetchRoleList(options)
+    this.setState({
+      state: value != -1 ? value : null,
+      selectedRowKeys: []
+    }, () => {
+      this.fetchRoleList()
+    })
+
+  }
+
+  fetchRoleList(params) {
+    params = Object.assign({ state: this.state.state }, params)
+
+    this.props.fetchRoleList(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        this.setState({
+          roleList: ret.data.data.list || []
+        })
+      }
+    })
   }
 
   render() {
@@ -90,35 +122,23 @@ class Role extends Component {
         if (state == 2) {
           return null
         } else {
-          let opposite = state == 1 ? { text: '禁用', state: 0 } : { text: '启用', state: 1 }
+          let opposite = state == 1 ? { text: '停用', state: 0 } : { text: '启用', state: 1 }
+          const url = `/role-edit?roleId=${encodeURIComponent(roleId)}`
 
-          const url = `/role-edit?roleId=${encodeURIComponent(roleId)}&roleName=${encodeURIComponent(roleName)}&remark=${encodeURIComponent(remark || '')}`
           return (
             <span>
-              <a className="mr-20" onClick={this.enableRole.bind(this, { roleId: [roleId], enableType: opposite.state })}>
-                <Tooltip title={opposite.text}>
-                  <Icon type="file-text" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-                </Tooltip>
-              </a>
+              <a className="mr-20" onClick={this.enableRole.bind(this, { roleId: [roleId], enableType: opposite.state })}>{opposite.text}</a>
 
-              <Link to={url} className="mr-20">
-                <Tooltip title="编辑">
-                  <Icon type="paper-clip" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-                </Tooltip>
-              </Link>
+              <Link to={url} className="mr-20">编辑</Link>
 
-              <a className="mr-20" onClick={this.deleteRole.bind(this, { roleId: [roleId] })}>
-                <Tooltip title="删除">
-                  <Icon type="shop" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-                </Tooltip>
-              </a>
+              <a onClick={this.deleteRole.bind(this, { roleId: [roleId] })}>删除</a>
             </span>
           )
         }
       }
     }]
 
-    let dataSource = this.props.roleList.map(({
+    let dataSource = this.state.roleList.map(({
       roleId,
       roleName,
       state,
@@ -153,10 +173,11 @@ class Role extends Component {
           <Col span={8}>
             <Form>
               <FormItem label="状态" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
-                <RadioGroup defaultValue="-1" onChange={this.onChange.bind(this)}>
+                <RadioGroup className="custom-radio-button-group" defaultValue="-1" onChange={this.onRadioGroupChange.bind(this)}>
                   <RadioButton value="-1">全部</RadioButton>
                   <RadioButton value="1">启用</RadioButton>
-                  <RadioButton value="0">禁用</RadioButton>
+                  <RadioButton value="0">停用</RadioButton>
+                  <RadioButton value="2">删除</RadioButton>
                 </RadioGroup>
               </FormItem>
             </Form>
@@ -176,9 +197,7 @@ class Role extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  roleList: state.roleList || []
-})
+const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   fetchRoleList: params => dispatch(fetchRoleList(params)),
   deleteRole: params => dispatch(deleteRole(params)),

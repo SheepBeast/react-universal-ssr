@@ -12,9 +12,7 @@ class Modal_Bind_Device extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      loading: false,
       visible: false,
-
       lockList: []
     }
   }

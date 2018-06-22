@@ -25,7 +25,6 @@ class Login extends React.Component {
           accountName: val.userName,
           password: val.password
         }).then((ret) => {
-          console.log('login ret -->', ret)
           if (isRequestSuccess(ret)) {
             this.props.history.push('/')
           } else {
