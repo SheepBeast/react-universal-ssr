@@ -37,12 +37,14 @@ class MyDevice extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      selectedRowKeys: [],
       selectedRows: [],
 
       deviceList: [],
 
-      options: {}
+      options: {},
+
+      state: -1,
+      findName: null
     }
 
     this.modal = {}
@@ -58,10 +60,22 @@ class MyDevice extends React.Component {
     })
   }
 
+  onRadioGroupChange(e) {
+    this.setState({
+      state: e.target.value
+    }, this.filteredFetchDeviceList)
+  }
+
+  onSearch(e) {
+    this.setState({
+      findName: e
+    }, this.filteredFetchDeviceList)
+  }
+
   filteredFetchDeviceList() {
     var params = {}
 
-    var { state, findName } = this.props.form.getFieldsValue()
+    var { state, findName } = this.state
 
     if (state != '-1') {
       params.state = state
@@ -262,14 +276,9 @@ class MyDevice extends React.Component {
       }
     }]
 
-
-    const { getFieldDecorator } = this.props.form
-
     const rowSelection = {
-      onChange: (selectedRowKeys, selectedRows) => {
-        console.log('selected rows -->', selectedRows)
+      onChange: (_, selectedRows) => {
         this.setState({
-          selectedRowKeys,
           selectedRows
         })
       }
@@ -279,27 +288,17 @@ class MyDevice extends React.Component {
       <div id="MyDevice" className="container">
         <Form className="mb-20">
           <FormItem label="房间状态" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
-            {
-              getFieldDecorator('state', {
-                initialValue: "-1",
-              })(
-                <RadioGroup className="custom-radio-button-group" onChange={this.filteredFetchDeviceList.bind(this)}>
-                  <RadioButton value="-1">全部</RadioButton>
-                  <RadioButton value="1">正常</RadioButton>
-                  <RadioButton value="0">异常</RadioButton>
-                </RadioGroup>
-              )
-            }
+            <RadioGroup defaultValue="-1" className="custom-radio-button-group" onChange={this.onRadioGroupChange.bind(this)}>
+              <RadioButton value="-1">全部</RadioButton>
+              <RadioButton value="1">正常</RadioButton>
+              <RadioButton value="0">异常</RadioButton>
+            </RadioGroup>
           </FormItem>
 
           <FormItem >
             <Row>
               <Col span={8}>
-                {
-                  getFieldDecorator('findName')(
-                    <Search style={{ height: 32 }} enterButton="搜索" placeholder="请输入设备名称/设备MAC/安装关联位置" onSearch={this.filteredFetchDeviceList.bind(this)}></Search>
-                  )
-                }
+                <Search style={{ height: 32 }} enterButton="搜索" placeholder="请输入设备名称/设备MAC/安装关联位置" onSearch={this.onSearch.bind(this)} />
               </Col>
               <Col className="tr">
                 <Button type="primary" onClick={this.batchDeleteDevice.bind(this)}>批量删除</Button>

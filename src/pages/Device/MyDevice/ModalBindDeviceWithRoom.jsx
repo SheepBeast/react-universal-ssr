@@ -269,8 +269,6 @@ class ModalBindDeviceWithRoom extends React.Component {
       visible, disabled, options
     } = this.state
 
-    console.log('options -->', options)
-
     let { deviceId, deviceName, mac, deviceType } = options
 
     return (

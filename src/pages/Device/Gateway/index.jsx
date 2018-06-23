@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Form, Table, Button, Input, Radio, Icon, Row, Col, Tooltip } from 'antd'
+import { Form, Table, Button, Input, Radio, Icon, Row, Col, Tooltip, message } from 'antd'
 
 import { fetchGatewayList, deleteGateway } from '../../../actions/device';
+import isRequestSuccess from '../../../utils/isRequestSuccess'
 
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
@@ -23,47 +24,65 @@ const stateRefers = {
   4: '离线'
 }
 
-
-
-
 class Gateway extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      selectedRowKeys: []
+      selectedRowKeys: [],
+
+      gatewayList: [],
+
+      state: -1,
+      findName: null
     }
   }
 
   componentWillMount() {
-    this.props.fetchGatewayList()
+    this.props.fetchGatewayList().then(ret => {
+      if (isRequestSuccess(ret)) {
+        let gatewayList = ret.data.data.list || []
+
+        this.setState({ gatewayList })
+      }
+    })
   }
 
-  fetch(state, search) {
-    var options = {}
+  filteredFetchGatewayList() {
+    var params = {}
 
-    if (!state) {
-      state = this.props.form.getFieldValue('state')
-    }
+    var { state, findName } = this.state
 
     if (state != '-1') {
-      options.state = parseInt(state)
+      params.state = state
     }
 
-    if (search) {
-      options.findName = search
+    if (findName) {
+      params.findName = findName
     }
 
-    console.log('options -->', options)
+    console.log('params -->', params)
 
-    this.props.fetchGatewayList(options)
+    this.props.fetchGatewayList(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        let gatewayList = ret.data.data.list || []
+
+        this.setState({
+          gatewayList
+        })
+      }
+    })
   }
 
   onSearch(e) {
-    this.fetch(null, e)
+    this.setState({
+      findName: e
+    }, this.filteredFetchGatewayList)
   }
 
-  onChange(e) {
-    this.fetch(e.target.value)
+  onRadioGroupChange(e) {
+    this.setState({
+      state: e.target.value
+    }, this.filteredFetchGatewayList)
   }
 
   deleteGateway(params) {
@@ -83,9 +102,8 @@ class Gateway extends React.Component {
   }
 
   render() {
-    console.log('device list -->', this.props.deviceList)
 
-    const dataSource = this.props.gatewayList.map(({ gatewayId, gatewayType, gatewayName, hardwareVersion, mac, roomName, floorName, buildingName, houseName, state, softwareVersion }) => {
+    const dataSource = this.state.gatewayList.map(({ gatewayId, gatewayType, gatewayName, hardwareVersion, mac, roomName, floorName, buildingName, houseName, state, softwareVersion }) => {
       let installationSite = `${houseName || ''}${buildingName ? buildingName + '栋' : ''}${floorName ? floorName + '层' : ''}${roomName || ''}`
 
       if (installationSite) {
@@ -149,13 +167,8 @@ class Gateway extends React.Component {
       key: 'actions',
       dataIndex: 'actions',
       render: ({ gatewayId }) => {
-        const url = `/device-lockDetail?lockId=${encodeURIComponent(gatewayId)}`
         return (
-          <a className="mr-20" onClick={this.deleteGateway.bind(this, { gatewayId: [gatewayId] })}>
-            <Tooltip title="删除">
-              <Icon type="shop" className="fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-            </Tooltip>
-          </a>
+          <a className="mr-20" onClick={this.deleteGateway.bind(this, { gatewayId: [gatewayId] })}>删除</a>
         )
       }
     }]
@@ -163,7 +176,6 @@ class Gateway extends React.Component {
     const { getFieldDecorator } = this.props.form
     const rowSelection = {
       onChange: (selectedRowKeys) => {
-        // console.log('selected row keys -->' , selectedRowKeys)
         this.setState({
           selectedRowKeys
         })
@@ -174,27 +186,17 @@ class Gateway extends React.Component {
       <div id="Gateway" className="container">
         <Form className="mb-20">
           <FormItem label="房间状态" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
-            {
-              getFieldDecorator('state', {
-                initialValue: "-1",
-              })(
-                <RadioGroup className="custom-radio-button-group" onChange={this.onChange.bind(this)}>
-                  <RadioButton value="-1">全部</RadioButton>
-                  <RadioButton value="1">正常</RadioButton>
-                  <RadioButton value="0">异常</RadioButton>
-                </RadioGroup>
-              )
-            }
+            <RadioGroup defaultValue="-1" className="custom-radio-button-group" onChange={this.onRadioGroupChange.bind(this)}>
+              <RadioButton value="-1">全部</RadioButton>
+              <RadioButton value="1">正常</RadioButton>
+              <RadioButton value="0">异常</RadioButton>
+            </RadioGroup>
           </FormItem>
 
           <FormItem>
             <Row>
               <Col span={8}>
-                {
-                  getFieldDecorator('search')(
-                    <Search style={{ height: 32 }} enterButton="搜索" placeholder="请输入设备名称/设备MAC/安装关联位置" onSearch={this.onSearch.bind(this)}></Search>
-                  )
-                }
+                <Search style={{ height: 32 }} enterButton="搜索" placeholder="请输入设备名称/设备MAC/安装关联位置" onSearch={this.onSearch.bind(this)} />
               </Col>
               <Col className="tr">
                 <Button type="primary" onClick={this.batchDelete.bind(this)}>批量删除</Button>
@@ -210,14 +212,10 @@ class Gateway extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  gatewayList: state.gatewayList || []
+const mapStateToProps = state => ({})
+const mapDispatchToProps = dispatch => ({
+  fetchGatewayList: params => dispatch(fetchGatewayList(params)),
+  deleteGateway: params => dispatch(deleteGateway(params))
 })
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchGatewayList: params => dispatch(fetchGatewayList(params)),
-    deleteGateway: params => dispatch(deleteGateway(params))
-  }
-}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(Gateway))
