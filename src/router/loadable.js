@@ -25,8 +25,8 @@ var loadable = __TERMINAL__ === 'browser' ? {
   }),
 
   // tenant
-  LoadableAddRenter: Loadable({
-    loader: () => import('../pages/Tenant/AddRenter/index'),
+  LoadableAddTenant: Loadable({
+    loader: () => import('../pages/Tenant/AddTenant/index'),
     loading
   }),
 
@@ -125,7 +125,7 @@ var loadable = __TERMINAL__ === 'browser' ? {
 
 
     // tenant
-    LoadableAddRenter: require('../pages/Tenant/AddRenter/index').default,
+    LoadableAddTenant: require('../pages/Tenant/AddTenant/index').default,
 
     // device
     LoadableMyDevice: require('../pages/Device/MyDevice/index').default,

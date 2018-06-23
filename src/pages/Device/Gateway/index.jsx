@@ -32,8 +32,7 @@ class Gateway extends React.Component {
 
       gatewayList: [],
 
-      state: -1,
-      findName: null
+      state: -1
     }
   }
 
@@ -50,12 +49,13 @@ class Gateway extends React.Component {
   filteredFetchGatewayList() {
     var params = {}
 
-    var { state, findName } = this.state
+    var { state } = this.state
 
-    if (state != '-1') {
+    if (state && state != '-1') {
       params.state = state
     }
 
+    let findName = this.props.form.getFieldValue('findName')
     if (findName) {
       params.findName = findName
     }
@@ -86,7 +86,14 @@ class Gateway extends React.Component {
   }
 
   deleteGateway(params) {
-    this.props.deleteGateway(params)
+    this.props.deleteGateway(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success('删除网关成功')
+        this.filteredFetchGatewayList()
+      } else {
+        message.error(`删除网关失败，${ret.data.reason}`)
+      }
+    })
   }
 
   batchDelete() {
@@ -173,7 +180,6 @@ class Gateway extends React.Component {
       }
     }]
 
-    const { getFieldDecorator } = this.props.form
     const rowSelection = {
       onChange: (selectedRowKeys) => {
         this.setState({
@@ -181,6 +187,8 @@ class Gateway extends React.Component {
         })
       }
     }
+
+    const { getFieldDecorator } = this.props.form
 
     return (
       <div id="Gateway" className="container">
@@ -196,7 +204,7 @@ class Gateway extends React.Component {
           <FormItem>
             <Row>
               <Col span={8}>
-                <Search style={{ height: 32 }} enterButton="搜索" placeholder="请输入设备名称/设备MAC/安装关联位置" onSearch={this.onSearch.bind(this)} />
+                <Search style={{ height: 32 }} enterButton="搜索" placeholder="请输入设备名称/设备MAC/安装关联位置" onSearch={this.filteredFetchGatewayList.bind(this)} />
               </Col>
               <Col className="tr">
                 <Button type="primary" onClick={this.batchDelete.bind(this)}>批量删除</Button>
@@ -206,7 +214,7 @@ class Gateway extends React.Component {
           </FormItem>
         </Form>
 
-        <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} pagination={false}></Table>
+        <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} pagination={false} />
       </div >
     )
   }
@@ -218,4 +226,4 @@ const mapDispatchToProps = dispatch => ({
   deleteGateway: params => dispatch(deleteGateway(params))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(Gateway))
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create(Gateway))

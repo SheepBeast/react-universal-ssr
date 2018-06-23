@@ -17,6 +17,7 @@ const deviceTypeRefers = {
 
 class ModalBindDeviceWithRoom extends React.Component {
   constructor(props) {
+    console.log('ctor -->', props)
     super(props)
 
     this.state = {
@@ -129,7 +130,7 @@ class ModalBindDeviceWithRoom extends React.Component {
     let { selectedHouseName, selectedBuildingName, selectedFloorName, selectedRoomName, options } = this.state
 
 
-    let installationSite = `${selectedHouseName || ''}${selectedBuildingName ? selectedBuildingName + '栋' : ''}${selectedFloorName ? selectedFloorName + '层' : ''}${selectedRoomName || ''}：${deviceTypeRefers[options.deviceType]}`
+    let installationSite = `${selectedHouseName || ''}${selectedBuildingName  || ''}${selectedFloorName || ''}${selectedRoomName || ''}：${deviceTypeRefers[options.deviceType]}`
 
     this.props.form.setFieldsValue({
       rename: installationSite
@@ -253,25 +254,16 @@ class ModalBindDeviceWithRoom extends React.Component {
     })
   }
 
-  componentWillReceiveProps(props) {
-    if (props) {
-      this.setState({
-        options: props.options
-      })
-    }
-  }
-
   render() {
     const { getFieldDecorator } = this.props.form
 
     let {
       houseList, buildingList, floorList, roomList,
-      visible, disabled, options
+      visible, disabled
     } = this.state
 
-    console.log('options -->', options)
 
-    let { deviceId, deviceName, mac, deviceType } = options
+    let { deviceId, deviceName, mac, deviceType } = this.props.options
 
     return (
       <Modal title="设备关联房间" visible={visible} destroyOnClose={true} okText="保存" cancelText="取消" onOk={this.onOk.bind(this)} onCancel={this.hide.bind(this)}>

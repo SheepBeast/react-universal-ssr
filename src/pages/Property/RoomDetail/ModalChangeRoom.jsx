@@ -1,19 +1,19 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Form, Input, Select, Modal, DatePicker, Breadcrumb } from 'antd'
+import { fetchRoomList } from '../../../actions/property'
+import isRequestSuccess from '../../../utils/isRequestSuccess'
 
 const FormItem = Form.Item
 const Option = Select.Option
 const BreadcrumbItem = Breadcrumb.Item
 
-class Modal_Change_Room extends React.Component {
+class ModalChangeRoom extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      loading: false,
-
       visible: false,
-
-      options: null
+      roomList: []
     }
   }
 
@@ -29,16 +29,20 @@ class Modal_Change_Room extends React.Component {
     })
   }
 
-  componentDidMount() {
-    this.props.onInit(this)
+  componentWillMount() {
+    this.props.fetchRoomList({
+      state: [1, 2, 3, 4, 5]
+    }).then(ret => {
+      if (isRequestSuccess(ret)) {
+        this.setState({
+          roomList: ret.data.data.list
+        })
+      }
+    })
   }
 
-  componentWillReceiveProps(props) {
-    if (props.options) {
-      this.setState({
-        options: props.options
-      })
-    }
+  componentDidMount() {
+    this.props.onInit(this)
   }
 
   onOk(e) {
@@ -46,24 +50,20 @@ class Modal_Change_Room extends React.Component {
       if (!err) {
         this.props.onOk(val)
         this.hide()
-
       }
     })
-
   }
 
   render() {
-    let {
-      tenantName,
-      endDate,
-      roomList,
-      houseName,
-      buildingName,
-      floorName,
-      roomName
-    } = this.state.options || {}
 
-    const { getFieldDecorator } = this.props.form
+
+    var { options, form } = this.props
+
+    var { tenantName, endDate, houseName, buildingName, floorName, roomName } = options
+
+    var { roomList } = this.state
+
+    const { getFieldDecorator } = form
 
     return (
       <Modal title="换房" visible={this.state.visible} destroyOnClose={true} okText="保存" cancelText="取消" onOk={this.onOk.bind(this)} onCancel={this.hide.bind(this)}>
@@ -96,7 +96,7 @@ class Modal_Change_Room extends React.Component {
               })(
                 <Select>
                   {
-                    (roomList || []).map(room => {
+                    roomList.map(room => {
                       let { houseName, buildingName, floorName, roomName, roomId } = room
 
                       return (
@@ -117,4 +117,9 @@ class Modal_Change_Room extends React.Component {
   }
 }
 
-export default Form.create()(Modal_Change_Room)
+const mapStateToProps = state => ({})
+const mapDispatchToProps = dispatch => ({
+  fetchRoomList: params => dispatch(fetchRoomList(params))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(ModalChangeRoom))

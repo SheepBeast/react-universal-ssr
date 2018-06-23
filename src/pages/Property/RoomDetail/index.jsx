@@ -1,19 +1,17 @@
 import React, { Component } from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import qs from 'querystring'
-import { Button, Avatar, Row, Col, Breadcrumb, Card, Divider, Table, Icon, Modal, Form, Select, Input, DatePicker } from 'antd'
-
-import './index.less'
-import { fetchRoomDetailData, fetchRoomTenantListData, fetchRoomDeviceListData, fetchRoomListData } from '../../../actions/property';
+import { Button, Avatar, Row, Col, Breadcrumb, Card, Divider, Table, Icon, Modal, message } from 'antd'
+import { fetchRoomDetail, fetchRoomTenantList, fetchRoomDeviceList } from '../../../actions/property';
 import { fetchTenantDetail, updateTenancy, delTenant, tenantChangeRoom } from '../../../actions/tenant';
 
-import Modal_Relet from './Modal_Relet'
-import Modal_Change_Room from './Modal_Change_Room'
+import ModalRelet from './ModalRelet'
+import ModalChangeRoom from './ModalChangeRoom'
 import isRequestSuccess from '../../../utils/isRequestSuccess';
+import parseQueryToParams from '../../../utils/parseQueryToParams'
+import { unbindDevice } from '../../../actions/device';
+import './index.less'
 
-const FormItem = Form.Item
-const Option = Select.Option
 const BreadcrumbItem = Breadcrumb.Item
 const confirm = Modal.confirm
 
@@ -50,48 +48,38 @@ class RoomDetail extends Component {
 
       oldEndDate: null,
 
-      changeRoomOptions: null,
+      changeRoomOptions: {},
 
-      roomList: []
+      roomDetail: {},
+      roomTenantList: [],
+      roomDeviceList: {}
     }
 
     this.modal = {}
   }
 
   componentWillMount() {
-    var params = this.parseQueryToParams()
+    var params = parseQueryToParams(this.props.location.search)
 
-    this.setState({
-      currentRoomId: params.roomId
-    })
+    let p1 = this.props.fetchRoomDetail(params),
+      p2 = this.props.fetchRoomTenantList(params),
+      p3 = this.props.fetchRoomDeviceList(params)
 
-    this.props.fetchRoomDetail(params)
+    Promise.all([p1, p2, p3]).then(ret => {
+      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1]) && isRequestSuccess(ret[2])) {
+        let roomDetail = ret[0].data.data || {},
+          roomTenantList = ret[1].data.data.tenantList || [],
+          roomDeviceList = ret[2].data.data.lockInfo || {}
 
-    this.props.fetchRoomTenantList(params)
-
-    this.props.fetchRoomDeviceList(params)
-
-    this.props.fetchRoomList({
-      state: [1, 2, 3, 4, 5]
-    }).then(ret => {
-      if (isRequestSuccess(ret)) {
         this.setState({
-          roomList: ret.data.data.list
+          roomDetail,
+          roomTenantList,
+          roomDeviceList,
+
+          currentRoomId: params.roomId
         })
       }
     })
-
-  }
-
-  parseQueryToParams() {
-    let search = this.props.location.search.replace('?', ''), k, params = {}
-    search = qs.parse(search)
-
-    for (k in search) {
-      params[k] = decodeURIComponent(search[k])
-    }
-
-    return params
   }
 
   delTenant(params) {
@@ -101,31 +89,21 @@ class RoomDetail extends Component {
       // onOk: this.delTenantSuccess,
       onOk: () => {
         params.roomId = this.state.currentRoomId
+
         this.props.delTenant(params).then(ret => {
           if (isRequestSuccess(ret)) {
-            this.delTenantSuccess()
+            message.success('退租成功')
+            this.fetchRoomTenantList()
           } else {
-            this.delTenantFail()
+            message.error(`退租失败，${ret.data.reason}`)
           }
         })
       },
-      onCancel: this.delTenantFail,
+      onCancel: () => {
+        message.error(`退租失败`)
+      },
       okText: '确定',
       cancelText: '取消'
-    })
-  }
-
-  delTenantSuccess() {
-    Modal.info({
-      title: '提示',
-      content: '退租成功'
-    })
-  }
-
-  delTenantFail() {
-    Modal.info({
-      title: '提示',
-      content: '退租失败'
     })
   }
 
@@ -141,7 +119,14 @@ class RoomDetail extends Component {
       endDate: form.newEndDate
     }
 
-    this.props.updateTenancy(params)
+    this.props.updateTenancy(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success('续租成功')
+        this.fetchRoomTenantList()
+      } else {
+        message.error(`续租失败，${ret.data.reason}`)
+      }
+    })
   }
 
   callModalRelet(params) {
@@ -166,20 +151,38 @@ class RoomDetail extends Component {
       priorRoomId: this.state.currentRoomId
     }
 
-    this.props.changeRoom(params)
+    this.props.changeRoom(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success('换房成功')
+        this.fetchRoomTenantList()
+      } else {
+        message.error(`换房失败，${ret.data.reason}`)
+      }
+    })
+  }
+
+  fetchRoomTenantList() {
+    var params = {
+      roomId: this.state.currentRoomId
+    }
+
+    this.props.fetchRoomTenantList(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        let roomTenantList = ret.data.data.tenantList
+        this.setState({ roomTenantList })
+      }
+    })
   }
 
   callModalChangeRoom(params) {
-    let { houseName, buildingName, floorName, roomName } = this.props.roomDetail
+    let { houseName, buildingName, floorName, roomName } = this.state.roomDetail
     let { tenantId, tenantName, endDate } = params
-    let { roomList } = this.state
 
     this.setState({
       changingTenantId: tenantId,
       changeRoomOptions: {
         tenantName,
         endDate,
-        roomList,
         houseName,
         buildingName,
         floorName,
@@ -190,17 +193,31 @@ class RoomDetail extends Component {
     })
   }
 
+  unbindDevice(params) {
+    this.props.unbindDevice(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success('解绑成功')
 
+        var params = {
+          roomId: currentRoomId
+        }
+
+        this.props.fetchRoomDeviceList(params).then(ret => {
+          if (isRequestSuccess(ret)) {
+            let roomDeviceList = ret.data.data.lockInfo
+
+            this.setState({ roomDeviceList })
+          }
+        })
+      }
+    })
+  }
 
   render() {
-    let {
-      lockId,
-      lockMac,
-      lockType,
-      electricNum,
-      // 信号强度
-      lockState
-    } = this.props.roomDeviceList
+    let { roomDetail, roomTenantList, roomDeviceList } = this.state
+
+    let { houseName, buildingName, floorName, roomName } = roomDetail
+    let { lockId, lockMac, lockType, electricNum, lockState } = roomDeviceList
 
     var dataSource = lockId ? [{
       key: lockId,
@@ -210,7 +227,8 @@ class RoomDetail extends Component {
       lockSignalIntensity: '--',
       state: stateRefers[lockState],
       actions: {
-        lockId
+        lockId,
+        lockType
       }
     }] : []
 
@@ -246,26 +264,21 @@ class RoomDetail extends Component {
       title: '操作',
       dataIndex: 'actions',
       key: 'actions',
-      render: ({ lockId }) => {
+      render: ({ lockId, lockType }) => {
         return (
           <span>
-            <Link to={`/device-lockDetail?lockId=${encodeURIComponent(lockId)}`} className="mr-20">详情</Link>
-            <a>关联</a>
+            <Link to={`/device-lock-detail?lockId=${encodeURIComponent(lockId)}`} className="mr-20">详情</Link>
+            <a onClick={this.unbindDevice.bind(this, { deviceId: [lockId], deviceType: lockType })}>解绑</a>
           </span>
         )
       }
     }]
 
-
-    let { houseName, buildingName, floorName, roomName } = this.props.roomDetail
-
-    let roomTenantList = this.props.roomTenantList
-
     return (
       <div id="RoomDetail">
         <div id="room-list" className="container">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className="mb-20" >
-            <div>
+          <Row className="mb-20">
+            <Col span={12}>
               <h3>
                 <b>房间详情</b>
               </h3>
@@ -276,21 +289,20 @@ class RoomDetail extends Component {
                 <BreadcrumbItem>{roomName}</BreadcrumbItem>
               </Breadcrumb>
 
-              共<span className="danger">{roomTenantList.length}</span>位租客
+              <span>共<span className="danger">{roomTenantList.length}</span>位租客</span>
 
-            </div>
-            <div>
-              <div className="fr mr-20">
-                <Button type="primary" className="fs-12 mr-10" onClick={() => { this.props.history.goBack() }}>返回</Button>
+            </Col>
+            <Col className="tr" span={12}>
+              <Link className="mr-20" to={`/property-add-tenant?roomId=${encodeURIComponent(this.state.currentRoomId)}`}>
+                <Button type="primary" className="fs-12">添加租客</Button>
+              </Link>
 
-                <Link to={`/property-add-renter?roomId=${encodeURIComponent(this.state.currentRoomId)}`}>
-                  <Button type="primary" className="fs-12" >添加租客</Button>
-                </Link>
-              </div>
-            </div>
-          </div>
+              <Button type="primary" className="fs-12 mr-10" onClick={() => { this.props.history.goBack() }}>返回</Button>
+            </Col>
+          </Row>
 
           <Divider />
+
           {
             roomTenantList.length > 0 ?
               <Row gutter={24}>
@@ -354,7 +366,6 @@ class RoomDetail extends Component {
                 <Avatar className="br-50" style={{ width: 150, height: 150 }} src="http://cdn.duitang.com/uploads/item/201405/27/20140527173845_dk8uY.jpeg" />
                 <br />
                 <h2 className="mt-30">暂无租客居住</h2>
-
               </div>
           }
         </div>
@@ -365,32 +376,25 @@ class RoomDetail extends Component {
           </h3>
 
           <h4 className="mt-20">关联门锁</h4>
-          <Table dataSource={dataSource} columns={columns} pagination={false}></Table>
+          <Table dataSource={dataSource} columns={columns} pagination={false} />
         </div>
 
-
-        <Modal_Relet onInit={this.onModalReletInit.bind(this)} onOk={this.onModalReletOk.bind(this)} oldEndDate={this.state.oldEndDate} />
-
-        <Modal_Change_Room onInit={this.onModalChangeRoomInit.bind(this)} onOk={this.onModalChangeRoomOk.bind(this)} options={this.state.changeRoomOptions} />
+        <ModalChangeRoom onInit={this.onModalChangeRoomInit.bind(this)} onOk={this.onModalChangeRoomOk.bind(this)} options={this.state.changeRoomOptions} />
+        <ModalRelet onInit={this.onModalReletInit.bind(this)} onOk={this.onModalReletOk.bind(this)} oldEndDate={this.state.oldEndDate} />
       </div>
     )
   }
 }
 
-const mapStateToProps = state => ({
-  roomDetail: state.roomDetail || {},
-  roomTenantList: state.roomTenantList || [],
-  roomDeviceList: state.roomDeviceList || {}
-})
+const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
-  fetchRoomDetail: params => dispatch(fetchRoomDetailData(params)),
-  fetchRoomTenantList: params => dispatch(fetchRoomTenantListData(params)),
-  fetchRoomDeviceList: params => dispatch(fetchRoomDeviceListData(params)),
-  fetchTenantDetail: params => dispatch(fetchTenantDetail(params)),
+  fetchRoomDetail: params => dispatch(fetchRoomDetail(params)),
+  fetchRoomTenantList: params => dispatch(fetchRoomTenantList(params)),
+  fetchRoomDeviceList: params => dispatch(fetchRoomDeviceList(params)),
   updateTenancy: params => dispatch(updateTenancy(params)),
   delTenant: params => dispatch(delTenant(params)),
   changeRoom: params => dispatch(tenantChangeRoom(params)),
-  fetchRoomList: params => dispatch(fetchRoomListData(params)),
+  unbindDevice: params => dispatch(unbindDevice(params))
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(RoomDetail))

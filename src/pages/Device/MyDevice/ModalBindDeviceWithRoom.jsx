@@ -36,9 +36,7 @@ class ModalBindDeviceWithRoom extends React.Component {
       houseList: [],
       buildingList: [],
       floorList: [],
-      roomList: [],
-
-      options: {}
+      roomList: []
     }
 
   }
@@ -253,23 +251,15 @@ class ModalBindDeviceWithRoom extends React.Component {
     })
   }
 
-  componentWillReceiveProps(props) {
-    if (props) {
-      this.setState({
-        options: props.options
-      })
-    }
-  }
-
   render() {
     const { getFieldDecorator } = this.props.form
 
     let {
       houseList, buildingList, floorList, roomList,
-      visible, disabled, options
+      visible, disabled
     } = this.state
 
-    let { deviceId, deviceName, mac, deviceType } = options
+    let { deviceId, deviceName, mac, deviceType } = this.props.options
 
     return (
       <Modal title="设备关联房间" visible={visible} destroyOnClose={true} okText="保存" cancelText="取消" onOk={this.onOk.bind(this)} onCancel={this.hide.bind(this)}>

@@ -4,13 +4,13 @@ import {
   LoadableStatistics,
   LoadableProperty,
   LoadableRoomDetail,
-  LoadableAddRenter,
+  LoadableAddTenant,
   LoadableRelet,
 
   LoadableMyDevice,
   LoadableGateway,
 
-  LoadableLock,
+  LoadableLockList,
   LoadableLockDetail,
 
   LoadableUser,
@@ -51,9 +51,9 @@ class RoomDetail extends React.Component {
   }
 }
 
-class AddRenter extends React.Component {
+class AddTenant extends React.Component {
   render() {
-    return <LoadableAddRenter />
+    return <LoadableAddTenant />
   }
 }
 
@@ -75,9 +75,9 @@ class Gateway extends React.Component {
   }
 }
 
-class Lock extends React.Component {
+class LockList extends React.Component {
   render() {
-    return <LoadableLock />
+    return <LoadableLockList />
   }
 }
 
@@ -181,11 +181,11 @@ module.exports = {
   Statistics,
   Property,
   RoomDetail,
-  AddRenter,
+  AddTenant,
   Relet,
   MyDevice,
   Gateway,
-  Lock,
+  LockList,
   LockDetail,
   User,
   AddUser,

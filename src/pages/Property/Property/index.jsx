@@ -59,31 +59,25 @@ class Property extends Component {
   }
 
   componentWillMount() {
-    let p1 = this.props.fetchHouseList({ state: 1 }),
-      p2 = this.props.fetchBuildingList({ state: 1 }),
-      p3 = this.props.fetchFloorList({ state: 1 }),
-      p4 = this.props.fetchRoomList({ state: [1, 2, 3, 4, 5] })
+    this.props.fetchHouseList({ state: 1 }).then(ret => {
+      if (isRequestSuccess(ret)) {
+        let houseList = ret.data.data.list
 
-    let p = Promise.all([p1, p2, p3, p4]).then(ret => {
-      console.log('ret -->', ret)
-      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1]) && isRequestSuccess(ret[2]) && isRequestSuccess(ret[3])) {
-        let houseList = ret[0].data.data.list,
-          buildingList = ret[1].data.data.list,
-          floorList = ret[2].data.data.list,
-          roomList = ret[3].data.data.list
+        var first = houseList[0] || {}
+        var { houseId, houseName } = first
 
         this.setState({
           houseList,
-          buildingList,
-          floorList,
-          roomList,
-
-          selectedHouseId: houseList[0].houseId,
-          selectedBuildingId: buildingList[0].buildingId,
-          selectedFloorId: floorList[0].floorId,
-          selectedRoomId: roomList[0].roomId,
-
-          selectedHouseName: houseList[0].houseName
+          selectedHouseId: houseId,
+          selectedHouseName: houseName
+        }, () => {
+          if (houseId) {
+            var params = {
+              houseId,
+              state: 1
+            }
+            this.linkedFetchBuildingList(params)
+          }
         })
       }
     })

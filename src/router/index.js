@@ -6,7 +6,7 @@ import {
     Statistics,
     Property,
     RoomDetail,
-    AddRenter,
+    AddTenant,
     Relet,
     Gateway,
     MyDevice,
@@ -32,19 +32,19 @@ import {
 export default function getRoutes() {
     return (
         <div style={{ minWidth: 1563, maxWidth: 1563 }}>
-            <Route path="/" component={MyDevice} exact />
+            <Route path="/" component={Property} exact />
 
             <Route path="/statistics" component={Statistics} />
 
             <Route path="/property" component={Property} />
             <Route path="/property-room-detail" component={RoomDetail} />
-            <Route path="/property-add-renter" component={AddRenter} />
+            <Route path="/property-add-tenant" component={AddTenant} />
             <Route path="/property-relet" component={Relet} />
 
             <Route path="/device-list" component={MyDevice} />
             <Route path="/device-gateway" component={Gateway} />
-            <Route path="/device-lockList" component={LockList} />
-            <Route path="/device-lockDetail" component={LockDetail} />
+            <Route path="/device-lock-list" component={LockList} />
+            <Route path="/device-lock-detail" component={LockDetail} />
 
             <Route path="/user-list" component={User} />
             <Route path="/user-add" component={AddUser} />

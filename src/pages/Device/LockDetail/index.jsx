@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import qs from 'querystring'
-import { Tooltip, Row, Col, Button, Divider, Table, Tabs, Timeline, Popconfirm, Avatar, Icon, Form, Switch, Slider } from 'antd'
-
+import { Row, Col, Button, Divider, Table, Tabs, Timeline, Avatar, Form, Switch, Slider, message } from 'antd'
+import moment from 'moment'
 import { fetchLockDetail, fetchLockKeyList, fetchLockAppKeyList, updateLockFunctionConfig, fetchLockLogList, unbindDevice, releaseAlarm } from '../../../actions/device';
+import parseQueryToParams from '../../../utils/parseQueryToParams.js'
+import isRequestSuccess from '../../../utils/isRequestSuccess';
 import './index.less'
 
 const TabPane = Tabs.TabPane
@@ -138,61 +139,97 @@ const authCols = [{
 }]
 
 class LockDetail extends React.Component {
-  componentWillMount() {
-    let params = this.parseQueryToParams()
+  constructor(props) {
+    super(props)
 
-    this.props.fetchLockDetail(params)
-    this.props.fetchLockKeyList(params)
-    this.props.fetchLockAppKeyList(params)
-    // this.props.updateLockFunction(params)
-    this.props.fetchLockLogList(params)
+    this.state = {
+      lockDetail: {},
+      lockKeyList: [],
+      lockAppKeyList: [],
+      lockLogList: []
+    }
   }
 
-  parseQueryToParams() {
-    let search = this.props.location.search.replace('?', ''), k, params = {}
-    search = qs.parse(search)
+  componentWillMount() {
+    let params = parseQueryToParams(this.props.location.search)
 
-    for (k in search) {
-      params[k] = decodeURIComponent(search[k])
-    }
+    let p1 = this.props.fetchLockDetail(params),
+      p2 = this.props.fetchLockLogList(params),
+      p3 = this.props.fetchLockKeyList(params),
+      p4 = this.props.fetchLockAppKeyList(params)
 
-    return params
+    Promise.all([p1, p2, p3, p4]).then(ret => {
+      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1]) && isRequestSuccess(ret[2]) && isRequestSuccess(ret[3])) {
+        let lockDetail = ret[0].data.data.lockInfo || {},
+          lockLogList = ret[1].data.data.doorLockLog || [],
+          lockKeyList = ret[2].data.data.list || [],
+          lockAppKeyList = ret[3].data.data.list || []
+
+        this.setState({
+          lockDetail,
+          lockLogList,
+          lockKeyList,
+          lockAppKeyList
+        })
+      }
+    })
+
+    // this.props.updateLockFunction(params)
+  }
+
+  bindDevice(params) {
+    this.props.bindDevice(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success('关联成功')
+        this.fetchLockDetail()
+      } else {
+        message.error(`关联失败，${ret.data.reason}`)
+      }
+    })
   }
 
   unbindDevice(params) {
     console.log('unbind device -->', params)
-    this.props.unbindDevice(params)
+    this.props.unbindDevice(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success('解绑成功')
+        this.fetchLockDetail()
+      } else {
+        message.error(`解绑失败，${ret.data.reason}`)
+      }
+    })
   }
 
   releaseAlarm(params) {
-    this.props.releaseAlarm(params)
+    this.props.releaseAlarm(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success('解除报警成功')
+        this.fetchLockDetail()
+      } else {
+        message.error(`解除报警失败，${ret.data.reason}`)
+      }
+    })
+  }
+
+  fetchLockDetail() {
+    this.props.fetchLockDetail().then(ret => {
+      if (isRequestSuccess(ret)) {
+        let lockDetail = ret.data.data.lockInfo
+        this.setState({ lockDetail })
+      }
+    })
+  }
+
+  goBack() {
+    this.props.history.goBack()
   }
 
   render() {
-    console.log('lock detail -->', this.props.lockDetail)
-    let {
-      lockState,
-      electricNum,
-      // 门锁信号
-      // 网关信号
-      lockId,
-      lockMac,
-      lockType,
-      lockName,
-      gatewayMac,
-      gatewayType,
-      roomId,
-      roomName, floorName, buildingName, houseName,
-      // 当前租客
-      maxVolume,
+    var { lockDetail, lockKeyList, lockAppKeyList, lockLogList } = this.state
 
-      comName,
-      projectLogo,
-      // 门锁型号
-      // 公司型号
-    } = this.props.lockDetail
-
-
+    let { lockState, electricNum, lockId, lockMac, lockType, lockName, gatewayMac, gatewayType, roomId, roomName, floorName, buildingName, houseName, maxVolume, comName, projectLogo
+      // 门锁信号 // 网关信号 // 当前租客 // 门锁型号 // 公司型号
+    } = lockDetail
 
 
     const lockData = [{
@@ -200,11 +237,6 @@ class LockDetail extends React.Component {
       lockMac,
       lockType: lockTypeRefers[lockType]
     }]
-
-
-
-
-
 
     const gatewayData = [{
       key: 2,
@@ -227,7 +259,7 @@ class LockDetail extends React.Component {
     }]
 
 
-    const keysData = this.props.lockKeyList.map(({
+    const keysData = lockKeyList.map(({
       lockKeyId,
       userName,
       keyType,
@@ -244,7 +276,7 @@ class LockDetail extends React.Component {
       }
     })
 
-    const authData = this.props.lockAppKeyList.map(({
+    const authData = lockAppKeyList.map(({
       lockKeyId,
       userName,
       beginTime,
@@ -256,8 +288,6 @@ class LockDetail extends React.Component {
         expires: `${new Date(beginTime).toLocaleString()}至${new Date(endTime).toLocaleString()}`
       }
     })
-
-    console.log('log list -->', this.props.lockLogList)
 
     return (
       <div id="LockDetail">
@@ -271,47 +301,54 @@ class LockDetail extends React.Component {
             <Col span={12}>
               <div className="fr">
                 <ButtonGroup className="mr-20">
-                  <Button type="primary" onClick={this.releaseAlarm.bind(this, { lockId, releaseType: 255 })} ghost>解除报警</Button>
-                  <Button type="primary" onClick={this.unbindDevice.bind(this, { deviceType: 2, deviceId: [lockId] })} ghost>解除关联</Button>
+                  {
+                    lockState == 3 ? <Button type="primary" onClick={this.releaseAlarm.bind(this, { lockId, releaseType: 255 })} ghost>解除报警</Button> : null
+                  }
+                  {
+                    roomId
+                      ? <Button type="primary" onClick={this.unbindDevice.bind(this, { deviceType: 2, deviceId: [lockId] })} ghost>解除关联</Button>
+                      : <Button type="primary" onClick={this.bindDevice.bind(this, { id: roomId, level: 4, deviceType: 2, deviceId: lockId, deviceName: lockName })}>关联房间</Button>
+
+                  }
                 </ButtonGroup>
 
-                <Button type="primary">返回</Button>
+                <Button type="primary" onClick={this.goBack.bind(this)}>返回</Button>
               </div>
             </Col>
           </Row>
 
-          <div className="container tc">
-            <Row>
-              <Col span={6}>
-                <span className="fs-14 gray">当前状态</span>
-                <br />
-                <span className={`fs-24 ${lockState == 1 ? '' : 'danger'}`}>{stateRefers[lockState]}</span>
-              </Col>
-              <Col span={6}>
-                <span className="fs-14 gray">电量</span>
-                <br />
-                <span className="fs-24">{electricNum}%</span>
-              </Col>
-              <Col span={6}>
-                <span className="fs-14 gray">门锁信号</span>
-                <br />
-                <span className="fs-24">--</span>
-              </Col>
-              <Col span={6}>
-                <span className="fs-14 gray">网关信号</span>
-                <br />
-                <span className="fs-24">--</span>
-              </Col>
-            </Row>
-          </div>
+          <br />
+
+          <Row className="tc">
+            <Col span={6}>
+              <span className="fs-14 gray">当前状态</span>
+              <br />
+              <span className={`fs-24 ${lockState == 1 ? 'health' : 'danger'}`}>{stateRefers[lockState]}</span>
+            </Col>
+            <Col span={6}>
+              <span className="fs-14 gray">电量</span>
+              <br />
+              <span className="fs-24">{electricNum}%</span>
+            </Col>
+            <Col span={6}>
+              <span className="fs-14 gray">门锁信号</span>
+              <br />
+              <span className="fs-24">--</span>
+            </Col>
+            <Col span={6}>
+              <span className="fs-14 gray">网关信号</span>
+              <br />
+              <span className="fs-24">--</span>
+            </Col>
+          </Row>
         </div>
 
         <div className="container">
           <h3>
             <b>门锁信息</b>
           </h3>
-          <Table dataSource={lockData} columns={lockCols} pagination={false}></Table>
-          <Table dataSource={gatewayData} columns={gatewayCols} pagination={false}></Table>
+          <Table dataSource={lockData} columns={lockCols} pagination={false} />
+          <Table dataSource={gatewayData} columns={gatewayCols} pagination={false} />
         </div>
 
         {
@@ -327,7 +364,7 @@ class LockDetail extends React.Component {
                   </Col>
                 </Row>
               </h3>
-              <Table dataSource={roomData} columns={roomCols} pagination={false}></Table>
+              <Table dataSource={roomData} columns={roomCols} pagination={false} />
             </div> :
             <div className="container">
               <h3>
@@ -335,7 +372,7 @@ class LockDetail extends React.Component {
               </h3>
               <div className="tc">
                 <p className="gray">未关联房间，请进行关联操作</p>
-                <Button type="primary">关联房间</Button>
+                <Button type="primary" onClick={this.bindDevice.bind(this, { id: roomId, level: 4, deviceType: 2, deviceId: lockId, deviceName: lockName })}>关联房间</Button>
               </div>
             </div>
         }
@@ -348,12 +385,10 @@ class LockDetail extends React.Component {
               <div className="container">
                 <Timeline>
                   {
-                    this.props.lockLogList.map(({
+                    lockLogList.map(({
                       logId,
-                      createTime,
-                      lockType,
+                      logAlert,
                       relatedOperation
-
                     }) => (
                         <TimelineItem key={logId}
                           dot={
@@ -362,42 +397,20 @@ class LockDetail extends React.Component {
                         >
                           <div className="ml-20 tooltip-inner">
                             <div className="tooltip-arrow" />
-                            <div>
-                              <h4>
-                                <b>{createTime}</b>
-                              </h4>
-                              <span className="gray">{relatedOperation
-                              }：--使用了--打开了{lockTypeRefers[lockType]}</span>
-                            </div>
-
+                            <div className="gray">{relatedOperation}：{logAlert}</div>
                           </div>
                         </TimelineItem>
                       ))
                   }
-                  {/* <TimelineItem
-                    dot={
-                      <Avatar src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526969661280&di=a5aebf85080548c16ed57e49ea9cac17&imgtype=0&src=http%3A%2F%2Fimg.1ting.com%2Fimages%2Fspecial%2F99%2Fs300_d7d69fb2354557be5178919fe6562688.jpg"></Avatar>
-                    }
-                  >
-                    <div className="ml-20 tooltip-inner">
-                      <div className="tooltip-arrow" />
-                      <div>
-                        <h4>
-                          <b>今天 9:00</b>
-                        </h4>
-                        <span className="danger">非法操作报警</span>
-                      </div>
-                    </div>
-                  </TimelineItem> */}
                 </Timeline>
               </div>
 
             </TabPane>
             <TabPane tab="钥匙列表" key="2">
-              <Table style={{ width: 1000 }} pagination={false} dataSource={keysData} columns={keysCols}></Table>
+              <Table style={{ width: 1000 }} pagination={false} dataSource={keysData} columns={keysCols} />
             </TabPane>
             <TabPane tab="APP用户授权" key="3">
-              <Table style={{ width: 1000 }} pagination={false} dataSource={authData} columns={authCols}></Table>
+              <Table style={{ width: 1000 }} pagination={false} dataSource={authData} columns={authCols} />
             </TabPane>
             <TabPane tab="高级功能设置" key="4">
               <Form className="form-shim" style={{ width: 400 }}>
@@ -469,12 +482,7 @@ class LockDetail extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  lockDetail: state.lockDetail || {},
-  lockKeyList: state.lockKeyList || [],
-  lockAppKeyList: state.lockAppKeyList || [],
-  lockLogList: state.lockLogList || []
-})
+const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => {
   return {
     fetchLockDetail: params => dispatch(fetchLockDetail(params)),

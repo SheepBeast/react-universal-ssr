@@ -41,25 +41,6 @@ export const login = params => async dispatch => {
 
   console.log('login ret -->', ret)
 
-  if (isRequestSuccess(ret)) {
-
-    const { businessUserInfo, tokenId } = ret.data.data
-
-
-    dispatch(setUserInfo(businessUserInfo))
-    dispatch(setTokenID(tokenId))
-
-    api.tokenId = tokenId
-
-  } else {
-
-    const { reason } = ret.data
-
-    console.log('reason -->', reason)
-
-    dispatch(onLoginError(reason))
-  }
-
   return ret
 
 }

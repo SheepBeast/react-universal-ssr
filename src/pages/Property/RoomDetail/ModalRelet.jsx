@@ -14,7 +14,6 @@ class Relet extends React.Component {
 
       visible: false,
 
-      oldEndDate: null,
       newEndDate: null,
       time: 0,
       unit: 'd'
@@ -67,26 +66,32 @@ class Relet extends React.Component {
   }
 
   compute() {
-    let { time, unit, oldEndDate } = this.state
+    let { oldEndDate } = this.props
+
+    if (!oldEndDate) {
+      return
+    }
+
+    let { time, unit } = this.state
     let newEndDate = moment(oldEndDate, 'YYYY-MM-DD').add(time, unit).format('YYYY-MM-DD')
 
-    this.setState({
-      newEndDate
-    })
+    this.setState({ newEndDate })
   }
 
   render() {
+    var { oldEndDate } = this.props
+
     return (
       <Modal title="续租" visible={this.state.visible} destroyOnClose={true} okText="保存" cancelText="取消" onOk={this.onOk.bind(this)} onCancel={this.hide.bind(this)} >
         <Form className="form-shim">
           <FormItem label="当前 合约到期日" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} >
-            <Input value={this.props.oldEndDate} disabled />
+            <Input value={oldEndDate} disabled />
           </FormItem>
 
           <FormItem label="调整 续约时长" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} >
             <InputGroup compact>
-              <InputNumber min="0" style={{width: '80%'}} onChange={this.onTimeChange.bind(this)} />
-              <Select defaultValue="d" style={{width: '20%'}} onChange={this.onUnitChange.bind(this)}>
+              <InputNumber min="0" style={{ width: '80%' }} onChange={this.onTimeChange.bind(this)} />
+              <Select defaultValue="d" style={{ width: '20%' }} onChange={this.onUnitChange.bind(this)}>
                 <Option value="d">日</Option>
                 <Option value="M">月</Option>
                 <Option value="y">年</Option>
@@ -94,7 +99,7 @@ class Relet extends React.Component {
             </InputGroup>
           </FormItem>
 
-          <FormItem label="调整后 合约到租日" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} >
+          <FormItem label="预计 合约到租日" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} >
             <Input value={this.state.newEndDate} disabled />
           </FormItem>
         </Form>

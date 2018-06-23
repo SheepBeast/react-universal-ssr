@@ -43,8 +43,7 @@ class MyDevice extends React.Component {
 
       options: {},
 
-      state: -1,
-      findName: null
+      state: -1
     }
 
     this.modal = {}
@@ -75,12 +74,13 @@ class MyDevice extends React.Component {
   filteredFetchDeviceList() {
     var params = {}
 
-    var { state, findName } = this.state
+    var { state } = this.state
 
-    if (state != '-1') {
+    if (state && state != '-1') {
       params.state = state
     }
 
+    let findName = this.props.form.getFieldValue('findName')
     if (findName) {
       params.findName = findName
     }
@@ -260,7 +260,7 @@ class MyDevice extends React.Component {
       key: 'actions',
       dataIndex: 'actions',
       render: ({ deviceId, deviceName, deviceType, mac }) => {
-        const url = `/device-lockDetail?lockId=${encodeURIComponent(deviceId)}`
+        const url = `/device-lock-detail?lockId=${encodeURIComponent(deviceId)}`
         return (
           <span>
             {
@@ -284,6 +284,8 @@ class MyDevice extends React.Component {
       }
     }
 
+    const { getFieldDecorator } = this.props.form
+
     return (
       <div id="MyDevice" className="container">
         <Form className="mb-20">
@@ -298,7 +300,11 @@ class MyDevice extends React.Component {
           <FormItem >
             <Row>
               <Col span={8}>
-                <Search style={{ height: 32 }} enterButton="搜索" placeholder="请输入设备名称/设备MAC/安装关联位置" onSearch={this.onSearch.bind(this)} />
+                {
+                  getFieldDecorator('findName')(
+                    <Search style={{ height: 32 }} enterButton="搜索" onSearch={this.filteredFetchLockList.bind(this)} />
+                  )
+                }
               </Col>
               <Col className="tr">
                 <Button type="primary" onClick={this.batchDeleteDevice.bind(this)}>批量删除</Button>

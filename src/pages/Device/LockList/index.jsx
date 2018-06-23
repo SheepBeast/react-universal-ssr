@@ -1,17 +1,16 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Row, Col, Form, Select, Button, Table, Divider, Radio, Input, Icon, Checkbox, Tooltip } from 'antd'
+import { Row, Col, Form, Button, Table, Radio, Input, message } from 'antd'
 import { fetchLockList, fetchLockStatistics, deleteDevice } from '../../../actions/device';
 
 import ModalBindDeviceWithRoom from './ModalBindDeviceWithRoom'
+import isRequestSuccess from '../../../utils/isRequestSuccess';
 
 const FormItem = Form.Item
-const Option = Select.Option
 const RadioGroup = Radio.Group
 const RadioButton = Radio.Button
 const Search = Input.Search
-
 
 const lockTypeRefers = {
   1: '网关锁',
@@ -31,50 +30,80 @@ class LockList extends React.Component {
     this.state = {
       deviceName: null,
       mac: null,
-      selectedRowKeys: []
+
+      options: {},
+
+
+      selectedRowKeys: [],
+
+      lockStatistics: {},
+      lockList: [],
+
+      state: -1
     }
 
     this.modal = {}
   }
 
   componentWillMount() {
-    this.props.fetchLocStatistics()
-    this.props.fetchLockList()
+    let p1 = this.props.fetchLockStatistics(),
+      p2 = this.props.fetchLockList()
+
+    Promise.all([p1, p2]).then(ret => {
+      console.log('ret -->', ret)
+      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1])) {
+        let lockStatistics = ret[0].data.data || { onlineNum: 0, exceptionNum: 0 },
+          lockList = ret[1].data.data.list || []
+
+        this.setState({
+          lockStatistics,
+          lockList
+        })
+      }
+    })
   }
 
-  fetch(state, search) {
-    var options = {}
+  filteredFetchLockList() {
+    var params = {}
 
-    if (!state) {
-      state = this.props.form.getFieldValue('state')
+    var { state } = this.state
+
+    if (state && state != '-1') {
+      params.state = state
     }
 
-    if (state != '-1') {
-      options.state = parseInt(state)
+    let findName = this.props.form.getFieldValue('findName')
+    if (findName) {
+      params.findName = findName
     }
 
-    if (search) {
-      options.findName = search
-    }
+    console.log('params -->', params)
 
-    console.log('options -->', options)
+    this.props.fetchLockList(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        let lockList = ret.data.data.list || []
 
-    this.props.fetchLockList(options)
+        this.setState({
+          lockList
+        })
+      }
+    })
   }
 
-  onSearch(e) {
-    this.fetch(null, e)
-  }
-
-  onChange(e) {
-    this.fetch(e.target.value)
+  onRadioGroupChange(e) {
+    this.setState({
+      state: e.target.value
+    }, this.filteredFetchLockList)
   }
 
   deleteLock(params) {
-    // 门锁类型
-    params.deviceType = 2
-
-    this.props.deleteLock(params)
+    this.props.deleteLock(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success('删除门锁成功')
+      } else {
+        message.success(`删除门锁失败，${ret.data.reason}`)
+      }
+    })
   }
 
   batchDelete() {
@@ -89,8 +118,8 @@ class LockList extends React.Component {
     })
   }
 
-  bindDevice(params) {
-    this.setState(params, () => {
+  bindDevice(options) {
+    this.setState({ options }, () => {
       this.modal.bindDeviceWithRoom.show()
     })
   }
@@ -101,13 +130,47 @@ class LockList extends React.Component {
 
   onModalBindDeviceWithRoomOk(form) {
     console.log('form -->', form)
+
+    let { houseId, buildingId, floorId, roomId, rename, deviceId, deviceType } = form
+    let params = {
+      deviceType,
+      deviceId,
+      deviceName: rename
+    }
+
+    if (roomId) {
+      params.level = 4
+      params.id = roomId
+    } else if (floorId) {
+      params.level = 3
+      params.id = floorId
+    } else if (buildingId) {
+      params.level = 2
+      params.id = buildingId
+    } else if (houseId) {
+      params.level = 1
+      params.id = houseId
+    } else {
+      message.error('设备关联失败，id值不能为空')
+      return
+    }
+
+    this.props.bindDevice(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success('设备关联成功')
+      } else {
+        message.success(`设备关联失败，${ret.data.reason}`)
+      }
+    })
+
   }
 
 
   render() {
-    let lockStatistics = this.props.lockStatistics
+    var { lockStatistics, lockList } = this.state
 
-    const dataSource = this.props.lockList.map(({
+
+    const dataSource = lockList.map(({
       deviceId,
       deviceName,
       mac,
@@ -138,7 +201,8 @@ class LockList extends React.Component {
         actions: {
           deviceId,
           deviceName,
-          mac
+          mac,
+          deviceType: lockType
         }
       }
     })
@@ -172,23 +236,18 @@ class LockList extends React.Component {
       title: '操作',
       key: 'actions',
       dataIndex: 'actions',
-      render: ({ deviceId, deviceName, mac }) => {
-        const url = `/device-lockDetail?lockId=${encodeURIComponent(deviceId)}`
+      render: ({ deviceId, deviceName, deviceType, mac }) => {
+        const url = `/device-lock-detail?lockId=${encodeURIComponent(deviceId)}`
         return (
           <span>
             <Link to={url} className="mr-20">详情</Link>
-            <a className="mr-20" onClick={this.bindDevice.bind(this, { deviceName, mac })}>关联</a>
-            <a onClick={this.deleteLock.bind(this, { deviceId: [deviceId] })}>删除</a>
+            <a className="mr-20" onClick={this.bindDevice.bind(this, { deviceId, deviceName, deviceType, mac })}>关联</a>
+            <a onClick={this.deleteLock.bind(this, { deviceId: [deviceId], deviceType })}>删除</a>
           </span>
         )
       }
     }];
 
-    let { deviceName, mac } = this.state
-
-    let options = { deviceName, mac }
-
-    const { getFieldDecorator } = this.props.form
     const rowSelection = {
       onChange: selectedRowKeys => {
         console.log('selected row keys -->', selectedRowKeys)
@@ -197,6 +256,9 @@ class LockList extends React.Component {
         })
       }
     }
+
+    const { getFieldDecorator } = this.props.form
+
 
     return (
       <div id="LockList">
@@ -222,25 +284,19 @@ class LockList extends React.Component {
         <div className="container">
           <Form>
             <FormItem label="设备状态" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
-              {
-                getFieldDecorator('state', {
-                  initialValue: "-1",
-                })(
-                  <RadioGroup className="custom-radio-button-group" onChange={this.onChange.bind(this)}>
-                    <RadioButton value="-1">全部</RadioButton>
-                    <RadioButton value="1">正常</RadioButton>
-                    <RadioButton value="0">异常</RadioButton>
-                  </RadioGroup>
-                )
-              }
+              <RadioGroup defaultValue="-1" className="custom-radio-button-group" onChange={this.onRadioGroupChange.bind(this)}>
+                <RadioButton value="-1">全部</RadioButton>
+                <RadioButton value="1">正常</RadioButton>
+                <RadioButton value="0">异常</RadioButton>
+              </RadioGroup>
             </FormItem>
 
             <FormItem>
               <Row>
                 <Col span={8}>
                   {
-                    getFieldDecorator('search')(
-                      <Search style={{ height: 32 }} enterButton="搜索" placeholder="请输入设备名称/设备MAC/安装关联位置" onSearch={this.onSearch.bind(this)}></Search>
+                    getFieldDecorator('findName')(
+                      <Search style={{ height: 32 }} enterButton="搜索" onSearch={this.filteredFetchLockList.bind(this)} />
                     )
                   }
                 </Col>
@@ -251,30 +307,21 @@ class LockList extends React.Component {
             </FormItem>
           </Form>
 
-          <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} pagination={false}></Table>
-
+          <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} pagination={false} />
         </div>
 
 
-        <ModalBindDeviceWithRoom options={options} onInit={this.onModalBindDeviceWithRoomInit.bind(this)} onOk={this.onModalBindDeviceWithRoomOk.bind(this)} />
+        <ModalBindDeviceWithRoom onInit={this.onModalBindDeviceWithRoomInit.bind(this)} onOk={this.onModalBindDeviceWithRoomOk.bind(this)} options={this.state.options} />
       </div >
     )
   }
 }
 
-const mapStateToProps = state => ({
-  lockStatistics: state.lockStatistics || {
-    onlineNum: 0,
-    exceptionNum: 0
-  },
-  lockList: state.lockList || []
+const mapStateToProps = state => ({})
+const mapDispatchToProps = dispatch => ({
+  fetchLockList: params => dispatch(fetchLockList(params)),
+  fetchLockStatistics: params => dispatch(fetchLockStatistics(params)),
+  deleteLock: params => dispatch(deleteDevice(params))
 })
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchLockList: params => dispatch(fetchLockList(params)),
-    fetchLocStatistics: params => dispatch(fetchLockStatistics(params)),
-    deleteLock: params => dispatch(deleteDevice(params))
-  }
-}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(LockList))

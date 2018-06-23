@@ -12,7 +12,7 @@ const Option = Select.Option
 const TextArea = Input.TextArea
 const RadioGroup = Radio.Group
 
-class AddRenter extends Component {
+class AddTenant extends Component {
   constructor(props) {
     super(props)
 
@@ -114,7 +114,7 @@ class AddRenter extends Component {
     const { getFieldDecorator } = this.props.form
 
     return (
-      <div id="AddRenter" className="container">
+      <div id="AddTenant" className="container">
         <Row className="mb-20">
           <Col span={12}>
             <h3>
@@ -328,4 +328,4 @@ const mapDispatchToProps = dispatch => ({
   addRenter: params => dispatch(addTenant(params))
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(AddRenter)))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(AddTenant)))

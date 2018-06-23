@@ -1,9 +1,9 @@
 import React from 'react';
 import { hydrate, render } from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
-import { Provider, connect } from 'react-redux'
+import { Provider } from 'react-redux'
 
-import App from './pages/App/index'
+import App from './App'
 
 import configureStore from './store'
 

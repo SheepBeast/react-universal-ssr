@@ -4,19 +4,16 @@ import { withRouter, Link } from 'react-router-dom'
 import { Form, Icon, Input, Button, Checkbox, Row, Col } from 'antd';
 import PropTypes from 'prop-types'
 
-import { login } from '../../../actions/common'
+import { login, setUserInfo, setTokenID } from '../../../actions/common'
 import isRequestSuccess from '../../../utils/isRequestSuccess';
+import {api} from '../../../api'
 
 const FormItem = Form.Item;
 
 
 class Login extends React.Component {
-  componentDidMount() {
-    this.onSubmit()
-  }
-
   onSubmit(e) {
-    e && e.preventDefault()
+    e.preventDefault()
 
     this.props.form.validateFields((err, val) => {
       if (!err) {
@@ -26,20 +23,20 @@ class Login extends React.Component {
           password: val.password
         }).then((ret) => {
           if (isRequestSuccess(ret)) {
-            this.props.history.push('/')
+            const { businessUserInfo, tokenId } = ret.data.data
+
+            this.props.setUserInfo(businessUserInfo)
+            this.props.setTokenID(tokenId)
+
+            api.tokenId = tokenId
           } else {
             this.props.form.setFields({
               result: {
-                value: '',
-                errors: [
-                  new Error('账号密码错误')
-                ]
+                errors: [new Error('登陆失败，${ret.data.reason}')]
               }
             })
           }
         })
-      } else {
-        console.log('validate form err: ', err)
       }
     })
   }
@@ -49,7 +46,7 @@ class Login extends React.Component {
 
     return (
       <div id="Login">
-        <div style={{ width: 430, backgroundColor: 'rgba(255,255,255,0.2)', padding: 30, borderRadius: 4, margin: 'auto' }}>
+        <div className="pt-30 pr-30 pb-30 pl-30" style={{ width: 430, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 4, margin: 'auto' }}>
           <div className="tc mb-20">
             <img src="" alt="" style={{ width: 200, height: 40 }} />
           </div>
@@ -93,7 +90,7 @@ class Login extends React.Component {
                   {
                     getFieldDecorator('remember', {
                       valuePropName: 'checked',
-                      initialValue: true
+                      initialValue: false
                     })(
                       <Checkbox>自动登陆</Checkbox>
                     )
@@ -112,7 +109,7 @@ class Login extends React.Component {
               <Button type="primary" htmlType="submit" style={{ width: '100%' }} >登陆</Button>
               {
                 getFieldDecorator('result')(
-                  <Input type="hidden"></Input>
+                  <Input type="hidden" />
                 )
               }
             </FormItem>
@@ -129,7 +126,9 @@ class Login extends React.Component {
 const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => {
   return {
-    login: params => dispatch(login(params))
+    login: params => dispatch(login(params)),
+    setUserInfo: params => dispatch(setUserInfo(params)),
+    setTokenID: params => dispatch(setTokenID(params))
   }
 }
 
