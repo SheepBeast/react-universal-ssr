@@ -166,9 +166,8 @@ class Modal_Batch_Add_Property_2 extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   fetchDistrictList: params => dispatch(fetchDistrictList(params))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(Modal_Batch_Add_Property_2))
+export default connect(null, mapDispatchToProps)(Form.create()(Modal_Batch_Add_Property_2))

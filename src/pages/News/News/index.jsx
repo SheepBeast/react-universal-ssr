@@ -1,14 +1,23 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Form, Row, Col, Radio, DatePicker, Button, Table, Icon, Tooltip } from 'antd'
+import { Form, Row, Col, Radio, DatePicker, Button, Table, message } from 'antd'
 
 
 const FormItem = Form.Item
 const RadioButton = Radio.Button
 const RadioGroup = Radio.Group
+const RangePicker = DatePicker.RangePicker
 
 import { fetchNewsList, deleteNews, sendNews } from '../../../actions/news'
+import isRequestSuccess from '../../../utils/isRequestSuccess';
+
+// 0 修改、删除、提交
+// 1 不可修改 不可删除
+// 2 不可修改 可删除 可发送
+// 3 可修改 可提审 可删除
+// 4 不可发送 不可修改 可删除 不可审核
+// 5 不可显示
 
 const newsStateRefers = {
   0: '草稿',
@@ -26,23 +35,114 @@ const newsPushTypeRefers = {
 }
 
 class News extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      newsList: [],
+
+      state: -1,
+      pushType: -1,
+      beginDate: null,
+      endDate: null
+    }
+  }
+
   componentWillMount() {
-    this.props.fetchNewsList()
+    this.filteredFetchNewsList()
   }
 
   deleteNews(params) {
-    this.props.deleteNews(params)
+    this.props.deleteNews(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success('消息删除成功')
+        this.filteredFetchNewsList()
+      } else {
+        message.error(`消息删除失败，${ret.data.reason}`)
+      }
+    })
   }
 
   sendNews(params) {
-    this.props.sendNews(params)
+    this.props.sendNews(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success('消息发送成功')
+        this.filteredFetchNewsList()
+      } else {
+        message.error(`消息发送失败，${ret.data.reason}`)
+      }
+    })
+  }
+
+  filteredFetchNewsList() {
+    let { state, pushType, beginDate, endDate } = this.state
+
+    var params = {}
+
+    params.state = state == -1 ? [0, 1, 2, 3, 4, 6] : [state]
+
+    if (pushType != -1) {
+      params.pushType = pushType
+    }
+
+    if (beginDate) {
+      params.beginDate = beginDate
+    }
+
+    if (endDate) {
+      params.endDate = endDate
+    }
+
+    this.props.fetchNewsList(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        let newsList = ret.data.data.list || []
+
+        this.setState({
+          newsList
+        })
+      }
+    })
+  }
+
+  onStateChange(e) {
+    this.setState({
+      state: e.target.value
+    }, () => {
+      this.filteredFetchNewsList()
+    })
+  }
+
+  onPushTypeChange(e) {
+    this.setState({
+      pushType: e.target.value
+    }, () => {
+      this.filteredFetchNewsList()
+    })
+  }
+
+  onPeriodChange(e, selectedDate) {
+    console.log('selected date -->', selectedDate)
+
+    var [beginDate, endDate] = selectedDate
+
+    var date = {}
+
+    if (beginDate) {
+      date.beginDate = beginDate
+    }
+
+    if (endDate) {
+      date.endDate = endDate
+    }
+
+    this.setState(date, () => {
+      this.filteredFetchNewsList()
+    })
   }
 
   render() {
 
-    console.log('news list -->', this.props.newsList)
-
-    let dataSource = this.props.newsList.map(({
+    let dataSource = this.state.newsList.map(({
       newsTitle,
       pushType,
       userNames,
@@ -99,56 +199,32 @@ class News extends React.Component {
           <span>{newsStateRefers[state]}</span>
         )
       }
-    }, {
+    },
+    {
       title: '操作',
       key: 'actions',
       dataIndex: 'actions',
       render: ({ newsId, state }) => {
-        var url = `/news-check?newsId=${encodeURIComponent(newsId)}`
+        // 0 修改、删除、提交
+        // 1 不可修改 不可删除
+        // 2 不可修改 可删除 可发送
+        // 3 可修改 可提审 可删除
+        // 4 不可发送 不可修改 可删除 不可审核
+        // 5 不可显示
 
-        return (
+        // 查看 0 1 2 3 4
+        // 编辑 0 3
+        // 发送 2
+        // 删除 0 2 3
+
+        return state != 5 ?
           <span>
-            {
-              state != 0 ?
-                <Link to={url}>
-                  <Tooltip title="查看">
-                    <Icon type="file-text" className="mr-20 fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-                  </Tooltip>
-                </Link>
-                : null
-            }
-            {
-              state == 0 || state == 3 ?
-                <Link to={url}>
-                  <Tooltip title="编辑">
-                    <Icon type="file-text" className="mr-20 fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
+            <Link className="mr-20" to={`/news-check?newsId=${encodeURIComponent(newsId)}`}>查看</Link>
+            {state == 0 || state == 3 ? <Link className="mr-20" to={`/news-edit?newsId=${encodeURIComponent(newsId)}`}>编辑</Link> : null}
+            {state == 2 ? <a className="mr-20" onClick={this.sendNews.bind(this, { newsId })}>发送</a> : null}
+            {state != 1 && state == 4 ? <a onClick={this.deleteNews.bind(this, { newsId: [newsId] })}>删除</a> : null}
+          </span> : null
 
-                  </Tooltip>
-                </Link> : null
-            }
-
-            {
-              state == 2 ?
-                <a>
-                  <Tooltip title="发送">
-                    <Icon type="file-text" onClick={this.sendNews.bind(this, {newsId})} className="mr-20 fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-
-                  </Tooltip>
-                </a> : null
-            }
-
-            {
-              state == 0 ?
-                <a>
-                  <Tooltip title="删除">
-                    <Icon type="file-text" onClick={this.deleteNews.bind(this, { newsId })} className="mr-20 fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-                  </Tooltip>
-                </a>
-
-                : null
-            }
-          </span>
-        )
       }
     }]
 
@@ -160,21 +236,23 @@ class News extends React.Component {
 
         <Form className="mb-20">
           <Row>
-            <Col span={8}>
+            <Col span={9}>
               <FormItem label="房间状态" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
-                <RadioGroup className="custom-radio-button-group" defaultValue="0">
-                  <RadioButton value="0">全部</RadioButton>
-                  <RadioButton value="1">草稿</RadioButton>
-                  <RadioButton value="2">审核中</RadioButton>
-                  <RadioButton value="3">已发送</RadioButton>
-                  <RadioButton value="4">审核不通过</RadioButton>
+                <RadioGroup className="custom-radio-button-group" defaultValue="-1" onChange={this.onStateChange.bind(this)}>
+                  <RadioButton value="-1">全部</RadioButton>
+                  <RadioButton value="0">草稿</RadioButton>
+                  <RadioButton value="1">审核中</RadioButton>
+                  <RadioButton value="2">待发送</RadioButton>
+                  <RadioButton value="3">审核不通过</RadioButton>
+                  <RadioButton value="4">已发送</RadioButton>
+                  {/* <RadioButton value="5">删除</RadioButton> */}
                 </RadioGroup>
               </FormItem>
             </Col>
-            <Col span={5}>
+            <Col offset={1} span={5}>
               <FormItem label="接受对象" labelCol={{ span: 5 }} wrapperCol={{ span: 19 }}>
-                <RadioGroup className="custom-radio-button-group" defaultValue="0">
-                  <RadioButton value="0">全部</RadioButton>
+                <RadioGroup className="custom-radio-button-group" defaultValue="-1" onChange={this.onPushTypeChange.bind(this)}>
+                  <RadioButton value="-1">全部</RadioButton>
                   <RadioButton value="1">员工</RadioButton>
                   <RadioButton value="2">租客</RadioButton>
                 </RadioGroup>
@@ -182,12 +260,12 @@ class News extends React.Component {
             </Col>
             <Col span={5} className="form-shim">
               <FormItem label="选择日期" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-                <DatePicker style={{ width: '100%' }} placeholder="请选择日期"></DatePicker>
+                <RangePicker placeholder={['起始日期', '结束日期']} onChange={this.onPeriodChange.bind(this)} />
               </FormItem>
             </Col>
-            <Col span={6} className="tr">
+            <Col span={4} className="tr">
               <Link to="/news-add">
-                <Button type="primary" >新建</Button>
+                <Button type="primary">新建</Button>
               </Link>
             </Col>
           </Row>
@@ -199,13 +277,10 @@ class News extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  newsList: state.newsList || []
-})
 const mapDispatchToProps = dispatch => ({
   fetchNewsList: params => dispatch(fetchNewsList(params)),
   deleteNews: params => dispatch(deleteNews(params)),
   sendNews: params => dispatch(sendNews(params))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(News)
+export default connect(null, mapDispatchToProps)(News)

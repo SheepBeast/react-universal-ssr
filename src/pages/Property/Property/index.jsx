@@ -59,28 +59,7 @@ class Property extends Component {
   }
 
   componentWillMount() {
-    this.props.fetchHouseList({ state: 1 }).then(ret => {
-      if (isRequestSuccess(ret)) {
-        let houseList = ret.data.data.list || []
-
-        var first = houseList[0] || {}
-        var { houseId, houseName } = first
-
-        this.setState({
-          houseList,
-          selectedHouseId: houseId,
-          selectedHouseName: houseName
-        }, () => {
-          if (houseId) {
-            var params = {
-              houseId,
-              state: 1
-            }
-            this.linkedFetchBuildingList(params)
-          }
-        })
-      }
-    })
+    this.linkedFetchHouseList()
   }
 
 
@@ -138,6 +117,32 @@ class Property extends Component {
   }
 
   ///////////////////////////////////
+  linkedFetchHouseList() {
+    this.props.fetchHouseList({ state: 1 }).then(ret => {
+      if (isRequestSuccess(ret)) {
+        let houseList = ret.data.data.list || []
+
+        var first = houseList[0] || {}
+        var { houseId, houseName } = first
+
+        this.setState({
+          houseList,
+          selectedHouseId: houseId,
+          selectedHouseName: houseName
+        }, () => {
+          if (houseId) {
+            var params = {
+              houseId,
+              state: 1
+            }
+            this.linkedFetchBuildingList(params)
+          }
+        })
+      }
+    })
+  }
+
+
   linkedFetchBuildingList(params) {
     this.props.fetchBuildingList(params).then(ret => {
       var buildingList = isRequestSuccess(ret) && ret.data.data.list || []
@@ -219,6 +224,7 @@ class Property extends Component {
       this.modal.batchAddProperty2.show()
     } else {
       message.success('批量添加房产成功')
+      this.linkedFetchHouseList()
     }
   }
 
@@ -233,6 +239,7 @@ class Property extends Component {
     this.props.addHouse(form).then(ret => {
       if (isRequestSuccess(ret)) {
         message.success('添加房产成功')
+        this.linkedFetchHouseList()
       } else {
         message.error(`添加房产失败，${ret.data.reason}`)
       }
@@ -556,8 +563,6 @@ class Property extends Component {
     )
   }
 }
-
-const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   fetchHouseList: params => dispatch(fetchHouseList(params)),
   fetchBuildingList: params => dispatch(fetchBuildingList(params)),
@@ -570,4 +575,4 @@ const mapDispatchToProps = dispatch => ({
   modifyProperty: params => dispatch(updateRoomInfo(params))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Property)
+export default connect(null, mapDispatchToProps)(Property)

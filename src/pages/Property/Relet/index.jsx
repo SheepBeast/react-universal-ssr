@@ -77,10 +77,9 @@ class Relet extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   fetchTenantDetail: params => dispatch(fetchTenantDetail(params)),
   updateTenancy: params => dispatch(updateTenancy(params))
 })
 
-export default withRouter(connect(mapStateToProps,mapDispatchToProps)(Form.create()(Relet)))
+export default withRouter(connect(null,mapDispatchToProps)(Form.create()(Relet)))

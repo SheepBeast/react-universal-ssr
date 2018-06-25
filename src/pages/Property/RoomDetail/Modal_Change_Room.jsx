@@ -117,9 +117,8 @@ class ModalChangeRoom extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   fetchRoomList: params => dispatch(fetchRoomList(params))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(ModalChangeRoom))
+export default connect(null, mapDispatchToProps)(Form.create()(ModalChangeRoom))

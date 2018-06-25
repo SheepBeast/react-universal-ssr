@@ -270,7 +270,6 @@ class AddRole extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   addRole: params => dispatch(addRole(params)),
   fetchRoleList: params => dispatch(fetchRoleList(params)),
@@ -278,4 +277,4 @@ const mapDispatchToProps = dispatch => ({
   fetchRoleDetail: params => dispatch(fetchRoleDetail(params))
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(AddRole)))
+export default withRouter(connect(null, mapDispatchToProps)(Form.create()(AddRole)))

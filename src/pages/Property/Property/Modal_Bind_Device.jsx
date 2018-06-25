@@ -82,9 +82,8 @@ class Modal_Bind_Device extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   fetchLockList: params => dispatch(fetchLockList(params))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(Modal_Bind_Device))
+export default connect(null, mapDispatchToProps)(Form.create()(Modal_Bind_Device))

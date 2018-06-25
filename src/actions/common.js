@@ -1,5 +1,5 @@
 import { api } from "../api";
-import { APP_SMS_INFO, BUSSINESS_REGISTER, BUSINESS_WEB_LOGIN, BUSINESS_FORGET_PASSWORD, BUSINESS_PROVINCE_CITIES_AREAS_LIST } from "../constants/method-types";
+import { APP_SMS_INFO, BUSSINESS_REGISTER, BUSINESS_WEB_LOGIN, BUSINESS_FORGET_PASSWORD, BUSINESS_PROVINCE_CITIES_AREAS_LIST, BUSINESS_LOGOUT } from "../constants/method-types";
 import { SET_USER_INFO, SET_TOKEN_ID, ON_LOGIN_ERROR, SET_COMMON_PAGE } from '../constants/action-types'
 import isRequestSuccess from "../utils/isRequestSuccess";
 
@@ -39,7 +39,15 @@ export const login = params => async dispatch => {
   console.log('login ret -->', ret)
 
   return ret
+}
 
+// 退出登陆
+export const logout = params => async dispatch => {
+  let ret = await api.fetch(BUSINESS_LOGOUT, params)
+
+  console.log('log out ret -->', ret)
+
+  return ret
 }
 
 // 注册

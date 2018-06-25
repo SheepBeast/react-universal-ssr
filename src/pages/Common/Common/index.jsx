@@ -5,7 +5,7 @@ import Login from '../Login/index'
 import Register from '../Register/index'
 import ForgetPassword from '../ForgetPassword/index'
 
-let pages = {
+const pages = {
   Login,
   Register,
   ForgetPassword
@@ -14,6 +14,7 @@ let pages = {
 class Common extends React.Component {
   render() {
     let Page = pages[this.props.page]
+
     return <Page />
   }
 }

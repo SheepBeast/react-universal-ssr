@@ -1,11 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
-import { Row, Col, Select, Checkbox, Input, Form, Button } from 'antd'
+import { Row, Col, Select, Checkbox, Input, Form, Button, message } from 'antd'
 
 import SimditorTextarea from '../../../components/Simditor/index'
 import { addNews, submitNews } from '../../../actions/news'
 import { fetchUserList } from '../../../actions/user';
+import isRequestSuccess from '../../../utils/isRequestSuccess';
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -13,60 +14,46 @@ const CheckBoxGroup = Checkbox.Group
 const TextArea = Input.TextArea
 
 class AddNews extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      // userList: []
+    }
+  }
 
   componentWillMount() {
-
-
-    // this.props.fetchTenantList()
-    this.props.fetchUserList({ state: 1 })
-    // .then(() => {
-    //   var params = {
-    //     newsTitle: '新闻标题',
-    //     pushType: 1,
-    //     userId: 'HDwF6ivba80=',
-    //     newsAbstract: '消息摘要',
-    //     newsContent: '正文',
-    //     saveType: 2
-    //   }
-    //   this.props.addNews(params)
-    // })
+    // this.props.fetchUserList({ state: 1 })
   }
 
   goBack() {
     this.props.history.goBack()
   }
 
-  submit(saveType) {
-
-    console.log('saveType -->', saveType)
-
+  submit(options) {
     this.props.form.validateFields((err, val) => {
       if (!err) {
         console.log('val -->', val)
-        val.saveType = saveType
+        var params = { ...val, ...options }
 
-        this.props.addNews(val)
+        this.props.addNews(params).then(ret => {
+          if (isRequestSuccess(ret)) {
+            message.success('提交成功')
+            this.goBack()
+          } else {
+            message.error(`提交失败，${ret.data.reason}`)
+          }
+        })
       }
     })
   }
 
-  onInit(editor) {
-    this.editor = editor
-  }
-
-  onTextAreaChange(content) {
-    this.props.form.setFieldsValue({
-      newsContent: content
-    })
+  onTextAreaChange(newsContent) {
+    this.props.form.setFieldsValue({ newsContent })
   }
 
   render() {
-    var options = this.props.userList.map(({ userName, userId }) => {
-      return {
-        label: userName,
-        value: userId
-      }
-    })
+    // var options = this.state.userList.map(({ userName, userId }) => ({ label: userName, value: userId }))
 
     let { getFieldDecorator } = this.props.form
 
@@ -79,7 +66,7 @@ class AddNews extends React.Component {
             </h3>
           </Col>
           <Col className="tr" span={12}>
-            <Button type="primary" onClick={() => { this.goBack() }}>返回</Button>
+            <Button type="primary" onClick={this.goBack.bind(this)}>返回</Button>
           </Col>
         </Row>
 
@@ -87,7 +74,7 @@ class AddNews extends React.Component {
           <FormItem label="接收对象" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
             {
               getFieldDecorator('pushType')(
-                <Select style={{ width: 100 }} defaultValue="1">
+                <Select placeholder="接受类型" style={{ width: 100 }}>
                   <Option value="1">员工</Option>
                   <Option value="2">租客</Option>
                 </Select>
@@ -95,7 +82,7 @@ class AddNews extends React.Component {
             }
           </FormItem>
 
-          {
+          {/* {
             options.length > 0 ?
               <FormItem label="接收人" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
                 {
@@ -110,7 +97,7 @@ class AddNews extends React.Component {
                 }
               </FormItem>
               : null
-          }
+          } */}
 
 
 
@@ -141,17 +128,7 @@ class AddNews extends React.Component {
           </FormItem>
 
           <FormItem label="正文" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
-            {/* {
-              getFieldDecorator('newsContent', {
-                rules: [{
-                  required: true,
-                  message: '正文不能为空'
-                }]
-              })(
-                <TextArea autosize={{ minRows: 12, maxRows: 12 }} />
-              )
-            } */}
-            <SimditorTextarea id="newsContent" onInit={this.onInit.bind(this)} onChange={this.onTextAreaChange.bind(this)} />
+            <SimditorTextarea id="newsContent" onChange={this.onTextAreaChange.bind(this)} />
             {
               getFieldDecorator('newsContent', {
                 rules: [{
@@ -159,16 +136,16 @@ class AddNews extends React.Component {
                   message: '正文不能为空'
                 }],
               })(
-                <TextArea style={{display: 'none'}} />
+                <TextArea style={{ display: 'none' }} />
               )
             }
           </FormItem>
 
           <Row>
             <Col offset={3}>
-              <Button type="primary" className="mr-20" onClick={this.submit.bind(this, 2)}>提交</Button>
-              <Button className="mr-20" onClick={this.submit.bind(this, 1)}>保存为草稿</Button>
-              <Button onClick={() => { this.goBack() }}>取消</Button>
+              <Button type="primary" className="mr-20" onClick={this.submit.bind(this, { saveType: 2 })}>提交</Button>
+              <Button className="mr-20" onClick={this.submit.bind(this, { saveType: 1 })}>保存为草稿</Button>
+              <Button onClick={this.goBack.bind(this)}>取消</Button>
             </Col>
           </Row>
 
@@ -180,14 +157,10 @@ class AddNews extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  userList: state.userList || [],
-  tenantList: state.tenantList || []
-})
 const mapDispatchToProps = dispatch => ({
   addNews: params => dispatch(addNews(params)),
-  fetchUserList: params => dispatch(fetchUserList(params)),
+  // fetchUserList: params => dispatch(fetchUserList(params)),
   submitNews: params => dispatch(submitNews(params))
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(AddNews)))
+export default withRouter(connect(null, mapDispatchToProps)(Form.create()(AddNews)))

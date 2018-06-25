@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 
 import Index from './pages/Index/index'
 // import Login from './pages/Common/Login/index'
@@ -21,4 +22,4 @@ const mapStateToProps = state => ({
   tokenID: state.tokenID
 })
 
-export default connect(mapStateToProps, null, null, { pure: false })(App)
+export default withRouter(connect(mapStateToProps)(App))

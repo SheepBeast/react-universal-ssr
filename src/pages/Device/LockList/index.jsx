@@ -317,11 +317,10 @@ class LockList extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   fetchLockList: params => dispatch(fetchLockList(params)),
   fetchLockStatistics: params => dispatch(fetchLockStatistics(params)),
   deleteLock: params => dispatch(deleteDevice(params))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(LockList))
+export default connect(null, mapDispatchToProps)(Form.create()(LockList))

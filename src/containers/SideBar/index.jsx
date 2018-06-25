@@ -15,7 +15,7 @@ class SideBar extends React.Component {
     let { userPhoto, accountName, actions } = userInfo
 
     return (
-      <Sider id="SideBar" width={280} className="bg-w">
+      <Sider id="SideBar" width={280} className="bg-w" style={{ borderRight: '1px solid #eee' }}>
         <div style={{
           textAlign: 'center',
           paddingTop: 30,

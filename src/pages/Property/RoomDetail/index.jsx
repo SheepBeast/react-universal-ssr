@@ -386,7 +386,6 @@ class RoomDetail extends Component {
   }
 }
 
-const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   fetchRoomDetail: params => dispatch(fetchRoomDetail(params)),
   fetchRoomTenantList: params => dispatch(fetchRoomTenantList(params)),
@@ -397,4 +396,4 @@ const mapDispatchToProps = dispatch => ({
   unbindDevice: params => dispatch(unbindDevice(params))
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(RoomDetail))
+export default withRouter(connect(null, mapDispatchToProps)(RoomDetail))

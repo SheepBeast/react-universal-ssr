@@ -352,7 +352,6 @@ class ModalBindDeviceWithRoom extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   fetchHouseList: params => dispatch(fetchHouseList(params)),
   fetchBuildingList: params => dispatch(fetchBuildingList(params)),
@@ -360,4 +359,4 @@ const mapDispatchToProps = dispatch => ({
   fetchRoomList: params => dispatch(fetchRoomList(params))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(ModalBindDeviceWithRoom))
+export default connect(null, mapDispatchToProps)(Form.create()(ModalBindDeviceWithRoom))

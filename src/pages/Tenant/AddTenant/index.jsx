@@ -323,9 +323,8 @@ class AddTenant extends Component {
   }
 }
 
-const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   addRenter: params => dispatch(addTenant(params))
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(AddTenant)))
+export default withRouter(connect(null, mapDispatchToProps)(Form.create()(AddTenant)))

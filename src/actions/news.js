@@ -1,5 +1,5 @@
 import { api } from "../api";
-import { BUSINESS_NEWS_LIST, BUSINESS_ADD_NEWS, BUSINESS_AUDIT_NEWS, BUSINESS_NEWS_DETAIL, BUSINESS_DEL_NEWS, BUSINESS_SEND_NEWS, BUSINESS_SUBMIT_NEWS } from "../constants/method-types";
+import { BUSINESS_NEWS_LIST, BUSINESS_ADD_NEWS, BUSINESS_AUDIT_NEWS, BUSINESS_NEWS_DETAIL, BUSINESS_DEL_NEWS, BUSINESS_SEND_NEWS, BUSINESS_SUBMIT_NEWS, BUSINESS_UPDATE_NEWS } from "../constants/method-types";
 
 // 消息列表
 export const fetchNewsList = params => async dispatch => {
@@ -60,6 +60,15 @@ export const submitNews = params => async dispatch => {
   let ret = await api.fetch(BUSINESS_SUBMIT_NEWS, params)
 
   console.log('submit news  -->', ret)
+
+  return ret
+}
+
+// 提审消息
+export const editNews = params => async dispatch => {
+  let ret = await api.fetch(BUSINESS_UPDATE_NEWS, params)
+
+  console.log('edit news  -->', ret)
 
   return ret
 }

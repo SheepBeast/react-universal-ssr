@@ -243,7 +243,6 @@ class Register extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   fetchCaptcha: params => dispatch(fetchCaptcha(params)),
   register: params => dispatch(register(params)),
@@ -253,4 +252,4 @@ const mapDispatchToProps = dispatch => ({
   setTokenID: params => dispatch(setTokenID(params))
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(Register)))
+export default withRouter(connect(null, mapDispatchToProps)(Form.create()(Register)))

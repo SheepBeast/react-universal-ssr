@@ -209,11 +209,10 @@ class ForgetPassword extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   fetchCaptcha: params => dispatch(fetchCaptcha(params)),
   forgetPassword: params => dispatch(forgetPassword(params)),
   setCommonPage: params => dispatch(setCommonPage(params))
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(ForgetPassword)))
+export default withRouter(connect(null, mapDispatchToProps)(Form.create()(ForgetPassword)))

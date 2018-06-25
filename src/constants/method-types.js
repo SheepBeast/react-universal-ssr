@@ -1,7 +1,7 @@
 export const BUSSINESS_REGISTER = 'businessRegister'
 export const APP_SMS_INFO = 'appSmsInfo'
 export const BUSINESS_WEB_LOGIN = 'businessWebLogin'
-export const BUSINESS_LOGOUT = 'businessLogout'
+export const BUSINESS_LOGOUT = 'businessLoginout'
 export const BUSINESS_UPDATE_USER_INFO = 'businessUpdateUserInfo'
 export const BUSINESS_UPDATE_PASSWORD = 'businessUpdatePassword'
 export const BUSINESS_FORGET_PASSWORD = 'businessForgetPassword'

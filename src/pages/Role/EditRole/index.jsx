@@ -290,7 +290,6 @@ class EditRole extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   fetchRoleList: params => dispatch(fetchRoleList(params)),
   fetchMenuPermissionList: params => dispatch(fetchMenuPermissionList(params)),
@@ -298,4 +297,4 @@ const mapDispatchToProps = dispatch => ({
   editRole: params => dispatch(editRole(params))
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(EditRole)))
+export default withRouter(connect(null, mapDispatchToProps)(Form.create()(EditRole)))

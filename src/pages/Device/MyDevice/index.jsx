@@ -322,14 +322,11 @@ class MyDevice extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({})
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchDeviceList: params => dispatch(fetchDeviceList(params)),
-    deleteDevice: params => dispatch(deleteDevice(params)),
-    batchDeleteDevice: params => dispatch(batchDeleteDevice(params)),
-    bindDevice: params => dispatch(roomAddDevice(params))
-  }
-}
+const mapDispatchToProps = dispatch => ({
+  fetchDeviceList: params => dispatch(fetchDeviceList(params)),
+  deleteDevice: params => dispatch(deleteDevice(params)),
+  batchDeleteDevice: params => dispatch(batchDeleteDevice(params)),
+  bindDevice: params => dispatch(roomAddDevice(params))
+})
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(MyDevice))
+export default connect(null, mapDispatchToProps)(Form.create()(MyDevice))

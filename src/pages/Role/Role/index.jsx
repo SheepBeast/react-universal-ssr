@@ -197,11 +197,10 @@ class Role extends Component {
   }
 }
 
-const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   fetchRoleList: params => dispatch(fetchRoleList(params)),
   deleteRole: params => dispatch(deleteRole(params)),
   enableRole: params => dispatch(enableRole(params))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Role)
+export default connect(null, mapDispatchToProps)(Role)

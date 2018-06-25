@@ -372,7 +372,6 @@ class EditUser extends Component {
   }
 }
 
-const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   editUser: params => dispatch(editUser(params)),
   fetchUserDetail: params => dispatch(fetchUserDetail(params)),
@@ -380,4 +379,4 @@ const mapDispatchToProps = dispatch => ({
   fetchApartmentList: params => dispatch(fetchApartmentList(params))
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(EditUser)))
+export default withRouter(connect(null, mapDispatchToProps)(Form.create()(EditUser)))

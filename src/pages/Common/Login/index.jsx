@@ -12,33 +12,54 @@ const FormItem = Form.Item;
 
 
 class Login extends React.Component {
+  componentWillMount() {
+    var remember = localStorage.getItem('hsj_remember')
+    console.log('rem', remember, remember == 1)
+    if (remember == 1) {
+      var accountName = localStorage.getItem('hsj_accountName'),
+        password = localStorage.getItem('hsj_password')
+
+      this.login({ accountName, password })
+    }
+  }
+
+  login(params, callback) {
+    this.props.login(params).then((ret) => {
+      if (isRequestSuccess(ret)) {
+        const { businessUserInfo, tokenId } = ret.data.data
+
+        this.props.setUserInfo(businessUserInfo)
+        this.props.setTokenID(tokenId)
+
+
+        api.tokenId = tokenId
+
+        callback && callback()
+
+        this.props.history.push('/')
+
+      } else {
+        this.props.form.setFields({
+          result: {
+            errors: [new Error(`登陆失败，${ret.data.reason}`)]
+          }
+        })
+      }
+    })
+  }
+
   onSubmit(e) {
     e.preventDefault()
 
     this.props.form.validateFields((err, val) => {
       if (!err) {
         console.log('received val of form: ', val)
-        this.props.login({
-          accountName: val.userName,
-          password: val.password
-        }).then((ret) => {
-          if (isRequestSuccess(ret)) {
-            const { businessUserInfo, tokenId } = ret.data.data
 
-            this.props.setUserInfo(businessUserInfo)
-            this.props.setTokenID(tokenId)
-
-
-            api.tokenId = tokenId
-
-            this.props.history.push('/')
-
-          } else {
-            this.props.form.setFields({
-              result: {
-                errors: [new Error('登陆失败，${ret.data.reason}')]
-              }
-            })
+        this.login(val, () => {
+          if (val.remember) {
+            localStorage.setItem('hsj_remember', 1)
+            localStorage.setItem('hsj_accountName', val.accountName)
+            localStorage.setItem('hsj_password', val.password)
           }
         })
       }
@@ -62,7 +83,7 @@ class Login extends React.Component {
           <Form onSubmit={this.onSubmit.bind(this)}>
             <FormItem>
               {
-                getFieldDecorator('userName', {
+                getFieldDecorator('accountName', {
                   rules: [{
                     required: true,
                     message: '账号不能为空'
@@ -96,7 +117,7 @@ class Login extends React.Component {
                   {
                     getFieldDecorator('remember', {
                       valuePropName: 'checked',
-                      initialValue: false
+                      initialValue: localStorage.getItem('remember')
                     })(
                       <Checkbox>自动登陆</Checkbox>
                     )
@@ -121,8 +142,6 @@ class Login extends React.Component {
                 )
               }
             </FormItem>
-
-
           </Form>
         </div>
 
@@ -131,7 +150,6 @@ class Login extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => {
   return {
     login: params => dispatch(login(params)),
@@ -141,4 +159,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(Login)))
+export default withRouter(connect(null, mapDispatchToProps)(Form.create()(Login)))

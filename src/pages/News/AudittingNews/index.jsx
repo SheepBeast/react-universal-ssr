@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import { Form, Row, Col, Radio, DatePicker, Button, Table, Icon, Tooltip } from 'antd'
 import { fetchNewsList } from '../../../actions/news'
+import isRequestSuccess from '../../../utils/isRequestSuccess.js'
 
 const FormItem = Form.Item
 const RadioButton = Radio.Button
@@ -12,7 +13,7 @@ const RangePicker = DatePicker.RangePicker
 
 const newsStateRefers = {
   0: '草稿',
-  1: '审核中',
+  1: '待审核',
   2: '待发送',
   3: '审核不通过',
   4: '已发送',
@@ -25,65 +26,110 @@ const newsPushTypeRefers = {
   2: '租客'
 }
 
+let columns = [{
+  title: '创建时间',
+  key: 'createTime',
+  dataIndex: 'createTime'
+}, {
+  title: '标题',
+  key: 'newsTitle',
+  dataIndex: 'newsTitle'
+}, {
+  title: '接受对象',
+  key: 'pushType',
+  dataIndex: 'pushType'
+}, {
+  title: '接收人',
+  key: 'userNames',
+  dataIndex: 'userNames'
+}, {
+  title: '创建人',
+  key: 'userName',
+  dataIndex: 'userName'
+}, {
+  title: '审核单位',
+  key: 'auditName',
+  dataIndex: 'auditName'
+},
+{
+  title: '状态',
+  key: 'state',
+  dataIndex: 'state',
+  render: state => <span>{newsStateRefers[state]}</span>
+}, {
+  title: '操作',
+  key: 'actions',
+  dataIndex: 'actions',
+  render: ({ newsId, state }) =>
+    <span>
+      {
+        state != 5 ?
+          state == 1 ?
+            <Link to={`/news-audit?newsId=${encodeURIComponent(newsId)}`}>审核</Link> :
+            <Link to={`/news-check?newsId=${encodeURIComponent(newsId)}`}>查看</Link>
+          : null
+      }
+    </span>
+}]
+
 class AudittingNews extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      state: [1, 2, 3, 4],
+      state: -1,
+
       beginDate: null,
-      endDate: null
+      endDate: null,
+
+      newsList: []
     }
   }
+
   componentWillMount() {
-    this.fetchNewsList()
+    this.filterdFetchNewsList()
   }
 
-  onRadioGroupChange(e) {
-    console.log('on radio group change -->', e)
-
+  onStateChange(e) {
     this.setState({
-      state: [e.target.value]
-    }, this.fetchNewsList)
-
-
+      state: e.target.value
+    }, this.filterdFetchNewsList)
   }
 
-  onDatePickerChange(e, dataString) {
-    console.log('date picker change -->', dataString)
-
+  onDateChange(e, dataString) {
     this.setState({
       beginDate: dataString[0],
       endDate: dataString[1]
-    }, this.fetchNewsList)
+    }, this.filterdFetchNewsList)
   }
 
-  fetchNewsList() {
+  filterdFetchNewsList() {
     let { state, beginDate, endDate } = this.state
 
-    var options = {}
+    var params = {}
 
-    if (state != -1) {
-      options.state = state
-    }
+    params.state = state != -1 ? [state] : [1, 2, 3, 6]
 
     if (beginDate) {
-      options.beginDate = beginDate
+      params.beginDate = beginDate
     }
 
     if (endDate) {
-      options.endDate = endDate
+      params.endDate = endDate
     }
 
-    console.log('options -->', options)
+    console.log('params -->', params)
 
-    this.props.fetchNewsList(options)
+    this.props.fetchNewsList(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        let newsList = ret.data.data.list || []
+
+        this.setState({ newsList })
+      }
+    })
   }
 
   render() {
-
-    console.log('news list -->', this.props.newsList)
-
-    let dataSource = this.props.newsList.map(({
+    let dataSource = this.state.newsList.map(({
       newsTitle,
       pushType,
       userNames,
@@ -106,83 +152,7 @@ class AudittingNews extends React.Component {
       }
     }))
 
-    let columns = [{
-      title: '创建时间',
-      key: 'createTime',
-      dataIndex: 'createTime'
-    }, {
-      title: '标题',
-      key: 'newsTitle',
-      dataIndex: 'newsTitle'
-    }, {
-      title: '接受对象',
-      key: 'pushType',
-      dataIndex: 'pushType'
-    }, {
-      title: '接收人',
-      key: 'userNames',
-      dataIndex: 'userNames'
-    }, {
-      title: '创建人',
-      key: 'userName',
-      dataIndex: 'userName'
-    }, {
-      title: '审核单位',
-      key: 'auditName',
-      dataIndex: 'auditName'
-    },
-    {
-      title: '状态',
-      key: 'state',
-      dataIndex: 'state',
-      render: state => {
-        return (
-          <span>{newsStateRefers[state]}</span>
-        )
-      }
-    }, {
-      title: '操作',
-      key: 'actions',
-      dataIndex: 'actions',
-      render: ({ newsId, state }) => {
-        var url = `/news-check?newsId=${encodeURIComponent(newsId)}`
 
-        let options = {
-          check: {
-            url: `/news-check?newsId=${encodeURIComponent(newsId)}`,
-            text: '查看'
-          },
-          audit: {
-            url: `/news-audit?newsId=${encodeURIComponent(newsId)}`,
-            text: '审核'
-          }
-        }
-
-        let isValidState = state >= 1 && state <= 4
-
-        return (
-          <span>
-            {
-              isValidState ?
-                state == 1 ?
-                  <Link to={options.audit.url}>
-                    <Tooltip title={options.audit.text}>
-                      <Icon type="file-text" className="mr-20 fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-                    </Tooltip>
-                  </Link>
-                  :
-                  <Link to={options.check.url}>
-                    <Tooltip title={options.check.text}>
-                      <Icon type="file-text" className="mr-20 fs-16 br-50 icon-gray-bg w-text" style={{ padding: 6 }} />
-                    </Tooltip>
-                  </Link>
-                : null
-            }
-
-          </span>
-        )
-      }
-    }]
 
     return (
       <div id="AudittingNews" className="container">
@@ -194,7 +164,7 @@ class AudittingNews extends React.Component {
           <Row>
             <Col span={8}>
               <FormItem label="状态" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
-                <RadioGroup className="custom-radio-button-group" defaultValue="-1" onChange={this.onRadioGroupChange.bind(this)}>
+                <RadioGroup className="custom-radio-button-group" defaultValue="-1" onChange={this.onStateChange.bind(this)}>
                   <RadioButton value="-1">全部</RadioButton>
                   <RadioButton value="1">未审核</RadioButton>
                   <RadioButton value="2">审核通过</RadioButton>
@@ -204,12 +174,12 @@ class AudittingNews extends React.Component {
             </Col>
             <Col span={9} className="form-shim">
               <FormItem label="日期" labelCol={{ span: 3 }} wrapperCol={{ span: 18 }}>
-                <RangePicker className="w-100" onChange={this.onDatePickerChange.bind(this)} placeholder={['开始日期', '结束日期']} />
+                <RangePicker onChange={this.onDateChange.bind(this)} placeholder={['开始日期', '结束日期']} />
               </FormItem>
             </Col>
             <Col offset={1} span={6} className="tr">
               <Link to="/news-add">
-                <Button type="primary" >返回</Button>
+                <Button type="primary" onClick={() => { this.props.history.goBack() }}>返回</Button>
               </Link>
             </Col>
           </Row>
@@ -221,11 +191,8 @@ class AudittingNews extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  newsList: state.newsList || []
-})
 const mapDispatchToProps = dispatch => ({
   fetchNewsList: params => dispatch(fetchNewsList(params))
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AudittingNews))
+export default withRouter(connect(null, mapDispatchToProps)(AudittingNews))

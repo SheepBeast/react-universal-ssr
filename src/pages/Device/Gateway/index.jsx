@@ -220,10 +220,9 @@ class Gateway extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   fetchGatewayList: params => dispatch(fetchGatewayList(params)),
   deleteGateway: params => dispatch(deleteGateway(params))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(Gateway))
+export default connect(null, mapDispatchToProps)(Form.create()(Gateway))

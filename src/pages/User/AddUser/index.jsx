@@ -349,11 +349,10 @@ class AddUser extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   addUser: params => dispatch(addUser(params)),
   fetchRoleList: params => dispatch(fetchRoleList(params)),
   fetchApartmentList: params => dispatch(fetchApartmentList(params))
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(AddUser)))
+export default withRouter(connect(null, mapDispatchToProps)(Form.create()(AddUser)))

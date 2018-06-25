@@ -25,6 +25,7 @@ import {
   LoadableNews,
   LoadableAudittingNews,
   LoadableAddNews,
+  LoadableEditNews,
   LoadableAuditNews,
   LoadableCheckNews,
   // LoadableTenant,
@@ -147,6 +148,12 @@ class AddNews extends React.Component {
   }
 }
 
+class EditNews extends React.Component {
+  render(){
+    return <LoadableEditNews />
+  }
+}
+
 class AuditNews extends React.Component {
   render(){
     return <LoadableAuditNews />
@@ -197,6 +204,7 @@ module.exports = {
   News,
   AudittingNews,
   AddNews,
+  EditNews,
   AuditNews,
   CheckNews,
   // Tenant,

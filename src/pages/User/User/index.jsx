@@ -258,7 +258,6 @@ class User extends Component {
   }
 }
 
-const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   fetchUserList: params => dispatch(fetchUserList(params)),
   enableUser: params => dispatch(enableUser(params)),
@@ -266,4 +265,4 @@ const mapDispatchToProps = dispatch => ({
   fetchRoleList: params => dispatch(fetchRoleList(params))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(User))
+export default connect(null, mapDispatchToProps)(Form.create()(User))

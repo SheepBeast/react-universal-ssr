@@ -4,6 +4,8 @@ import { withRouter } from 'react-router-dom'
 import qs from 'querystring'
 import { Form, Button, Input, Row, Col, Divider, Tag } from 'antd'
 import { fetchNewsDetail } from '../../../actions/news';
+import isRequestSuccess from '../../../utils/isRequestSuccess.js'
+import parseQueryToParams from '../../../utils/parseQueryToParams.js'
 
 const FormItem = Form.Item
 const TextArea = Input.TextArea
@@ -31,30 +33,33 @@ const newsStateRefers = {
 }
 
 class CheckNews extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      newsDetail: {}
+    }
+  }
+
   componentWillMount() {
-    var params = this.parseQueryToParams()
+    var params = parseQueryToParams(this.props.location.search)
 
     console.log('params -->', params)
 
-    this.props.fetchNewsDetail(params)
+    this.props.fetchNewsDetail(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        var newsDetail = ret.data.data
+
+        this.setState({
+          newsDetail
+        })
+      }
+    })
   }
 
-  parseQueryToParams() {
-    let search = this.props.location.search.replace('?', ''), k, params = {}
-    search = qs.parse(search)
-
-    for (k in search) {
-      params[k] = decodeURIComponent(search[k])
-    }
-
-    return params
-  }
 
   render() {
-
-
-
-    let { auditName, auditUserType, newsAbstract, newsContent, newsTitle, pushType, state, auditRemark, userNames, newsId } = this.props.newsDetail
+    let { auditName, auditUserType, newsAbstract, newsContent, newsTitle, pushType, state, auditRemark, userNames = [], newsId } = this.state.newsDetail
 
     return (
       <div id="CheckNews">
@@ -71,7 +76,7 @@ class CheckNews extends React.Component {
             </Col>
           </Row>
 
-          <Divider></Divider>
+          <Divider />
 
           <Row>
             <Col span={18}>
@@ -123,7 +128,7 @@ class CheckNews extends React.Component {
               </Col>
               <Col className="gray" span={21}>
                 {
-                  (userNames || []).map((name) => <Tag className="mb-10" color="#2db7f5">{name}</Tag>)
+                  userNames.map((name, idx) => <Tag key={idx} className="mb-10" color="#2db7f5">{decodeURIComponent(name.replace('EMOJI_URLENCODE=', ''))}</Tag>)
                 }
               </Col>
             </Row>
@@ -146,7 +151,7 @@ class CheckNews extends React.Component {
               <Col span={3} className="tr">
                 <b>正文：</b>
               </Col>
-              <Col className="gray" span={21} dangerouslySetInnerHTML={{__html: newsContent}} />
+              <Col className="gray" span={21} dangerouslySetInnerHTML={{ __html: newsContent }} />
             </Row>
           </div>
 
@@ -158,11 +163,8 @@ class CheckNews extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  newsDetail: state.newsDetail || {}
-})
 const mapDispatchToProps = dispatch => ({
   fetchNewsDetail: params => dispatch(fetchNewsDetail(params))
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CheckNews))
+export default withRouter(connect(null, mapDispatchToProps)(CheckNews))

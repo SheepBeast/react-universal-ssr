@@ -2,8 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import qs from 'querystring'
-import { Form, Button, Input, Row, Col, Tag } from 'antd'
+import { Form, Button, Input, Row, Col, Tag, message } from 'antd'
 import { auditNews, fetchNewsDetail } from '../../../actions/news';
+import parseQueryToParams from '../../../utils/parseQueryToParams'
+import isRequestSuccess from '../../../utils/isRequestSuccess';
 
 const FormItem = Form.Item
 const TextArea = Input.TextArea
@@ -22,7 +24,7 @@ const newsPushTypeRefers = {
 
 const newsStateRefers = {
   0: '草稿',
-  1: '审核中',
+  1: '待审核',
   2: '待发送',
   3: '审核不通过',
   4: '已发送',
@@ -31,50 +33,63 @@ const newsStateRefers = {
 }
 
 class AuditNews extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      newsDetail: {}
+    }
+  }
+
   componentWillMount() {
 
-    var params = this.parseQueryToParams()
+    var params = parseQueryToParams(this.props.location.search)
 
     console.log('params -->', params)
 
-    this.props.fetchNewsDetail(params).then(() => {
-      // this.props.auditNews(params)
+    this.props.fetchNewsDetail(params).then(ret => {
+      console.log('ret -->', ret)
+      if (isRequestSuccess(ret)) {
+        var newsDetail = ret.data.data || {}
+
+        this.setState({ newsDetail })
+      }
     })
   }
 
-  parseQueryToParams() {
-    let search = this.props.location.search.replace('?', ''), k, params = {}
-    search = qs.parse(search)
 
-    for (k in search) {
-      params[k] = decodeURIComponent(search[k])
+  auditNews(state) {
+    var auditRemark = this.props.form.getFieldValue('auditRemark')
+
+    if(auditRemark){
+      console.log('audit remark -->', auditRemark)
+      auditRemark = auditRemark.trim()
     }
 
-    return params
-  }
-
-  audit(state) {
-    if (!state) {
-      return
-    }
-
-    var auditRemark = this.props.form.getFieldValue('auditRemark').trim()
     var params = {
-      newsId: this.props.newsDetail.newsId,
-      audit: state
-    }
-
-    if (auditRemark) {
-      params.auditRemark = auditRemark
+      newsId: this.state.newsDetail.newsId,
+      audit: state,
+      auditRemark
     }
 
     console.log('params -->', params)
 
-    this.props.auditNews(params)
+    this.props.auditNews(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success('审核成功')
+        this.goBack()
+      } else {
+        message.error(`审核失败，${ret.data.reason}`)
+      }
+    })
+  }
+
+  goBack() {
+    this.props.history.goBack()
   }
 
   render() {
-    let { auditName, auditUserType, newsAbstract, newsContent, newsTitle, pushType, state, auditRemark, userNames, newsId } = this.props.newsDetail
+    let { auditName, auditUserType, newsAbstract, newsContent, newsTitle, pushType, state, auditRemark, userNames = [], newsId } = this.state.newsDetail
 
     const { getFieldDecorator } = this.props.form
 
@@ -88,7 +103,7 @@ class AuditNews extends React.Component {
               </h3>
             </Col>
             <Col className="tr" span={12}>
-              <Button type="primary" onClick={() => { this.props.history.goBack() }}>返回</Button>
+              <Button type="primary" onClick={this.goBack.bind(this)}>返回</Button>
             </Col>
           </Row>
 
@@ -104,8 +119,8 @@ class AuditNews extends React.Component {
 
             <Row>
               <Col offset={4}>
-                <Button type="primary" className="mr-20" htmlType="submit" onClick={this.audit.bind(this, 1)}>审核通过</Button>
-                <Button type="danger" htmlType="submit" onClick={this.audit.bind(this, 2)}>审核不通过</Button>
+                <Button type="primary" className="mr-20" onClick={this.auditNews.bind(this, 1)}>审核通过</Button>
+                <Button type="danger" onClick={this.auditNews.bind(this, 2)}>审核不通过</Button>
               </Col>
             </Row>
           </Form>
@@ -133,7 +148,7 @@ class AuditNews extends React.Component {
               </Col>
               <Col className="gray" span={21}>
                 {
-                  (userNames || []).map((name, idx) => <Tag key={idx} className="mb-10" color="#2db7f5">{name}</Tag>)
+                  userNames.map((name, idx) => <Tag key={idx} className="mb-10" color="#2db7f5">{decodeURIComponent(name.replace('EMOJI_URLENCODE=', ''))}</Tag>)
                 }
               </Col>
             </Row>
@@ -166,12 +181,9 @@ class AuditNews extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  newsDetail: state.newsDetail || {}
-})
 const mapDispatchToProps = dispatch => ({
   auditNews: params => dispatch(auditNews(params)),
   fetchNewsDetail: params => dispatch(fetchNewsDetail(params))
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(AuditNews)))
+export default withRouter(connect(null, mapDispatchToProps)(Form.create()(AuditNews)))

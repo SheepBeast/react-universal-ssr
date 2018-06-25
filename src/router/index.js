@@ -22,6 +22,7 @@ import {
     News,
     AudittingNews,
     AddNews,
+    EditNews,
     AuditNews,
     CheckNews,
     // Tenant,
@@ -32,7 +33,7 @@ import {
 export default function getRoutes() {
     return (
         <div style={{ minWidth: 1563, maxWidth: 1563 }}>
-            <Route path="/" component={Property} exact />
+            <Route path="/" component={News} exact />
 
             <Route path="/statistics" component={Statistics} />
 
@@ -58,6 +59,7 @@ export default function getRoutes() {
             <Route path="/news-list" component={News} />
             <Route path="/news-list-auditting" component={AudittingNews} />
             <Route path="/news-add" component={AddNews} />
+            <Route path="/news-edit" component={EditNews} />
             <Route path="/news-audit" component={AuditNews} />
             <Route path="/news-check" component={CheckNews} />
 

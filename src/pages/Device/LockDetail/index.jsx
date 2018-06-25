@@ -482,17 +482,14 @@ class LockDetail extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({})
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchLockDetail: params => dispatch(fetchLockDetail(params)),
+const mapDispatchToProps = dispatch => ({
+  fetchLockDetail: params => dispatch(fetchLockDetail(params)),
     fetchLockKeyList: params => dispatch(fetchLockKeyList(params)),
     fetchLockAppKeyList: params => dispatch(fetchLockAppKeyList(params)),
     updateLockFunction: params => dispatch(updateLockFunctionConfig(params)),
     fetchLockLogList: params => dispatch(fetchLockLogList(params)),
     unbindDevice: params => dispatch(unbindDevice(params)),
     releaseAlarm: params => dispatch(releaseAlarm(params))
-  }
-}
+})
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(LockDetail))
+export default withRouter(connect(null, mapDispatchToProps)(LockDetail))
