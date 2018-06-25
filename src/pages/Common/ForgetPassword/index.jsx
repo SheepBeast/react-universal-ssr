@@ -1,10 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
-import { Form, Input, Button, Row, Col, Select } from 'antd'
+import { Form, Input, Button, Row, Col, Select, message } from 'antd'
 
 import './index.less'
-import { forgetPassword, fetchCaptcha } from '../../../actions/common'
+import { forgetPassword, fetchCaptcha, setCommonPage } from '../../../actions/common'
 import isRequestSuccess from '../../../utils/isRequestSuccess';
 import { isMobile } from '../../../constants/regexp'
 
@@ -31,9 +31,7 @@ class ForgetPassword extends React.Component {
           phoneNo: val.phoneNo
         }).then(ret => {
           if (isRequestSuccess(ret)) {
-            // this.setState({
-            //   captcha: ret.data.data.code
-            // })
+
           } else {
             this.props.form.setFields({
               captcha: {
@@ -66,7 +64,9 @@ class ForgetPassword extends React.Component {
           code: captcha
         }).then(ret => {
           if (isRequestSuccess(ret)) {
-            this.props.history.push('/login')
+            // this.props.history.push('/login')
+            message.success('重置密码成功')
+            this.props.setCommonPage('Login')
           } else {
             this.props.form.setFields({
               result: {
@@ -140,8 +140,7 @@ class ForgetPassword extends React.Component {
 
                       callback()
                     }
-                  }],
-                  initialValue: 'asd751011568'
+                  }]
                 })(
                   <Input type="password" placeholder="确认新密码" />
                 )
@@ -213,7 +212,8 @@ class ForgetPassword extends React.Component {
 const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
   fetchCaptcha: params => dispatch(fetchCaptcha(params)),
-  forgetPassword: params => dispatch(forgetPassword(params))
+  forgetPassword: params => dispatch(forgetPassword(params)),
+  setCommonPage: params => dispatch(setCommonPage(params))
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(ForgetPassword)))

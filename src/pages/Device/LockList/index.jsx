@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Row, Col, Form, Button, Table, Radio, Input, message } from 'antd'
 import { fetchLockList, fetchLockStatistics, deleteDevice } from '../../../actions/device';
 
-import ModalBindDeviceWithRoom from './ModalBindDeviceWithRoom'
+import ModalBindDeviceWithRoom from './Modal_Bind_Device_With_Room'
 import isRequestSuccess from '../../../utils/isRequestSuccess';
 
 const FormItem = Form.Item

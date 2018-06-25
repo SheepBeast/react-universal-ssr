@@ -5,8 +5,8 @@ import { Button, Avatar, Row, Col, Breadcrumb, Card, Divider, Table, Icon, Modal
 import { fetchRoomDetail, fetchRoomTenantList, fetchRoomDeviceList } from '../../../actions/property';
 import { fetchTenantDetail, updateTenancy, delTenant, tenantChangeRoom } from '../../../actions/tenant';
 
-import ModalRelet from './ModalRelet'
-import ModalChangeRoom from './ModalChangeRoom'
+import ModalRelet from './Modal_Relet'
+import ModalChangeRoom from './Modal_Change_Room'
 import isRequestSuccess from '../../../utils/isRequestSuccess';
 import parseQueryToParams from '../../../utils/parseQueryToParams'
 import { unbindDevice } from '../../../actions/device';

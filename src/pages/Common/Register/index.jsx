@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
-import { Form, Input, Button, Row, Col, Select } from 'antd'
+import { Form, Input, Button, Row, Col, Select, message } from 'antd'
 
 import { fetchCaptcha, register, login, setCommonPage, setUserInfo, setTokenID } from '../../../actions/common';
 import isRequestSuccess from '../../../utils/isRequestSuccess';
@@ -79,6 +79,8 @@ class Register extends React.Component {
 
                 console.log('register ret -->', res)
 
+                message.success('注册成功')
+
                 this.props.setUserInfo(businessUserInfo)
                 this.props.setTokenID(tokenId)
 
@@ -93,7 +95,6 @@ class Register extends React.Component {
           } else {
             this.props.form.setFields({
               result: {
-                // value: '',
                 errors: [
                   new Error(ret.data.reason)
                 ]
