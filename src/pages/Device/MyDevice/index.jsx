@@ -302,7 +302,7 @@ class MyDevice extends React.Component {
               <Col span={8}>
                 {
                   getFieldDecorator('findName')(
-                    <Search style={{ height: 32 }} enterButton="搜索" onSearch={this.filteredFetchLockList.bind(this)} />
+                    <Search style={{ height: 32 }} enterButton="搜索" onSearch={this.filteredFetchDeviceList.bind(this)} />
                   )
                 }
               </Col>

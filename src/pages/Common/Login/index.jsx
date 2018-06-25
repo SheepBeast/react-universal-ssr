@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 
 import { login, setUserInfo, setTokenID } from '../../../actions/common'
 import isRequestSuccess from '../../../utils/isRequestSuccess';
-import {api} from '../../../api'
+import { api } from '../../../api'
 
 const FormItem = Form.Item;
 
@@ -28,7 +28,11 @@ class Login extends React.Component {
             this.props.setUserInfo(businessUserInfo)
             this.props.setTokenID(tokenId)
 
+
             api.tokenId = tokenId
+
+            this.props.history.push('/')
+
           } else {
             this.props.form.setFields({
               result: {

@@ -226,4 +226,4 @@ const mapDispatchToProps = dispatch => ({
   deleteGateway: params => dispatch(deleteGateway(params))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create(Gateway))
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(Gateway))
