@@ -1,9 +1,9 @@
 import { api } from "../api";
 import { APP_SMS_INFO, BUSSINESS_REGISTER, BUSINESS_WEB_LOGIN, BUSINESS_FORGET_PASSWORD, BUSINESS_PROVINCE_CITIES_AREAS_LIST } from "../constants/method-types";
-import { SET_USER_INFO, SET_TOKEN_ID, ON_LOGIN_ERROR } from '../constants/action-types'
+import { SET_USER_INFO, SET_TOKEN_ID, ON_LOGIN_ERROR, SET_COMMON_PAGE } from '../constants/action-types'
 import isRequestSuccess from "../utils/isRequestSuccess";
 
-export const fetchCaptchaData = params => async dispatch => {
+export const fetchCaptcha = params => async dispatch => {
   let ret = await api.fetch(APP_SMS_INFO, params)
 
   console.log('fetch vcode -->', ret)
@@ -27,13 +27,10 @@ export const setTokenID = tokenID => ({
   tokenID
 })
 
-export const onLoginError = error => {
-  return {
-    type: ON_LOGIN_ERROR,
-    error
-  }
-}
-
+export const setCommonPage = page => ({
+  type: SET_COMMON_PAGE,
+  page
+})
 
 // 登陆
 export const login = params => async dispatch => {

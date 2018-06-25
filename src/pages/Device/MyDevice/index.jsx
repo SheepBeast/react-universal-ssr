@@ -5,7 +5,7 @@ import { Form, Table, Button, Input, Radio, Icon, Row, Col, Tooltip, message } f
 import { fetchDeviceList, deleteDevice, batchDeleteDevice, bindDevice } from '../../../actions/device';
 import { roomAddDevice } from '../../../actions/property'
 import isRequestSuccess from '../../../utils/isRequestSuccess';
-import ModalBindDeviceWithRoom from './ModalBindDeviceWithRoom'
+import ModalBindDeviceWithRoom from './Modal_Bind_Device_With_Room'
 import './index.less'
 
 const FormItem = Form.Item
@@ -314,7 +314,7 @@ class MyDevice extends React.Component {
           </FormItem>
         </Form>
 
-        <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} pagination={false}></Table>
+        <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} pagination={false} />
 
         <ModalBindDeviceWithRoom onInit={this.onModalBindDeviceWithRoomInit.bind(this)} onOk={this.onModalBindDeviceWithRoomOk.bind(this)} options={this.state.options} />
       </div>

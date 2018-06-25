@@ -256,7 +256,7 @@ class AddUser extends React.Component {
                 initialValue: null,
                 validateFirst: true
               })(
-                <Input placeholder="请输入登录密码"></Input>
+                <Input type="password" placeholder="请输入登录密码" />
               )
             }
           </FormItem>

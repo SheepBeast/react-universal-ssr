@@ -88,10 +88,10 @@ class ModalBindDeviceWithRoom extends React.Component {
 
     Promise.all([p1, p2, p3, p4]).then(ret => {
       if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1]) && isRequestSuccess(ret[2]) && isRequestSuccess(ret[3])) {
-        let houseList = ret[0].data.data.list,
-          buildingList = ret[1].data.data.list,
-          floorList = ret[2].data.data.list,
-          roomList = ret[3].data.data.list
+        let houseList = ret[0].data.data.list || [],
+          buildingList = ret[1].data.data.list || [],
+          floorList = ret[2].data.data.list || [],
+          roomList = ret[3].data.data.list || []
 
         this.setState({
           houseList,
@@ -130,7 +130,7 @@ class ModalBindDeviceWithRoom extends React.Component {
     let { selectedHouseName, selectedBuildingName, selectedFloorName, selectedRoomName, options } = this.state
 
 
-    let installationSite = `${selectedHouseName || ''}${selectedBuildingName  || ''}${selectedFloorName || ''}${selectedRoomName || ''}：${deviceTypeRefers[options.deviceType]}`
+    let installationSite = `${selectedHouseName || ''}${selectedBuildingName || ''}${selectedFloorName || ''}${selectedRoomName || ''}：${deviceTypeRefers[options.deviceType]}`
 
     this.props.form.setFieldsValue({
       rename: installationSite

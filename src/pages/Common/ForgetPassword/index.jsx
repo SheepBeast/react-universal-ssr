@@ -106,7 +106,7 @@ class ForgetPassword extends React.Component {
                     message: '账号不能为空'
                   }]
                 })(
-                  <Input placeholder="账号"></Input>
+                  <Input placeholder="账号" />
                 )
               }
             </FormItem>
@@ -123,7 +123,7 @@ class ForgetPassword extends React.Component {
                   }],
                   validateFirst: true
                 })(
-                  <Input placeholder="6 - 16 位密码，区分大小写"></Input>
+                  <Input type="password" placeholder="6 - 16 位密码，区分大小写" />
                 )
               }
             </FormItem>
@@ -143,7 +143,7 @@ class ForgetPassword extends React.Component {
                   }],
                   initialValue: 'asd751011568'
                 })(
-                  <Input placeholder="确认新密码"></Input>
+                  <Input type="password" placeholder="确认新密码" />
                 )
               }
             </FormItem>
@@ -168,7 +168,7 @@ class ForgetPassword extends React.Component {
                     }],
                     validateFirst: true
                   })(
-                    <Input style={{ width: '80%' }} placeholder="11位手机号"></Input>
+                    <Input style={{ width: '80%' }} placeholder="11位手机号" />
                   )
                 }
               </InputGroup>
@@ -185,7 +185,7 @@ class ForgetPassword extends React.Component {
                         message: '验证码错误'
                       }]
                     })(
-                      <Input placeholder="输入验证码"></Input>
+                      <Input placeholder="输入验证码" />
                     )
                   }
 
@@ -211,11 +211,9 @@ class ForgetPassword extends React.Component {
 }
 
 const mapStateToProps = state => ({})
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchCaptcha: params => dispatch(fetchCaptcha(params)),
-    forgetPassword: params => dispatch(forgetPassword(params)),
-  }
-}
+const mapDispatchToProps = dispatch => ({
+  fetchCaptcha: params => dispatch(fetchCaptcha(params)),
+  forgetPassword: params => dispatch(forgetPassword(params))
+})
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(ForgetPassword)))

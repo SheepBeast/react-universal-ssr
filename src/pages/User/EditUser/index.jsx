@@ -273,7 +273,7 @@ class EditUser extends Component {
                 }],
                 validateFirst: true
               })(
-                <Input placeholder="请输入登录密码"></Input>
+                <Input placeholder="请输入登录密码" />
               )
             }
           </FormItem> */}

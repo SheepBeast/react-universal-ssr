@@ -105,7 +105,7 @@ class Tenant extends React.Component {
           <Button type="primary">添加</Button>
         </div>
 
-        <Table dataSource={dataSource} columns={columns} rowSelection={{}}></Table>
+        <Table dataSource={dataSource} columns={columns} rowSelection={{}} />
       </div>
     )
   }

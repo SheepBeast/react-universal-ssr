@@ -191,7 +191,7 @@ class Role extends Component {
         </Row >
 
         <br />
-        <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} pagination={false}></Table>
+        <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} pagination={false} />
       </div >
     )
   }

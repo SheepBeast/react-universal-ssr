@@ -4,7 +4,7 @@ import { withRouter, Link } from 'react-router-dom'
 import { Form, Icon, Input, Button, Checkbox, Row, Col } from 'antd';
 import PropTypes from 'prop-types'
 
-import { login, setUserInfo, setTokenID } from '../../../actions/common'
+import { login, setUserInfo, setTokenID, setCommonPage } from '../../../actions/common'
 import isRequestSuccess from '../../../utils/isRequestSuccess';
 import { api } from '../../../api'
 
@@ -45,6 +45,10 @@ class Login extends React.Component {
     })
   }
 
+  setCommonPage(page) {
+    this.props.setCommonPage(page)
+  }
+
   render() {
     const { getFieldDecorator } = this.props.form
 
@@ -62,8 +66,7 @@ class Login extends React.Component {
                   rules: [{
                     required: true,
                     message: '账号不能为空'
-                  }],
-                  initialValue: 'bestZZY'
+                  }]
                 })(
                   <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="账户" style={{ height: 32 }} />
                 )
@@ -80,8 +83,7 @@ class Login extends React.Component {
                     min: 6,
                     max: 16,
                     message: '密码为6-16位'
-                  }],
-                  initialValue: '123456'
+                  }]
                 })(
                   <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="密码" style={{ height: 32 }} />
                 )
@@ -102,8 +104,10 @@ class Login extends React.Component {
 
                 </Col>
                 <Col span={12} className="tr">
-                  <Link to="/register" className="mr-20">注册账户</Link>
-                  <Link to="/forget-password" style={{ color: '#333' }}>忘记密码</Link>
+                  {/* <Link to="/register" className="mr-20">注册账户</Link>
+                  <Link to="/forget-password" style={{ color: '#333' }}>忘记密码</Link> */}
+                  <a className="mr-20" onClick={this.setCommonPage.bind(this, 'Register')}>注册账户</a>
+                  <a style={{ color: '#333' }} onClick={this.setCommonPage.bind(this, 'ForgetPassword')} > 忘记密码</a>
                 </Col>
               </Row>
 
@@ -132,7 +136,8 @@ const mapDispatchToProps = dispatch => {
   return {
     login: params => dispatch(login(params)),
     setUserInfo: params => dispatch(setUserInfo(params)),
-    setTokenID: params => dispatch(setTokenID(params))
+    setTokenID: params => dispatch(setTokenID(params)),
+    setCommonPage: params => dispatch(setCommonPage(params))
   }
 }
 

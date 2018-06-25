@@ -268,7 +268,7 @@ class AddTenant extends Component {
                 <Col span={4}>
                   {
                     getFieldDecorator('password')(
-                      <Input disabled={this.state.input_password_disabled} />
+                      <Input type="password" disabled={this.state.input_password_disabled} />
                     )
                   }
                 </Col>

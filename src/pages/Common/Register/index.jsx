@@ -3,9 +3,10 @@ import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import { Form, Input, Button, Row, Col, Select } from 'antd'
 
-import { fetchCaptchaData, register, login } from '../../../actions/common';
+import { fetchCaptcha, register, login, setCommonPage, setUserInfo, setTokenID } from '../../../actions/common';
 import isRequestSuccess from '../../../utils/isRequestSuccess';
 import { isMobile } from '../../../constants/regexp'
+import { api } from '../../../api'
 import './index.less'
 
 const FormItem = Form.Item
@@ -34,13 +35,13 @@ class Register extends React.Component {
           phoneNo: val.phoneNo
         }).then(ret => {
           if (isRequestSuccess(ret)) {
+            console.log('register ret -->', ret)
             // this.setState({
             //   captcha: ret.data.data.code
             // })
           } else {
             this.props.form.setFields({
               captcha: {
-                value: '',
                 errors: [
                   new Error(ret.data.reason)
                 ]
@@ -69,14 +70,21 @@ class Register extends React.Component {
           code: captcha
         }).then(ret => {
           if (isRequestSuccess(ret)) {
-            console.log('submit ret -->', ret)
-            console.log('login form -->', accountName, password)
-            this.props.autoLogin({
+            this.props.login({
               accountName,
               password
             }).then(res => {
-              console.log('submit res -->', res)
               if (isRequestSuccess(res)) {
+                const { businessUserInfo, tokenId } = res.data.data
+
+                console.log('register ret -->', res)
+
+                this.props.setUserInfo(businessUserInfo)
+                this.props.setTokenID(tokenId)
+
+
+                api.tokenId = tokenId
+
                 this.props.history.push('/')
               } else {
                 console.log('auto login fail -->', res.data.reason)
@@ -96,6 +104,10 @@ class Register extends React.Component {
         })
       }
     })
+  }
+
+  setCommonPage(page) {
+    this.props.setCommonPage(page)
   }
 
   render() {
@@ -119,7 +131,7 @@ class Register extends React.Component {
                     message: '账号不能为空'
                   }]
                 })(
-                  <Input placeholder="账号"></Input>
+                  <Input placeholder="账号" />
                 )
               }
             </FormItem>
@@ -136,7 +148,7 @@ class Register extends React.Component {
                   }],
                   validateFirst: true
                 })(
-                  <Input placeholder="6 - 16 位密码，区分大小写"></Input>
+                  <Input type="password" placeholder="6 - 16 位密码，区分大小写" />
                 )
               }
             </FormItem>
@@ -153,10 +165,9 @@ class Register extends React.Component {
 
                       callback()
                     }
-                  }],
-                  initialValue: 'asd751011568'
+                  }]
                 })(
-                  <Input placeholder="确认密码"></Input>
+                  <Input type="password" placeholder="确认密码" />
                 )
               }
             </FormItem>
@@ -181,7 +192,7 @@ class Register extends React.Component {
                     }],
                     validateFirst: true
                   })(
-                    <Input style={{ width: '80%' }} placeholder="11位手机号"></Input>
+                    <Input style={{ width: '80%' }} placeholder="11位手机号" />
                   )
                 }
               </InputGroup>
@@ -198,7 +209,7 @@ class Register extends React.Component {
                         message: '验证码错误'
                       }]
                     })(
-                      <Input placeholder="输入验证码"></Input>
+                      <Input placeholder="输入验证码" />
                     )
                   }
 
@@ -219,7 +230,8 @@ class Register extends React.Component {
 
                 </Col>
                 <Col span={12} className="tr">
-                  <Link to="/login">使用已有账户登录</Link>
+                  {/* <Link to="/login">使用已有账户登录</Link> */}
+                  <a onClick={this.setCommonPage.bind(this, 'Login')}>使用已有账户登录</a>
                 </Col>
               </Row>
             </FormItem>
@@ -231,12 +243,13 @@ class Register extends React.Component {
 }
 
 const mapStateToProps = state => ({})
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchCaptcha: params => dispatch(fetchCaptcha(params)),
-    register: params => dispatch(register(params)),
-    autoLogin: params => dispatch(login(params))
-  }
-}
+const mapDispatchToProps = dispatch => ({
+  fetchCaptcha: params => dispatch(fetchCaptcha(params)),
+  register: params => dispatch(register(params)),
+  login: params => dispatch(login(params)),
+  setCommonPage: params => dispatch(setCommonPage(params)),
+  setUserInfo: params => dispatch(setUserInfo(params)),
+  setTokenID: params => dispatch(setTokenID(params))
+})
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Form.create()(Register)))

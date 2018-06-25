@@ -63,7 +63,7 @@ class Relet extends React.Component {
             <b>调整后</b>
           </h3>
           <FormItem label="合约到租日" labelCol={{ span: 3 }} wrapperCol={{ span: 8 }}>
-            <Input placeholder="2012-08-21" disabled={true}></Input>
+            <Input placeholder="2012-08-21" disabled={true} />
           </FormItem>
 
           <div>

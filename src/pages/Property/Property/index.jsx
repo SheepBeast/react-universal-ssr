@@ -61,7 +61,7 @@ class Property extends Component {
   componentWillMount() {
     this.props.fetchHouseList({ state: 1 }).then(ret => {
       if (isRequestSuccess(ret)) {
-        let houseList = ret.data.data.list
+        let houseList = ret.data.data.list || []
 
         var first = houseList[0] || {}
         var { houseId, houseName } = first

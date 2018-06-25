@@ -215,7 +215,7 @@ class AudittingNews extends React.Component {
           </Row>
         </Form>
 
-        <Table dataSource={dataSource} columns={columns} pagination={false}></Table>
+        <Table dataSource={dataSource} columns={columns} pagination={false} />
       </div>
     )
   }

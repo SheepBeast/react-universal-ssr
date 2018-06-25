@@ -4,7 +4,7 @@ import {
 } from '../constants/action-types'
 import assign from '../utils/assign';
 
-export const rentStatisticsData = (state = {}, action) => {
+export const rentStatistics = (state = {}, action) => {
   switch (action.type) {
     case SET_RENT_STATICSTICS:
       return action.rentStatisticsData || {}
@@ -14,7 +14,7 @@ export const rentStatisticsData = (state = {}, action) => {
 
 }
 
-export const deviceStatisticsData = (state = {}, action) => {
+export const deviceStatistics = (state = {}, action) => {
   switch (action.type) {
     case SET_DEVICE_STATICSTICS:
       return action.deviceStatisticsData || {}
