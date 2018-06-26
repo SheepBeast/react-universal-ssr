@@ -4,11 +4,10 @@ import { Modal, Select, Form, Upload, Button, Row, Col, Switch, Input, Icon } fr
 const FormItem = Form.Item
 const Option = Select.Option
 
-class Modal_Modify_Property extends React.Component {
+class Modal_Edit_House extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      loading: false,
       visible: false
     }
   }
@@ -40,30 +39,34 @@ class Modal_Modify_Property extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form
+
+    const {houseName, houseType} = this.props.options
+
     return (
-      <Modal title="房间" visible={this.state.visible} destroyOnClose={true} okText="保存" cancelText="取消" onOk={this.onOk.bind(this)} onCancel={this.hide.bind(this)} >
+      <Modal title="编辑房产" visible={this.state.visible} destroyOnClose={true} okText="保存" cancelText="取消" onOk={this.onOk.bind(this)} onCancel={this.hide.bind(this)} >
         <Form className="form-shim">
-          <FormItem label="房间名称" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} >
+          <FormItem label="房产" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} >
             {
-              getFieldDecorator('roomName', {
+              getFieldDecorator('houseName', {
                 rules: [{
                   required: true,
-                  message: '必须填写房间名称'
+                  message: '房产名称不能为空'
                 }],
-                initialValue: this.props.roomName
+                initialValue: houseName
               })(
-                <Input placeholder="请输入房间名称" className="w-100" />
+                <Input placeholder="请输入房产名称" className="w-100" />
               )
             }
           </FormItem>
 
-          {/* <FormItem label="房产类型" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} >
+          <FormItem label="房产类型" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} >
             {
               getFieldDecorator('houseType', {
                 rules: [{
                   required: true,
                   message: '必须选择房产类型'
-                }]
+                }],
+                initialValue: houseType
               })(
                 <Select placeholder="请选择房产类型" className="w-100">
                   <Option value="1">经济型酒店</Option>
@@ -75,23 +78,11 @@ class Modal_Modify_Property extends React.Component {
                 </Select>
               )
             }
-          </FormItem> */}
-
-          {/* <FormItem label="房产照片" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} >
-            <Upload>
-              <div className="pt-19 pr-19 pb-19 pl-19 tc bg-w" style={{ border: '1px dashed #ddd', borderRadius: 4 }} >
-                <Icon type={this.state.loading ? 'loading' : 'plus'} style={{
-                  fontSize: 30,
-                  color: '#ddd',
-                  fontWeight: 100
-                }} />
-              </div>
-            </Upload>
-          </FormItem> */}
+          </FormItem>
         </Form>
       </Modal>
     )
   }
 }
 
-export default Form.create()(Modal_Modify_Property)
+export default Form.create()(Modal_Edit_House)

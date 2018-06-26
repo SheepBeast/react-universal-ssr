@@ -1,5 +1,5 @@
 import { api } from "../api";
-import { BUSINESS_HOUSE_LIST, BUSINESS_ROOM_LIST, BUSINESS_BUILDING_LIST, BUSINESS_FLOOR_LIST, BUSINESS_APARTMENT_LIST, BUSINESS_ROOM_DETAIL, BUSINESS_ROOM_TENANT_LIST, BUSINESS_ROOM_DEVICE_LIST, BUSINESS_ADD_HOUSE, BUSINESS_ADD_BUILDING, BUSINESS_DEL_ROOM, BUSINESS_ROOM_ADD_DEVICE, BUSINESS_UPDATE_ROOM_INFO } from "../constants/method-types";
+import { BUSINESS_HOUSE_LIST, BUSINESS_ROOM_LIST, BUSINESS_BUILDING_LIST, BUSINESS_FLOOR_LIST, BUSINESS_APARTMENT_LIST, BUSINESS_ROOM_DETAIL, BUSINESS_ROOM_TENANT_LIST, BUSINESS_ROOM_DEVICE_LIST, BUSINESS_ADD_HOUSE, BUSINESS_ADD_BUILDING, BUSINESS_DEL_ROOM, BUSINESS_ROOM_ADD_DEVICE, BUSINESS_UPDATE_ROOM_INFO, BUSINESS_UPDATE_HOUSE_INFO, BUSINESS_UPDATE_BUILDING_INFO, BUSINESS_UPDATE_FLOOR_INFO, BUSINESS_ADD_ROOM, BUSINESS_ADD_FLOOR } from "../constants/method-types";
 
 // 房产列表
 export const fetchHouseList = params => async dispatch => {
@@ -93,6 +93,25 @@ export const addBuilding = params => async dispatch => {
   return ret
 }
 
+// 添加楼层
+export const addFloor = params => async dispatch => {
+  let ret = await api.fetch(BUSINESS_ADD_FLOOR, params)
+
+  console.log('add floor ret -->', ret)
+
+  return ret
+}
+
+// 添加房间
+export const addRoom = params => async dispatch => {
+  let ret = await api.fetch(BUSINESS_ADD_ROOM, params)
+
+  console.log('add room ret -->', ret)
+
+  return ret
+}
+
+
 // 删除房间
 export const delRoom = params => async dispatch => {
   let ret = await api.fetch(BUSINESS_DEL_ROOM, params)
@@ -111,7 +130,36 @@ export const roomAddDevice = params => async dispatch => {
   return ret
 }
 
-// 修改房间信息
+
+
+// 编辑房产
+export const updateHouseInfo = params => async dispatch => {
+  let ret = await api.fetch(BUSINESS_UPDATE_HOUSE_INFO, params)
+
+  console.log(' update house info ret -->', ret)
+
+  return ret
+}
+
+// 编辑楼栋
+export const updateBuildingInfo = params => async dispatch => {
+  let ret = await api.fetch(BUSINESS_UPDATE_BUILDING_INFO, params)
+
+  console.log(' update building info ret -->', ret)
+
+  return ret
+}
+
+// 编辑楼层
+export const updateFloorInfo = params => async dispatch => {
+  let ret = await api.fetch(BUSINESS_UPDATE_FLOOR_INFO, params)
+
+  console.log(' update floor info ret -->', ret)
+
+  return ret
+}
+
+// 编辑房间
 export const updateRoomInfo = params => async dispatch => {
   let ret = await api.fetch(BUSINESS_UPDATE_ROOM_INFO, params)
 

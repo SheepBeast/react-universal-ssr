@@ -4,7 +4,7 @@ import { Modal, Select, Form, Upload, Button, Row, Col, Switch, Input, Icon } fr
 const FormItem = Form.Item
 const Option = Select.Option
 
-class Modal_Add_Property extends React.Component {
+class Modal_Add_House extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -35,10 +35,6 @@ class Modal_Add_Property extends React.Component {
         this.hide()
       }
     })
-  }
-
-  onSwitchChange(checked) {
-    this.props.onSwitchChange(checked)
   }
 
   render() {
@@ -79,26 +75,10 @@ class Modal_Add_Property extends React.Component {
               )
             }
           </FormItem>
-
-          <FormItem label="房产照片" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} >
-            <Upload>
-              <div className="pt-19 pr-19 pb-19 pl-19 tc bg-w" style={{ border: '1px dashed #ddd', borderRadius: 4 }} >
-                <Icon type={this.state.loading ? 'loading' : 'plus'} style={{
-                  fontSize: 30,
-                  color: '#ddd',
-                  fontWeight: 100
-                }} />
-              </div>
-            </Upload>
-          </FormItem>
-
-          <FormItem label="批量添加" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} >
-            <Switch onChange={this.onSwitchChange.bind(this)} style={{ marginTop: 4 }} />
-          </FormItem>
         </Form>
       </Modal>
     )
   }
 }
 
-export default Form.create()(Modal_Add_Property)
+export default Form.create()(Modal_Add_House)
