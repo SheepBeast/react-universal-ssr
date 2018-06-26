@@ -32,8 +32,8 @@ import {
 
 export default function getRoutes() {
     return (
-        <div style={{ minWidth: 1563, maxWidth: 1563 }}>
-            <Route path="/" component={News} exact />
+        <div>
+            <Route path="/" component={Property} exact />
 
             <Route path="/statistics" component={Statistics} />
 
