@@ -829,14 +829,14 @@ class Property extends Component {
           </Row>
         </div>
 
-        {/* <Modal_Add_House onInit={this.onModalAddHouseInit.bind(this)} onOk={this.onModalAddHouseOk.bind(this)} /> */}
-        {/* <Modal_Edit_House onInit={this.onModalEditHouseInit.bind(this)} onOk={this.onModalEditHouseOk.bind(this)} options={{ houseName: selectedHouseName }} /> */}
+        <Modal_Add_House onInit={this.onModalAddHouseInit.bind(this)} onOk={this.onModalAddHouseOk.bind(this)} />
+        <Modal_Edit_House onInit={this.onModalEditHouseInit.bind(this)} onOk={this.onModalEditHouseOk.bind(this)} options={{ houseName: selectedHouseName }} />
 
-        {/* <Modal_Add_Building onInit={this.onModalAddBuildingInit.bind(this)} onOk={this.onModalAddBuildingOk.bind(this)} /> */}
-        {/* <Modal_Edit_Building onInit={this.onModalEditBuildingInit.bind(this)} onOk={this.onModalEditBuildingOk.bind(this)} options={{ buildingName: selectedBuildingName }} /> */}
+        <Modal_Add_Building onInit={this.onModalAddBuildingInit.bind(this)} onOk={this.onModalAddBuildingOk.bind(this)} /> */}
+        <Modal_Edit_Building onInit={this.onModalEditBuildingInit.bind(this)} onOk={this.onModalEditBuildingOk.bind(this)} options={{ buildingName: selectedBuildingName }} />
 
-        {/* <Modal_Add_Floor onInit={this.onModalAddFloorInit.bind(this)} onOk={this.onModalAddFloorOk.bind(this)} />
-        <Modal_Edit_Floor onInit={this.onModalEditFloorInit.bind(this)} onOk={this.onModalEditFloorOk.bind(this)} options={{ floorName: selectedFloorName }} /> */}
+        <Modal_Add_Floor onInit={this.onModalAddFloorInit.bind(this)} onOk={this.onModalAddFloorOk.bind(this)} />
+        <Modal_Edit_Floor onInit={this.onModalEditFloorInit.bind(this)} onOk={this.onModalEditFloorOk.bind(this)} options={{ floorName: selectedFloorName }} />
 
         <Modal_Add_Room onInit={this.onModalAddRoomInit.bind(this)} onOk={this.onModalAddRoomOk.bind(this)} />
         <Modal_Edit_Room onInit={this.onModalEditRoomInit.bind(this)} onOk={this.onModalEditRoomOk.bind(this)} options={{ roomName: this.state.selectedRoomName }} />
