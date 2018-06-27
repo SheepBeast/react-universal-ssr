@@ -106,7 +106,7 @@ class Login extends React.Component {
                     message: '密码为6-16位'
                   }]
                 })(
-                  <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="密码" style={{ height: 32 }} />
+                  <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" autoComplete="false" placeholder="密码" style={{ height: 32 }} />
                 )
               }
             </FormItem>

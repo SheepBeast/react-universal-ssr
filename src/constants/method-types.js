@@ -82,6 +82,7 @@ export const BUSINESS_AUDIT_NEWS = 'businessAuditNews'
 export const BUSINESS_SEND_NEWS = 'businessSendNews'
 export const BUSINESS_RENT_STATICSTICS = 'businessRentStatistics'
 export const BUSINESS_DEVICE_STATICSTICS = 'businessDeviceStatistics'
+export const BUSINESS_TENANT_STATICSTICS = 'businessTenantStatistics'
 export const BUSINESS_GATEWAY_LIST = 'businessGatewayList'
 export const BUSINESS_GATEWAY_DELETE = 'businessGatewayDelete'
 
@@ -96,3 +97,5 @@ export const BUSINESS_APARTMENT_LIST = 'businessApartmentList'
 export const BUSINESS_PROVINCE_CITIES_AREAS_LIST = 'businessProvincesCitiesAreasList'
 
 export const BUSINESS_RELEASE_ALARM = 'businessReleaseAlarm'
+
+export const BUSINESS_DYNAMIC_INFO_LIST = 'businessDynamicInfoList'

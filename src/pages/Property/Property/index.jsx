@@ -17,12 +17,6 @@ import Modal_Edit_Floor from './Modal_Edit_Floor'
 import Modal_Add_Room from './Modal_Add_Room'
 import Modal_Edit_Room from './Modal_Edit_Room'
 
-
-
-
-import Modal_Batch_Add_Property_1 from './Modal_Batch_Add_Property_1'
-import Modal_Batch_Add_Property_2 from './Modal_Batch_Add_Property_2'
-import Modal_Batch_Add_Property_3 from './Modal_Batch_Add_Property_3'
 import Modal_Bind_Device from './Modal_Bind_Device'
 import isRequestSuccess from '../../../utils/isRequestSuccess';
 import './index.less'
@@ -56,14 +50,7 @@ class Property extends Component {
       selectedBuildingName: null,
       selectedFloorName: null,
 
-      addingHouseId: null,
-      buildingNum: 0,
-      count: 0,
-
-      addingFloorList: [],
-
       bindingRoomId: null,
-      selectedRoomId: null,
 
       houseList: [],
       buildingList: [],
@@ -71,7 +58,9 @@ class Property extends Component {
       roomList: [],
 
       selectedHouseIndex: 0,
-      selectedBuildingIndex: 0
+      selectedBuildingIndex: 0,
+      selectedFloorIndex: 0,
+      selectedRoomIndex: 0
     }
 
     this.modal = {}
@@ -113,10 +102,11 @@ class Property extends Component {
     })
   }
 
-  onFloorChange({ floorId, floorName }) {
+  onFloorChange({ floorId, floorName, index }) {
     this.setState({
       selectedFloorId: floorId,
-      selectedFloorName: floorName
+      selectedFloorName: floorName,
+      selectedFloorIndex: index
     }, () => {
       var params = {
         floorId,
@@ -449,7 +439,7 @@ class Property extends Component {
       if (isRequestSuccess(ret)) {
         message.success(`修改房间成功`)
 
-        var idx = this.state.selectedIndex
+        var idx = this.state.selectedRoomIndex
         var roomList = [].concat(this.state.roomList)
         var room = { ...this.state.roomList[idx] }
         room.roomName = form.roomName
@@ -469,116 +459,10 @@ class Property extends Component {
   callModalEditRoom({ roomId, roomName, index }) {
     this.setState({
       selectedRoomId: roomId,
-      selectedIndex: index,
+      selectedRoomIndex: index,
       selectedRoomName: roomName
     }, () => {
       this.modal.editRoom.show()
-    })
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // batch add property 1
-  onModalBatchAddProperty1Init(modal) {
-    this.modal.batchAddProperty1 = modal
-  }
-
-  onModalBatchAddProperty1Ok(form) {
-    this.props.addHouse(form).then(ret => {
-      if (isRequestSuccess(ret)) {
-        let { buildingNum } = form
-        let { houseId } = ret.data.data
-
-        this.startAddBuilding({ buildingNum, houseId })
-      } else {
-        message.error(`批量添加房产失败，${ret.data.reason}`)
-      }
-    })
-  }
-
-  // batch add property 2
-  onModalBatchAddProperty2Init(modal) {
-    this.modal.batchAddProperty2 = modal
-  }
-
-  onModalBatchAddProperty2Ok(form) {
-    let { buildingName, batch, address, district, floorNum, roomNum, roomNamePrefix } = form
-
-    let params = {
-      houseId: this.state.addingHouseId,
-      buildingName,
-      batch: batch ? 1 : 0,
-      area: address
-    }
-
-    if (district) {
-      if (district[0]) {
-        params.provinceId = district[0]
-      }
-
-      if (district[1]) {
-        params.cityId = district[1]
-      }
-
-      if (district[2]) {
-        params.areaId = district[2]
-      }
-    }
-
-    if (floorNum) {
-      params.floorNum = floorNum
-    }
-
-    if (roomNum) {
-      params.roomNum = roomNum
-    }
-
-    if (roomNamePrefix) {
-      params.roomNamePrefix = roomNamePrefix
-    }
-
-    console.log('add building params -->', params)
-
-    this.props.addBuilding(params).then(ret => {
-      if (isRequestSuccess(ret)) {
-        this.setState({
-          addingFloorList: ret.data.data.floorList
-        }, () => {
-          this.modal.batchAddProperty3.show()
-        })
-      } else {
-        message.error(`批量添加房产失败，${ret.data.reason}`)
-      }
-    })
-  }
-
-
-  // batch add property 3
-  onModalBatchAddProperty3Init(modal) {
-    this.modal.batchAddProperty3 = modal
-  }
-
-  onModalBatchAddProperty3Ok(form) {
-    let params = { level: 4, ...form }
-
-    this.props.delRoom(params).then(ret => {
-      if (isRequestSuccess(ret)) {
-        this.setState({
-          count: ++this.state.count
-        }, this.loopAddBuilding)
-      } else {
-        message.error(`批量添加房产失败，${ret.data.reason}`)
-      }
     })
   }
 
@@ -622,10 +506,6 @@ class Property extends Component {
 
 
   ////////////////////////////
-
-
-
-
 
   delHouse() {
     var params = {
@@ -706,7 +586,7 @@ class Property extends Component {
               <Form>
                 {
                   houseList.length > 0 ?
-                    <FormItem label="公寓名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
+                    <FormItem className="mb-0" label="公寓名称" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
                       <RadioGroup className="custom-radio-button-group" defaultValue={selectedHouseId}>
                         {
                           houseList.map(({ houseId, houseName }, idx) =>
@@ -718,7 +598,7 @@ class Property extends Component {
                 }
                 {
                   buildingList.length > 0 ?
-                    <FormItem label="楼栋名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
+                    <FormItem className="mb-0" label="楼栋名称" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
                       <RadioGroup className="custom-radio-button-group" defaultValue={selectedBuildingId} value={selectedBuildingId}>
                         {
                           buildingList.map(({ buildingId, buildingName }, idx) =>
@@ -731,7 +611,7 @@ class Property extends Component {
 
                 {
                   floorList.length > 0 ?
-                    <FormItem label="楼层名称" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
+                    <FormItem label="楼层名称" className="mb-0" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
                       <RadioGroup className="custom-radio-button-group" defaultValue={selectedFloorId} value={selectedFloorId}>
                         {
                           floorList.map(({ floorId, floorName }, idx) =>
@@ -745,20 +625,46 @@ class Property extends Component {
             </Col>
             <Col span={4}>
               <Form className="tr">
-                <FormItem>
-                  <a className="mr-20" onClick={() => { this.modal.addHouse.show() }}>添加</a>
-                  <a className="mr-20" onClick={() => { this.modal.editHouse.show() }}>编辑</a>
-                  <a onClick={this.delHouse.bind(this)}>删除</a>
+                <FormItem className="mb-0">
+                  <a onClick={() => { this.modal.addHouse.show() }}>添加房产</a>
+                  {
+                    selectedHouseId ?
+                      <span>
+                        <a className="ml-20" onClick={() => { this.modal.editHouse.show() }}>编辑房产</a>
+                        <a className="ml-20" onClick={this.delHouse.bind(this)}>删除房产</a>
+                      </span>
+
+                      : null
+                  }
+
                 </FormItem>
-                <FormItem>
-                  <a className="mr-20" onClick={() => { this.modal.addBuilding.show() }}>添加</a>
-                  <a className="mr-20" onClick={() => { this.modal.editBuilding.show() }}>编辑</a>
-                  <a onClick={this.delBuilding.bind(this)}>删除</a>
+                <FormItem className="mb-0">
+                  {
+                    selectedHouseId ? <a onClick={() => { this.modal.addBuilding.show() }}>添加楼栋</a> : null
+                  }
+                  {
+                    selectedBuildingId ?
+                      <span>
+                        <a className="ml-20" onClick={() => { this.modal.editBuilding.show() }}>编辑楼栋</a>
+                        <a className="ml-20" onClick={this.delBuilding.bind(this)}>删除楼栋</a>
+                      </span>
+                      : null
+                  }
+
                 </FormItem>
-                <FormItem>
-                  <a className="mr-20" onClick={() => { this.modal.addFloor.show() }}>添加</a>
-                  <a className="mr-20" onClick={() => { this.modal.editFloor.show() }}>编辑</a>
-                  <a onClick={this.delFloor.bind(this)}>删除</a>
+                <FormItem className="mb-0">
+                  {
+                    selectedBuildingId ? <a onClick={() => { this.modal.addFloor.show() }}>添加楼层</a> : null
+                  }
+                  {
+                    selectedFloorId ?
+                      <span>
+                        <a className="ml-20" onClick={() => { this.modal.editFloor.show() }}>编辑楼层</a>
+                        <a className="ml-20" onClick={this.delFloor.bind(this)}>删除楼层</a>
+                      </span>
+
+                      : null
+                  }
                 </FormItem>
               </Form>
             </Col>
@@ -768,18 +674,19 @@ class Property extends Component {
 
 
         <div className="container">
-          <Row >
-            <Col className="tc" span={2}>
-              <Avatar className="br-50" style={{ width: 80, height: 80 }} src="http://cdn.duitang.com/uploads/item/201405/27/20140527173845_dk8uY.jpeg" />
-            </Col>
-            <Col span={8}>
+          <div>
+            <div style={{ width: 70, height: 70, display: 'inline-block', verticalAlign: 'top' }}>
+              <Avatar className="br-50" style={{ width: '100%', height: '100%' }} src="http://cdn.duitang.com/uploads/item/201405/27/20140527173845_dk8uY.jpeg" />
+            </div>
+            <div className="pl-20" style={{ display: 'inline-block' }}>
               <h3>
                 <b className="mr-20">{this.state.selectedHouseName || '--'}</b>
                 <small className="gray">已租--套&nbsp;&nbsp;闲置--套</small>
               </h3>
               <Button size="small" icon="plus" type="primary" onClick={() => { this.modal.addRoom.show() }}>添加房间</Button>
-            </Col>
-          </Row>
+            </div>
+          </div>
+
 
           <Divider />
 
@@ -807,13 +714,7 @@ class Property extends Component {
                           <Tooltip title="关联设备">
                             <Icon type="select" />
                           </Tooltip>
-                        </a>,
-
-                        // <Link to={url}>
-                        //   <Tooltip title="标记">
-                        //     <Icon type="tag-o" />
-                        //   </Tooltip>
-                        // </Link>
+                        </a>
                       ]
                     }>
                       <div className="tc">
@@ -840,12 +741,6 @@ class Property extends Component {
 
         <Modal_Add_Room onInit={this.onModalAddRoomInit.bind(this)} onOk={this.onModalAddRoomOk.bind(this)} />
         <Modal_Edit_Room onInit={this.onModalEditRoomInit.bind(this)} onOk={this.onModalEditRoomOk.bind(this)} options={{ roomName: this.state.selectedRoomName }} />
-
-        {/* <Modal_Batch_Add_Property_1 onInit={this.onModalBatchAddProperty1Init.bind(this)} onOk={this.onModalBatchAddProperty1Ok.bind(this)} />
-
-        <Modal_Batch_Add_Property_2 onInit={this.onModalBatchAddProperty2Init.bind(this)} onOk={this.onModalBatchAddProperty2Ok.bind(this)} subTitle={`楼栋${this.state.count + 1}`} />
-
-        <Modal_Batch_Add_Property_3 onInit={this.onModalBatchAddProperty3Init.bind(this)} onOk={this.onModalBatchAddProperty3Ok.bind(this)} floorList={this.state.addingFloorList} subTitle={`楼栋${this.state.count + 1}`} /> */}
 
         <Modal_Bind_Device onInit={this.onModalBindDeviceInit.bind(this)} onOk={this.onModalBindDeviceOk.bind(this)} />
 

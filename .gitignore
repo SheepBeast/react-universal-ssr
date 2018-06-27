@@ -4,3 +4,4 @@ dist/
 log/
 *.log
 conemu*
+npm-debug*
