@@ -115,7 +115,7 @@ class Modal_Edit_Building extends React.Component {
                 }],
                 initialValue: buildingName
               })(
-                <Cascader className="mb-20" options={this.state.district} changeOnSelect={true} placeholder="省/市/区" />
+                <Cascader options={this.state.district} changeOnSelect={true} placeholder="省/市/区" />
               )
             }
           </FormItem>

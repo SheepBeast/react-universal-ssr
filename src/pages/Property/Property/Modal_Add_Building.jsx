@@ -110,8 +110,7 @@ class Modal_Add_Building extends React.Component {
                 rules: [{
                   required: true,
                   message: '楼栋地址不能为空'
-                }],
-                initialValue: buildingName
+                }]
               })(
                 <Cascader options={this.state.district} changeOnSelect={true} placeholder="省/市/区" />
               )
