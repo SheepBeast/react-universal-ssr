@@ -131,13 +131,11 @@ class Property extends Component {
           selectedHouseId: houseId,
           selectedHouseName: houseName
         }, () => {
-          if (houseId) {
-            var params = {
-              houseId,
-              state: 1
-            }
-            this.linkedFetchBuildingList(params)
+          var params = {
+            houseId,
+            state: 1
           }
+          this.linkedFetchBuildingList(params)
         })
       }
     })
@@ -145,66 +143,86 @@ class Property extends Component {
 
 
   linkedFetchBuildingList(params) {
-    this.props.fetchBuildingList(params).then(ret => {
-      var buildingList = isRequestSuccess(ret) && ret.data.data.list || []
-
-      var first = buildingList[0] || {}
-      var { buildingId, buildingName } = first
-
+    if (!params || !params.houseId) {
       this.setState({
-        buildingList,
-        selectedBuildingId: buildingId,
-        selectedBuildingName: buildingName
-      }, () => {
-        if (buildingId) {
+        selectedBuildingId: null,
+        buildingList: []
+      }, this.linkedFetchFloorList)
+    } else {
+      this.props.fetchBuildingList(params).then(ret => {
+        var buildingList = isRequestSuccess(ret) && ret.data.data.list || []
+
+        var first = buildingList[0] || {}
+        var { buildingId, buildingName } = first
+
+        this.setState({
+          buildingList,
+          selectedBuildingId: buildingId,
+          selectedBuildingName: buildingName
+        }, () => {
           var params = {
             buildingId,
             state: 1
           }
 
           this.linkedFetchFloorList(params)
-        }
+        })
       })
-    })
+    }
+
   }
 
   linkedFetchFloorList(params) {
-    this.props.fetchFloorList(params).then(ret => {
-      var floorList = isRequestSuccess(ret) && ret.data.data.list || []
-
-      var first = floorList[0] || {}
-      var { floorId, floorName } = first
-
+    if (!params || !params.buildingId) {
       this.setState({
-        floorList,
-        selectedFloorId: floorId,
-        selectedFloorName: floorName
-      }, () => {
-        if (floorId) {
+        selectedFloorId: null,
+        floorList: []
+      }, this.linkedFetchRoomList)
+    } else {
+      this.props.fetchFloorList(params).then(ret => {
+        var floorList = isRequestSuccess(ret) && ret.data.data.list || []
+
+        var first = floorList[0] || {}
+        var { floorId, floorName } = first
+
+        this.setState({
+          floorList,
+          selectedFloorId: floorId,
+          selectedFloorName: floorName
+        }, () => {
           var params = {
             floorId,
             state: [1, 2, 3, 4, 5]
           }
 
           this.linkedFetchRoomList(params)
-        }
+        })
       })
-    })
+    }
+
   }
 
   linkedFetchRoomList(params, callback) {
-    this.props.fetchRoomList(params).then(ret => {
-      var roomList = isRequestSuccess(ret) && ret.data.data.list || []
-
-      var first = roomList[0] || {}
-      var { roomId, roomName } = first
-
+    if (!params || !params.floorId) {
       this.setState({
-        roomList,
-        selectedRoomId: roomId,
-        selectedRoomName: roomName
-      }, callback)
-    })
+        selectedRoomId: null,
+        roomList: []
+      })
+    } else {
+      this.props.fetchRoomList(params).then(ret => {
+        var roomList = isRequestSuccess(ret) && ret.data.data.list || []
+
+        var first = roomList[0] || {}
+        var { roomId, roomName } = first
+
+        this.setState({
+          roomList,
+          selectedRoomId: roomId,
+          selectedRoomName: roomName
+        }, callback)
+      })
+    }
+
   }
 
 
@@ -673,62 +691,65 @@ class Property extends Component {
         </div>
 
 
-        <div className="container">
-          <div>
-            <div style={{ width: 70, height: 70, display: 'inline-block', verticalAlign: 'top' }}>
-              <Avatar className="br-50" style={{ width: '100%', height: '100%' }} src="http://cdn.duitang.com/uploads/item/201405/27/20140527173845_dk8uY.jpeg" />
-            </div>
-            <div className="pl-20" style={{ display: 'inline-block' }}>
-              <h3>
-                <b className="mr-20">{this.state.selectedHouseName || '--'}</b>
-                <small className="gray">已租--套&nbsp;&nbsp;闲置--套</small>
-              </h3>
-              <Button size="small" icon="plus" type="primary" onClick={() => { this.modal.addRoom.show() }}>添加房间</Button>
-            </div>
-          </div>
+        {
+          selectedFloorId ?
+            <div className="container">
+              <div>
+                <div style={{ width: 70, height: 70, display: 'inline-block', verticalAlign: 'top' }}>
+                  <Avatar className="br-50" style={{ width: '100%', height: '100%' }} src="http://cdn.duitang.com/uploads/item/201405/27/20140527173845_dk8uY.jpeg" />
+                </div>
+                <div className="pl-20" style={{ display: 'inline-block' }}>
+                  <h3>
+                    <b className="mr-20">{this.state.selectedHouseName || '--'}</b>
+                    <small className="gray">已租--套&nbsp;&nbsp;闲置--套</small>
+                  </h3>
+                  <Button size="small" icon="plus" type="primary" onClick={() => { this.modal.addRoom.show() }}>添加房间</Button>
+                </div>
+              </div>
 
 
-          <Divider />
+              <Divider />
 
-          <Row gutter={8}>
-            {
-              roomList.map(({ roomId, roomName, state }, idx) => {
-                var url = `/property-room-detail?roomId=${encodeURIComponent(roomId)}`
-                return (
-                  <Col key={roomId} span={4} className="mb-20" >
-                    <Card actions={
-                      [
-                        <Link to={url}>
-                          <Tooltip title="房间详情">
-                            <Icon type="file-text" />
-                          </Tooltip>
-                        </Link>,
+              <Row gutter={8}>
+                {
+                  roomList.map(({ roomId, roomName, state }, idx) => {
+                    var url = `/property-room-detail?roomId=${encodeURIComponent(roomId)}`
+                    return (
+                      <Col key={roomId} span={4} className="mb-20" >
+                        <Card actions={
+                          [
+                            <Link to={url}>
+                              <Tooltip title="房间详情">
+                                <Icon type="file-text" />
+                              </Tooltip>
+                            </Link>,
 
-                        <a onClick={this.callModalEditRoom.bind(this, { roomId, roomName, index: idx })}>
-                          <Tooltip title="修改">
-                            <Icon type="form" />
-                          </Tooltip>
-                        </a>,
+                            <a onClick={this.callModalEditRoom.bind(this, { roomId, roomName, index: idx })}>
+                              <Tooltip title="修改">
+                                <Icon type="form" />
+                              </Tooltip>
+                            </a>,
 
-                        <a onClick={this.callModalBindDevice.bind(this, { roomId })}>
-                          <Tooltip title="关联设备">
-                            <Icon type="select" />
-                          </Tooltip>
-                        </a>
-                      ]
-                    }>
-                      <div className="tc">
-                        <Avatar style={{ width: 100, height: 100, borderRadius: '50%' }} src="http://cdn.duitang.com/uploads/item/201405/27/20140527173845_dk8uY.jpeg" className="mb-20" />
-                        <h3 className="mb-20">{roomName}</h3>
-                        <h3 className={state === 1 ? 'health' : 'danger'}>{roomStateRefers[state]}</h3>
-                      </div>
-                    </Card>
-                  </Col>
-                )
-              })
-            }
-          </Row>
-        </div>
+                            <a onClick={this.callModalBindDevice.bind(this, { roomId })}>
+                              <Tooltip title="关联设备">
+                                <Icon type="select" />
+                              </Tooltip>
+                            </a>
+                          ]
+                        }>
+                          <div className="tc">
+                            <Avatar style={{ width: 100, height: 100, borderRadius: '50%' }} src="http://cdn.duitang.com/uploads/item/201405/27/20140527173845_dk8uY.jpeg" className="mb-20" />
+                            <h3 className="mb-20">{roomName}</h3>
+                            <h3 className={state === 1 ? 'health' : 'danger'}>{roomStateRefers[state]}</h3>
+                          </div>
+                        </Card>
+                      </Col>
+                    )
+                  })
+                }
+              </Row>
+            </div> : null
+        }
 
         <Modal_Add_House onInit={this.onModalAddHouseInit.bind(this)} onOk={this.onModalAddHouseOk.bind(this)} />
         <Modal_Edit_House onInit={this.onModalEditHouseInit.bind(this)} onOk={this.onModalEditHouseOk.bind(this)} options={{ houseName: selectedHouseName }} />

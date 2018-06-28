@@ -1,5 +1,7 @@
 import { api } from "../api";
-import { BUSINESS_HOUSE_LIST, BUSINESS_ROOM_LIST, BUSINESS_BUILDING_LIST, BUSINESS_FLOOR_LIST, BUSINESS_APARTMENT_LIST, BUSINESS_ROOM_DETAIL, BUSINESS_ROOM_TENANT_LIST, BUSINESS_ROOM_DEVICE_LIST, BUSINESS_ADD_HOUSE, BUSINESS_ADD_BUILDING, BUSINESS_DEL_ROOM, BUSINESS_ROOM_ADD_DEVICE, BUSINESS_UPDATE_ROOM_INFO, BUSINESS_UPDATE_HOUSE_INFO, BUSINESS_UPDATE_BUILDING_INFO, BUSINESS_UPDATE_FLOOR_INFO, BUSINESS_ADD_ROOM, BUSINESS_ADD_FLOOR } from "../constants/method-types";
+import { BUSINESS_HOUSE_LIST, BUSINESS_ROOM_LIST, BUSINESS_BUILDING_LIST, BUSINESS_FLOOR_LIST, BUSINESS_APARTMENT_LIST, BUSINESS_ROOM_DETAIL, BUSINESS_ROOM_TENANT_LIST, BUSINESS_ROOM_DEVICE_LIST, BUSINESS_ADD_HOUSE, BUSINESS_ADD_BUILDING, BUSINESS_DEL_ROOM, BUSINESS_ROOM_ADD_DEVICE, BUSINESS_UPDATE_ROOM_INFO, BUSINESS_UPDATE_HOUSE_INFO, BUSINESS_UPDATE_BUILDING_INFO, BUSINESS_UPDATE_FLOOR_INFO, BUSINESS_ADD_ROOM, BUSINESS_ADD_FLOOR, BUSINESS_TENANT_CHECK_OUT_ROOM } from "../constants/method-types";
+import { SET_ROOM_DETAIL } from "../constants/action-types";
+import isRequestSuccess from "../utils/isRequestSuccess";
 
 // 房产列表
 export const fetchHouseList = params => async dispatch => {
@@ -47,11 +49,21 @@ export const fetchApartmentList = params => async dispatch => {
   return ret
 }
 
+export const setRoomDetail = roomDetail => ({
+  type: SET_ROOM_DETAIL,
+  roomDetail
+})
+
+
 // 房间详情
 export const fetchRoomDetail = params => async dispatch => {
   let ret = await api.fetch(BUSINESS_ROOM_DETAIL, params)
 
   console.log('room detail ret -->', ret)
+
+  // if(isRequestSuccess(ret)){
+  //   dispatch(setRoomDetail(ret.data.data))
+  // }
 
   return ret
 }
@@ -164,6 +176,15 @@ export const updateRoomInfo = params => async dispatch => {
   let ret = await api.fetch(BUSINESS_UPDATE_ROOM_INFO, params)
 
   console.log(' update room info ret -->', ret)
+
+  return ret
+}
+
+// 退租
+export const checkoutRoom = params => async dispatch => {
+  let ret = await api.fetch(BUSINESS_TENANT_CHECK_OUT_ROOM, params)
+
+  console.log(' tenant check out ret -->', ret)
 
   return ret
 }

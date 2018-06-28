@@ -215,33 +215,19 @@ class AddTenant extends Component {
                   }
                 </FormItem>
               </Col>
+
               <Col span={10} offset={1} >
                 <h3>
                   <b>租期信息</b>
                 </h3>
                 <Divider />
                 <FormItem label="起租日期" labelCol={{ span: 3 }} wrapperCol={{ span: 11 }} >
-                  <DatePicker className="w-100" onChange={this.onBeginDateChange.bind(this)} />
+                  <DatePicker className="w-100" onChange={this.onBeginDateChange.bind(this)} placeholder="起始时间" />
                 </FormItem>
 
                 <FormItem label="到租日期" labelCol={{ span: 3 }} wrapperCol={{ span: 11 }} >
-                  <DatePicker className="w-100" onChange={this.onEndDateChange.bind(this)} />
+                  <DatePicker className="w-100" onChange={this.onEndDateChange.bind(this)} placeholder="结束时间" />
                 </FormItem>
-
-                {/* <FormItem label="提醒日期" labelCol={{ span: 3 }} wrapperCol={{ span: 19 }} >
-                  <Row>
-                    <Col span={14} >
-                      <Select defaultValue="1">
-                        <Option value="1">14号</Option>
-                      </Select>
-                    </Col>
-                    <Col span={10} className="pl-30">
-                      <FormItem label="提醒收租" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
-                        <Switch defaultChecked style={{ marginTop: 4 }} />
-                      </FormItem>
-                    </Col>
-                  </Row>
-                </FormItem> */}
               </Col>
             </Row>
           </Form>

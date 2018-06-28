@@ -1,12 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Form, Input, Select, Modal, DatePicker, Breadcrumb } from 'antd'
+import DescriptionList from 'ant-design-pro/lib/DescriptionList';
+
 import { fetchRoomList } from '../../../actions/property'
 import isRequestSuccess from '../../../utils/isRequestSuccess'
 
 const FormItem = Form.Item
 const Option = Select.Option
 const BreadcrumbItem = Breadcrumb.Item
+const Description = DescriptionList.Description
 
 class ModalChangeRoom extends React.Component {
   constructor(props) {
@@ -59,7 +62,7 @@ class ModalChangeRoom extends React.Component {
 
     var { options, form } = this.props
 
-    var { tenantName, endDate, houseName, buildingName, floorName, roomName } = options
+    var { tenantName, endTime, houseName, buildingName, floorName, roomName } = options
 
     var { roomList } = this.state
 
@@ -67,25 +70,19 @@ class ModalChangeRoom extends React.Component {
 
     return (
       <Modal title="换房" visible={this.state.visible} destroyOnClose={true} okText="保存" cancelText="取消" onOk={this.onOk.bind(this)} onCancel={this.hide.bind(this)}>
+        <h3>
+          <b>{tenantName}</b>
+        </h3>
+        <DescriptionList size="large" title="当前" col="1">
+          <Description term="居住房间">{`${houseName}-${buildingName}-${floorName}-${roomName}`}</Description>
+          <Description term="合约到期">{endTime}</Description>
+        </DescriptionList>
+
+        <br />
+
+        <DescriptionList size="large" title="更换" col="1" />
+
         <Form>
-          <h3>
-            <b>{tenantName}</b>
-          </h3>
-          <br />
-          <h3 className="gray">
-            <b>当前</b>
-          </h3>
-          <FormItem label="居住房间" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} style={{ marginBottom: 2 }} >
-            <b style={{ lineHeight: '32px' }}>{`${houseName}-${buildingName}-${floorName}-${roomName}`}</b>
-          </FormItem>
-
-          <FormItem label="合约到期" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}  >
-            <b style={{ lineHeight: '32px' }}>{endDate}</b>
-          </FormItem>
-
-          <h3 className="gray">
-            <b>更换</b>
-          </h3>
           <FormItem label="更换房间" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
             {
               getFieldDecorator('roomId', {
@@ -108,9 +105,6 @@ class ModalChangeRoom extends React.Component {
               )
             }
           </FormItem>
-          {/* <FormItem label="更换时间" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
-            <DatePicker className="w-100" />
-          </FormItem> */}
         </Form>
       </Modal>
     )

@@ -3,7 +3,7 @@ import { SET_HOUSE_LIST, SET_ROOM_LIST, SET_BUILDING_LIST, SET_FLOOR_LIST, SET_A
 export const houseList = (state = [], action) => {
   switch (action.type) {
     case SET_HOUSE_LIST:
-      return action.houseListData || []
+      return action.houseList || []
     default:
       return state
   }
@@ -12,7 +12,7 @@ export const houseList = (state = [], action) => {
 export const buildingList = (state = [], action) => {
   switch (action.type) {
     case SET_BUILDING_LIST:
-      return action.buildingListData || []
+      return action.buildingList || []
     default:
       return state
   }
@@ -21,7 +21,7 @@ export const buildingList = (state = [], action) => {
 export const floorList = (state = [], action) => {
   switch (action.type) {
     case SET_FLOOR_LIST:
-      return action.floorListData || []
+      return action.floorList || []
     default:
       return state
   }
@@ -30,7 +30,7 @@ export const floorList = (state = [], action) => {
 export const roomList = (state = [], action) => {
   switch (action.type) {
     case SET_ROOM_LIST:
-      return action.roomListData || []
+      return action.roomList || []
     default:
       return state
   }
@@ -39,7 +39,7 @@ export const roomList = (state = [], action) => {
 export const apartmentList = (state = [], action) => {
   switch (action.type) {
     case SET_APARTMENT_LSIT:
-      return action.apartmentListData || []
+      return action.apartmentList || []
     default:
       return state
   }
@@ -48,7 +48,7 @@ export const apartmentList = (state = [], action) => {
 export const roomDetail = (state = {}, action) => {
   switch (action.type) {
     case SET_ROOM_DETAIL:
-      return action.roomDetailData || {}
+      return action.roomDetail || {}
     default:
       return state
   }
@@ -57,7 +57,7 @@ export const roomDetail = (state = {}, action) => {
 export const roomTenantList = (state = [], action) => {
   switch (action.type) {
     case SET_ROOM_TENANT_LIST:
-      return action.roomTenantListData || []
+      return action.roomTenantList || []
     default:
       return state
   }
@@ -66,7 +66,7 @@ export const roomTenantList = (state = [], action) => {
 export const roomDeviceList = (state = {}, action) => {
   switch (action.type) {
     case SET_ROOM_DEVICE_LIST:
-      return action.roomDeviceListData || {}
+      return action.roomDeviceList || {}
     default:
       return state
   }

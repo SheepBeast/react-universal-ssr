@@ -119,6 +119,7 @@ server.post('/register', commons_middleware)
 server.post('/forget-password', commons_middleware)
 
 server.post('/modify-password', function (req, res, next) {
+  console.log('modify password ------------------------------>')
   let {
     method,
     tokenId,
@@ -132,6 +133,8 @@ server.post('/modify-password', function (req, res, next) {
   var md5_new_password = encrypt.md5(newPassword)
 
   api.tokenId = tokenId
+
+  console.log('md5 -->', md5_old_password, md5_new_password)
 
   api.fetch(method, { oldPassword: md5_old_password, newPassword: md5_new_password }, { url: __REMOTE_SERVER__ })
     .then(ret => {

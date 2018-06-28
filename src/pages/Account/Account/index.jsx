@@ -50,10 +50,6 @@ class Account extends React.Component {
     })
   }
 
-  componentDidMount() {
-    console.log('this -->', this)
-  }
-
   // avatar
   onModalAvatarInit(modal) {
     this.modal.avatar = modal

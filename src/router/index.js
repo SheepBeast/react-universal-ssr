@@ -35,7 +35,7 @@ import {
 export default function getRoutes() {
     return (
         <div>
-            <Route path="/" component={Statistics} exact />
+            <Route path="/" component={Property} exact />
 
             <Route path="/statistics" component={Statistics} />
 

@@ -19,7 +19,7 @@ export const validateMobile = params => async dispatch => {
 
 
 export const updatePassowrd = params => async dispatch => {
-  let ret = await api.fetch(BUSINESS_UPDATE_PASSWORD, params, '/local/modify-password')
+  let ret = await api.fetch(BUSINESS_UPDATE_PASSWORD, params, { url: '/local/modify-password' })
 
   console.log('update password ret -->', ret)
 

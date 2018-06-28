@@ -9,4 +9,4 @@ type format = {
   newPassword: string
 }
 
-export default (data: format, tokenId: string, requestOptions: object): Promise => base(createApiOptions(BUSINESS_UPDATE_PASSWORD, data, tokenId))
+export default (data: format, tokenId: string, requestOptions: object): Promise => base(createApiOptions(BUSINESS_UPDATE_PASSWORD, data, tokenId, requestOptions))

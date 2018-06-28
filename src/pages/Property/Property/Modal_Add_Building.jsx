@@ -17,46 +17,46 @@ class Modal_Add_Building extends React.Component {
   }
 
   componentWillMount() {
-    this.props.fetchDistrictList().then(ret => {
-      if (isRequestSuccess(ret)) {
-        var provinces = ret.data.data.provinces
+    // this.props.fetchDistrictList().then(ret => {
+    //   if (isRequestSuccess(ret)) {
+    //     var provinces = ret.data.data.provinces
 
-        for (var i = 0, pl = provinces.length; i < pl; i++) {
-          var p = provinces[i]
+    //     for (var i = 0, pl = provinces.length; i < pl; i++) {
+    //       var p = provinces[i]
 
-          p.label = p.provinceName
-          p.value = p.provinceId
+    //       p.label = p.provinceName
+    //       p.value = p.provinceId
 
-          var cities = p.cities
+    //       var cities = p.cities
 
-          p.children = p.cities
+    //       p.children = p.cities
 
-          for (var j = 0, cl = cities.length; j < cl; j++) {
+    //       for (var j = 0, cl = cities.length; j < cl; j++) {
 
-            var c = cities[j]
+    //         var c = cities[j]
 
-            c.label = c.cityName
-            c.value = c.cityId
+    //         c.label = c.cityName
+    //         c.value = c.cityId
 
-            var areas = c.areas
+    //         var areas = c.areas
 
-            c.children = c.areas
+    //         c.children = c.areas
 
-            for (var k = 0, al = areas.length; k < al; k++) {
-              var a = areas[k]
+    //         for (var k = 0, al = areas.length; k < al; k++) {
+    //           var a = areas[k]
 
-              a.label = a.areaName
-              a.value = a.areaId
-            }
+    //           a.label = a.areaName
+    //           a.value = a.areaId
+    //         }
 
-          }
-        }
+    //       }
+    //     }
 
-        this.setState({
-          district: provinces
-        })
-      }
-    })
+    //     this.setState({
+    //       district: provinces
+    //     })
+    //   }
+    // })
   }
 
   show() {

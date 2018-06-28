@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Button, Avatar, Row, Col, Breadcrumb, Card, Divider, Table, Icon, Modal, message } from 'antd'
-import { fetchRoomDetail, fetchRoomTenantList, fetchRoomDeviceList } from '../../../actions/property';
-import { fetchTenantDetail, updateTenancy, delTenant, tenantChangeRoom } from '../../../actions/tenant';
+import { fetchRoomDetail, fetchRoomTenantList, fetchRoomDeviceList, checkoutRoom } from '../../../actions/property';
+import { fetchTenantDetail, updateTenancy, tenantChangeRoom } from '../../../actions/tenant';
 
 import ModalRelet from './Modal_Relet'
 import ModalChangeRoom from './Modal_Change_Room'
@@ -14,6 +14,7 @@ import './index.less'
 
 const BreadcrumbItem = Breadcrumb.Item
 const confirm = Modal.confirm
+const ButtonGroup = Button.Group
 
 const credentialTypeRefers = {
   0: '其他',
@@ -82,28 +83,23 @@ class RoomDetail extends Component {
     })
   }
 
-  delTenant(params) {
-    confirm({
-      title: '退租确认',
-      content: '退租后对应租客的门锁相关联的APP/卡片/密码权限会消失',
-      // onOk: this.delTenantSuccess,
-      onOk: () => {
-        params.roomId = this.state.currentRoomId
+  goBack() {
+    this.props.history.goBack()
+  }
 
-        this.props.delTenant(params).then(ret => {
-          if (isRequestSuccess(ret)) {
-            message.success('退租成功')
-            this.fetchRoomTenantList()
-          } else {
-            message.error(`退租失败，${ret.data.reason}`)
-          }
-        })
-      },
-      onCancel: () => {
-        message.error(`退租失败`)
-      },
-      okText: '确定',
-      cancelText: '取消'
+
+  checkoutRoom(params) {
+    var params = {
+      roomId: this.state.currentRoomId
+    }
+
+    this.props.checkoutRoom(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success('退租成功')
+        this.goBack()
+      } else {
+        message.error(`退租失败，${ret.data.reason}`)
+      }
     })
   }
 
@@ -116,26 +112,24 @@ class RoomDetail extends Component {
   onModalReletOk(form) {
     let params = {
       roomId: this.state.currentRoomId,
-      endDate: form.newEndDate
+      endTime: form.newEndDate
     }
 
     this.props.updateTenancy(params).then(ret => {
       if (isRequestSuccess(ret)) {
         message.success('续租成功')
-        this.fetchRoomTenantList()
+        var params = {
+          roomId: this.state.currentRoomId
+        }
+        this.props.fetchRoomDetail(params).then(ret => {
+          if (isRequestSuccess(ret)) {
+            let roomDetail = ret.data.data
+            this.setState({ roomDetail })
+          }
+        })
       } else {
         message.error(`续租失败，${ret.data.reason}`)
       }
-    })
-  }
-
-  callModalRelet(params) {
-    let { endDate, tenantId } = params
-    this.setState({
-      oldEndDate: endDate,
-      updatingRetantId: tenantId
-    }, () => {
-      this.modal.relet.show()
     })
   }
 
@@ -145,15 +139,25 @@ class RoomDetail extends Component {
   }
 
   onModalChangeRoomOk(form) {
+    if (form.roomId == this.state.currentRoomId) {
+      message.success('换房成功')
+      return
+    }
+
     var params = {
       tenantId: this.state.changingTenantId,
       roomId: form.roomId,
       priorRoomId: this.state.currentRoomId
     }
 
+
     this.props.changeRoom(params).then(ret => {
       if (isRequestSuccess(ret)) {
         message.success('换房成功')
+
+        var params = {
+          roomId: this.state.currentRoomId
+        }
         this.fetchRoomTenantList()
       } else {
         message.error(`换房失败，${ret.data.reason}`)
@@ -168,7 +172,7 @@ class RoomDetail extends Component {
 
     this.props.fetchRoomTenantList(params).then(ret => {
       if (isRequestSuccess(ret)) {
-        let roomTenantList = ret.data.data.tenantList
+        let roomTenantList = ret.data.data.tenantList || []
         this.setState({ roomTenantList })
       }
     })
@@ -176,13 +180,13 @@ class RoomDetail extends Component {
 
   callModalChangeRoom(params) {
     let { houseName, buildingName, floorName, roomName } = this.state.roomDetail
-    let { tenantId, tenantName, endDate } = params
+    let { tenantId, tenantName, endTime } = params
 
     this.setState({
       changingTenantId: tenantId,
       changeRoomOptions: {
         tenantName,
-        endDate,
+        endTime,
         houseName,
         buildingName,
         floorName,
@@ -216,7 +220,7 @@ class RoomDetail extends Component {
   render() {
     let { roomDetail, roomTenantList, roomDeviceList } = this.state
 
-    let { houseName, buildingName, floorName, roomName } = roomDetail
+    let { houseName, buildingName, floorName, roomName, createTime, beginTime, endTime } = roomDetail
     let { lockId, lockMac, lockType, electricNum, lockState } = roomDeviceList
 
     var dataSource = lockId ? [{
@@ -289,15 +293,23 @@ class RoomDetail extends Component {
                 <BreadcrumbItem>{roomName}</BreadcrumbItem>
               </Breadcrumb>
 
-              <span>共<span className="danger">{roomTenantList.length}</span>位租客</span>
-
+              <span className="mr-20">共<span className="danger">{roomTenantList.length}</span>位租客</span>
+              <span>租期时间：{beginTime} 至 {endTime}</span>
             </Col>
             <Col className="tr" span={12}>
+              {
+                roomTenantList.length > 0 ?
+                  <ButtonGroup className="mr-20">
+                    <Button type="primary" ghost onClick={() => { this.modal.relet.show() }}>续租</Button>
+                    <Button type="primary" ghost onClick={this.checkoutRoom.bind(this)}>退租</Button>
+                  </ButtonGroup> : null
+              }
+
               <Link className="mr-20" to={`/property-add-tenant?roomId=${encodeURIComponent(this.state.currentRoomId)}`}>
                 <Button type="primary" className="fs-12">添加租客</Button>
               </Link>
 
-              <Button type="primary" className="fs-12 mr-10" onClick={() => { this.props.history.goBack() }}>返回</Button>
+              <Button type="primary" className="fs-12 mr-10" onClick={this.goBack.bind(this)}>返回</Button>
             </Col>
           </Row>
 
@@ -311,8 +323,6 @@ class RoomDetail extends Component {
                     tenantId,
                     tenantName,
                     phoneNo,
-                    beginDate,
-                    endDate,
                     credentialNum,
                     credentialType
                   }) => (
@@ -332,27 +342,21 @@ class RoomDetail extends Component {
                             <Icon type="exclamation-circle-o" className="fs-21" style={{ color: '#0084E3' }} />
                           }>
                           <h4>联系电话：{phoneNo}</h4>
-                          <h4>租期时间：{beginDate} 至 {endDate}</h4>
                           <h4>授权方式：{credentialTypeRefers[credentialType]}</h4>
 
                           <div className="pos-r" style={{ bottom: -10 }} >
                             <Divider className="mt-20 mb-20" ></Divider>
 
-                            <Row className="tc btn-cols" >
-                              <Col span={6} className="btn-col">
-                                <a onClick={this.callModalRelet.bind(this, { tenantId, endDate })}>续租</a>
+                            <Row gutter={10}>
+                              <Col span={12} />
+                              <Col span={6}>
+                                <Button onClick={this.callModalChangeRoom.bind(this, { tenantId, tenantName, endTime })} className="w-100" type="primary" ghost>换房</Button>
                               </Col>
 
-                              <Col span={6} className="btn-col">
-                                <a onClick={this.delTenant.bind(this, { tenantId })}>退租</a>
-                              </Col>
-
-                              <Col span={6} className="btn-col">
-                                <a onClick={this.callModalChangeRoom.bind(this, { tenantId, tenantName, endDate })}>换房</a>
-                              </Col>
-
-                              <Col span={6} className="btn-col">
-                                <Link to="/RoomDetailInfo">查看</Link>
+                              <Col span={6}>
+                                <Link to="/property-room-info">
+                                  <Button className="w-100" type="primary" ghost>查看</Button>
+                                </Link>
                               </Col>
                             </Row>
                           </div>
@@ -380,7 +384,7 @@ class RoomDetail extends Component {
         </div>
 
         <ModalChangeRoom onInit={this.onModalChangeRoomInit.bind(this)} onOk={this.onModalChangeRoomOk.bind(this)} options={this.state.changeRoomOptions} />
-        <ModalRelet onInit={this.onModalReletInit.bind(this)} onOk={this.onModalReletOk.bind(this)} oldEndDate={this.state.oldEndDate} />
+        <ModalRelet onInit={this.onModalReletInit.bind(this)} onOk={this.onModalReletOk.bind(this)} oldEndDate={endTime} />
       </div>
     )
   }
@@ -391,7 +395,7 @@ const mapDispatchToProps = dispatch => ({
   fetchRoomTenantList: params => dispatch(fetchRoomTenantList(params)),
   fetchRoomDeviceList: params => dispatch(fetchRoomDeviceList(params)),
   updateTenancy: params => dispatch(updateTenancy(params)),
-  delTenant: params => dispatch(delTenant(params)),
+  checkoutRoom: params => dispatch(checkoutRoom(params)),
   changeRoom: params => dispatch(tenantChangeRoom(params)),
   unbindDevice: params => dispatch(unbindDevice(params))
 })

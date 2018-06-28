@@ -22,16 +22,9 @@ const deviceTypeRefers = {
 }
 
 const stateRefers = {
-  0: '异常',
-  1: '正常',
-  2: '低电量',
-  3: '挟持告警',
+  3: '在线',
   4: '离线'
 }
-
-
-
-
 
 class MyDevice extends React.Component {
   constructor(props) {
