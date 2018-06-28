@@ -14,7 +14,6 @@ const FormItem = Form.Item;
 class Login extends React.Component {
   componentWillMount() {
     var remember = localStorage.getItem('hsj_remember')
-    console.log('rem', remember, remember == 1)
     if (remember == 1) {
       var accountName = localStorage.getItem('hsj_accountName'),
         password = localStorage.getItem('hsj_password')
@@ -25,6 +24,7 @@ class Login extends React.Component {
 
   login(params, callback) {
     this.props.login(params).then((ret) => {
+      console.log('ret -->', ret)
       if (isRequestSuccess(ret)) {
         const { businessUserInfo, tokenId } = ret.data.data
 
@@ -117,7 +117,7 @@ class Login extends React.Component {
                   {
                     getFieldDecorator('remember', {
                       valuePropName: 'checked',
-                      initialValue: localStorage.getItem('remember')
+                      initialValue: localStorage.getItem('hsj_remember') == 1 ? true : false
                     })(
                       <Checkbox>自动登陆</Checkbox>
                     )

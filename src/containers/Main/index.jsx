@@ -31,8 +31,7 @@ class Main extends React.Component {
   }
 
   render() {
-    let userInfo = this.props.userInfo
-    let { userPhoto, accountName } = userInfo
+    let { userPhoto, accountName } = this.props.userInfo
 
     return (
       <Content id="Main" >
@@ -41,7 +40,7 @@ class Main extends React.Component {
             content={
               <div className="tc">
                 <Link to="/Account">个人中心</Link>
-                <Divider className="mt-8 mb-8" />
+                <Divider style={{ marginTop: 8, marginBottom: 8 }} />
                 <a onClick={this.logout.bind(this)}>
                   <b>退出</b>
                 </a>

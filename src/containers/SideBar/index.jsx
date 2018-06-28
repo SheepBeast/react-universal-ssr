@@ -11,8 +11,7 @@ import './index.less'
 
 class SideBar extends React.Component {
   render() {
-    let userInfo = this.props.userInfo
-    let { userPhoto, accountName } = userInfo
+    let { userPhoto, accountName } = this.props.userInfo
 
     return (
       <Sider id="SideBar" width={280} className="bg-w" style={{ borderRight: '1px solid #eee' }}>

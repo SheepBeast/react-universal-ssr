@@ -29,14 +29,13 @@ import {
     ForgetPassword,
     Register,
 
-    Account,
-    ModifyMobile
+    Account
 } from './wrapped'
 
 export default function getRoutes() {
     return (
         <div>
-            <Route path="/" component={Account} exact />
+            <Route path="/" component={Statistics} exact />
 
             <Route path="/statistics" component={Statistics} />
 
@@ -74,7 +73,6 @@ export default function getRoutes() {
             <Route path="/forget-password" component={ForgetPassword} />
 
             <Route path="/account" component={Account} />
-            <Route path="/account-modify-mobile" component={ModifyMobile} />
         </div>
 
     )

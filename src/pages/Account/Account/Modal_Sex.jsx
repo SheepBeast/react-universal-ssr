@@ -42,7 +42,7 @@ export default class Modal_Sex extends React.Component {
     this.hide()
   }
 
-  onSexChange(e){
+  onSexChange(e) {
     console.log('e -->', e)
     this.setState({
       userSex: e
@@ -54,8 +54,8 @@ export default class Modal_Sex extends React.Component {
 
     return (
       <Modal title="修改性别" visible={visible} destroyOnClose={true} okText="确定" cancelText="取消" onOk={this.onOk.bind(this)} onCancel={this.hide.bind(this)}>
-        <Form>
-          <FormItem label="性别" labelCol={2}>
+        <Form className="form-shim">
+          <FormItem label="性别" labelCol={{ span: 2 }} wrapperCol={{ span: 20 }}>
             <Select value={userSex} onChange={this.onSexChange.bind(this)}>
               <Option value="1">男</Option>
               <Option value="2">女</Option>

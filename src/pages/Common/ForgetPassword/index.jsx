@@ -132,8 +132,6 @@ class ForgetPassword extends React.Component {
                 getFieldDecorator('rePassword', {
                   rules: [{
                     validator: (rule, value, callback) => {
-                      console.log('re password -->', rule, value)
-
                       if (!value || value !== getFieldValue('password')) {
                         callback('两次输入的密码不一致')
                       }

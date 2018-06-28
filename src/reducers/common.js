@@ -1,6 +1,7 @@
 import { SET_USER_INFO, SET_TOKEN_ID, SET_COMMON_PAGE } from '../constants/action-types'
 
 export const userInfo = (state = {}, action) => {
+  console.log('user info -->', action.userInfo)
   switch (action.type) {
     case SET_USER_INFO:
       return action.userInfo || {}
