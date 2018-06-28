@@ -733,7 +733,7 @@ class Property extends Component {
         <Modal_Add_House onInit={this.onModalAddHouseInit.bind(this)} onOk={this.onModalAddHouseOk.bind(this)} />
         <Modal_Edit_House onInit={this.onModalEditHouseInit.bind(this)} onOk={this.onModalEditHouseOk.bind(this)} options={{ houseName: selectedHouseName }} />
 
-        <Modal_Add_Building onInit={this.onModalAddBuildingInit.bind(this)} onOk={this.onModalAddBuildingOk.bind(this)} /> */}
+        <Modal_Add_Building onInit={this.onModalAddBuildingInit.bind(this)} onOk={this.onModalAddBuildingOk.bind(this)} />
         <Modal_Edit_Building onInit={this.onModalEditBuildingInit.bind(this)} onOk={this.onModalEditBuildingOk.bind(this)} options={{ buildingName: selectedBuildingName }} />
 
         <Modal_Add_Floor onInit={this.onModalAddFloorInit.bind(this)} onOk={this.onModalAddFloorOk.bind(this)} />

@@ -58,7 +58,7 @@ class User extends Component {
         message.success(`${action}用户成功`)
         this.filteredFetchUserList()
       } else {
-        message.success(`${action}用户失败，${ret.data.reason}`)
+        message.error(`${action}用户失败，${ret.data.reason}`)
       }
     })
   }
@@ -69,7 +69,7 @@ class User extends Component {
         message.success(`删除用户成功`)
         this.filteredFetchUserList()
       } else {
-        message.success(`删除用户失败，${ret.data.reason}`)
+        message.error(`删除用户失败，${ret.data.reason}`)
       }
     })
   }

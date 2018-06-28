@@ -116,6 +116,16 @@ var loadable = __TERMINAL__ === 'browser' ? {
   LoadableCheckNews: Loadable({
     loader: () => import('../pages/News/CheckNews/index'),
     loading
+  }),
+
+  LoadableAccount: Loadable({
+    loader: () => import('../pages/Account/Account/index'),
+    loading
+  }),
+
+  LoadableModifyMobile: Loadable({
+    loader: () => import('../pages/Account/ModifyMobile/index'),
+    loading
   })
 
 } : {
@@ -158,7 +168,11 @@ var loadable = __TERMINAL__ === 'browser' ? {
     LoadableAddNews: require('../pages/News/AddNews/index').default,
     LoadableEditNews: require('../pages/News/EditNews/index').default,
     LoadableAuditNews: require('../pages/News/AuditNews/index').default,
-    LoadableCheckNews: require('../pages/News/CheckNews/index').default
+    LoadableCheckNews: require('../pages/News/CheckNews/index').default,
+
+    // account
+    LoadableAccount: require('../pages/Account/Account/index').default,
+    LoadableModifyMobile: require('../pages/Account/ModifyMobile/index').default
   }
 
 module.exports = loadable

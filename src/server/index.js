@@ -38,6 +38,15 @@ server.use(require('morgan')('dev', {
   }
 }))
 
+// 跨域设置
+server.all('/upload', function (req, res, next) {
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+  res.header("Content-Type", "application/json;charset=utf-8");
+  next();
+});
 
 server.use(bodyParser.urlencoded({ extended: false }))
 
@@ -157,6 +166,11 @@ server.post('/user-add', function (req, res, next) {
     }).catch(e => {
       console.log('common e -->', e)
     })
+})
+
+
+server.post('/upload', function (req, res) {
+  res.send('ok')
 })
 
 var port = process.env.NODE_ENV === "production" ? 1501 : 8081

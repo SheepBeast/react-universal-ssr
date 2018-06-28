@@ -30,8 +30,9 @@ import {
   LoadableCheckNews,
   // LoadableTenant,
   LoadableRegister,
-  LoadableForgetPassword
-
+  LoadableForgetPassword,
+  LoadableAccount,
+  LoadableModifyMobile
 } from './loadable'
 
 class Statistics extends React.Component {
@@ -184,6 +185,18 @@ class ForgetPassword extends React.Component {
   }
 }
 
+class Account extends React.Component {
+  render() {
+    return <LoadableAccount />
+  }
+}
+
+class ModifyMobile extends React.Component {
+  render() {
+    return <LoadableModifyMobile />
+  }
+}
+
 module.exports = {
   Statistics,
   Property,
@@ -209,5 +222,8 @@ module.exports = {
   CheckNews,
   // Tenant,
   Register,
-  ForgetPassword
+  ForgetPassword,
+
+  Account,
+  ModifyMobile
 }

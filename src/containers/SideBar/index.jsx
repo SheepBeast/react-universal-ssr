@@ -12,7 +12,7 @@ import './index.less'
 class SideBar extends React.Component {
   render() {
     let userInfo = this.props.userInfo
-    let { userPhoto, accountName, actions } = userInfo
+    let { userPhoto, accountName } = userInfo
 
     return (
       <Sider id="SideBar" width={280} className="bg-w" style={{ borderRight: '1px solid #eee' }}>
@@ -81,16 +81,6 @@ class SideBar extends React.Component {
             </MenuItem>
             <MenuItem key="checkNews">
               <Link to="/news-list-auditting">消息审核</Link>
-            </MenuItem>
-          </SubMenu>
-
-          <SubMenu key="account" title={
-            <span>
-              <Icon type="bell" /> <span>个人中心</span>
-            </span>
-          }>
-            <MenuItem key="account-info">
-              <Link to="/account-info">个人信息</Link>
             </MenuItem>
           </SubMenu>
         </Menu>

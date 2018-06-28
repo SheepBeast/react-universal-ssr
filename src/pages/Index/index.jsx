@@ -5,8 +5,6 @@ import { Layout } from 'antd'
 import SideBar from '../../containers/SideBar/index'
 import Main from '../../containers/Main/index'
 
-import './index.less'
-
 class Index extends React.Component {
   render() {
     return (

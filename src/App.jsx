@@ -2,6 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
+import 'ant-design-pro/dist/ant-design-pro.min.css'
+import './App.less'
+
 import Index from './pages/Index/index'
 // import Login from './pages/Common/Login/index'
 import Common from './pages/Common/Common/index'

@@ -27,13 +27,16 @@ import {
     CheckNews,
     // Tenant,
     ForgetPassword,
-    Register
+    Register,
+
+    Account,
+    ModifyMobile
 } from './wrapped'
 
 export default function getRoutes() {
     return (
         <div>
-            <Route path="/" component={Statistics} exact />
+            <Route path="/" component={Account} exact />
 
             <Route path="/statistics" component={Statistics} />
 
@@ -69,6 +72,9 @@ export default function getRoutes() {
 
             <Route path="/login" component={Login} />
             <Route path="/forget-password" component={ForgetPassword} />
+
+            <Route path="/account" component={Account} />
+            <Route path="/account-modify-mobile" component={ModifyMobile} />
         </div>
 
     )

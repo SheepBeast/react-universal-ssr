@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Highcharts from 'highcharts'
 import { Row, Col, Avatar, Divider, List } from 'antd'
-import { Pie, yuan } from 'ant-design-pro/lib/Charts'
-import 'ant-design-pro/dist/ant-design-pro.min.css'
+import { Pie } from 'ant-design-pro/lib/Charts'
 
 import { fetchRentStatistics, fetchDeviceStatistics, fetchDynamicInfoList, fetchTenantStatistics } from '../../actions/statistics'
 import isRequestSuccess from '../../utils/isRequestSuccess';

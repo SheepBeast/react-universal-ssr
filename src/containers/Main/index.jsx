@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
-import { Layout, message } from 'antd'
+import { withRouter, Link } from 'react-router-dom'
+import { Layout, message, Avatar, Popover, Divider } from 'antd'
 
 import getRoutes from '../../router'
 import isRequestSuccess from '../../utils/isRequestSuccess';
@@ -31,14 +31,29 @@ class Main extends React.Component {
   }
 
   render() {
+    let userInfo = this.props.userInfo
+    let { userPhoto, accountName } = userInfo
+
     return (
       <Content id="Main" >
         <div className="pr-30 tr bg-w" style={{ height: 64, borderBottom: '1px solid #eee', lineHeight: '64px', fontSize: 14 }}>
-          <a onClick={this.logout.bind(this)}>
-            <b>退出</b>
-          </a>
+          <Popover
+            content={
+              <div className="tc">
+                <Link to="/Account">个人中心</Link>
+                <Divider className="mt-8 mb-8" />
+                <a onClick={this.logout.bind(this)}>
+                  <b>退出</b>
+                </a>
+              </div>
+            }
+          >
+            <a>
+              <Avatar src={userPhoto} className="mr-10" />
+              <span>{accountName}</span>
+            </a>
+          </Popover>
         </div>
-
         <div className="pt-30 pr-30 pl-30">
           {getRoutes()}
         </div>
@@ -48,6 +63,7 @@ class Main extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  userInfo: state.userInfo || {},
   tokenID: state.tokenID || ''
 })
 const mapDispatchToProps = dispatch => ({
