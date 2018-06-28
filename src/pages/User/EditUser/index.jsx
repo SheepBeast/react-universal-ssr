@@ -180,7 +180,7 @@ class EditUser extends Component {
         <Row>
           <Col span={12}>
             <h3>
-              <b>增加租客</b>
+              <b>编辑用户</b>
             </h3>
           </Col>
           <Col className="tr" span={12}>

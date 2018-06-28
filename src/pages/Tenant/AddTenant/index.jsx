@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Divider, Form, Input, DatePicker, Switch, Select, Row, Col, Checkbox, Alert, Button, Radio } from 'antd'
+import { Divider, Form, Input, DatePicker, Switch, Select, Row, Col, Checkbox, Alert, Button, Radio, message } from 'antd'
 import qs from 'querystring'
 
 import { isMobile, isIdentityNo } from '../../../constants/regexp'
 import { addTenant } from '../../../actions/tenant';
+import isRequestSuccess from '../../../utils/isRequestSuccess';
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -105,9 +106,20 @@ class AddTenant extends Component {
 
         console.log('params -->', params)
 
-        this.props.addRenter(params)
+        this.props.addRenter(params).then(ret => {
+          if (isRequestSuccess(ret)) {
+            message.success('添加租客成功')
+            this.goBack.bind(this)
+          } else {
+            message.error(`添加租客失败，${ret.data.reason}`)
+          }
+        })
       }
     })
+  }
+
+  goBack() {
+    this.props.history.goBack()
   }
 
   render() {
@@ -118,11 +130,11 @@ class AddTenant extends Component {
         <Row className="mb-20">
           <Col span={12}>
             <h3>
-              <b>增加租客</b>
+              <b>添加租客</b>
             </h3>
           </Col>
           <Col className="tr" span={12}>
-            <Button type="primary" onClick={() => { this.props.history.goBack() }}>返回</Button>
+            <Button type="primary" onClick={this.goBack.bind(this)}>返回</Button>
           </Col>
         </Row>
 

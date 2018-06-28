@@ -32,10 +32,7 @@ const lockTypeRefers = {
 }
 
 const stateRefers = {
-  0: '异常',
-  1: '正常',
-  2: '低电量',
-  3: '挟持告警',
+  3: '在线',
   4: '离线'
 }
 
@@ -112,7 +109,7 @@ class RoomDetail extends Component {
   onModalReletOk(form) {
     let params = {
       roomId: this.state.currentRoomId,
-      endTime: form.newEndDate
+      endDate: form.newEndDate
     }
 
     this.props.updateTenancy(params).then(ret => {

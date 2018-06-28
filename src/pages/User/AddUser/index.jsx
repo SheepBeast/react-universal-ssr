@@ -158,7 +158,7 @@ class AddUser extends React.Component {
         <Row>
           <Col span={12}>
             <h3>
-              <b>增加租客</b>
+              <b>添加员工</b>
             </h3>
           </Col>
           <Col className="tr" span={12}>

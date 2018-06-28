@@ -165,6 +165,8 @@ class LockDetail extends React.Component {
           lockKeyList = ret[2].data.data.list || [],
           lockAppKeyList = ret[3].data.data.list || []
 
+        console.log('ret -->', ret)
+
         this.setState({
           lockDetail,
           lockLogList,
@@ -230,6 +232,8 @@ class LockDetail extends React.Component {
     let { lockState, electricNum, lockId, lockMac, lockType, lockName, gatewayMac, gatewayType, roomId, roomName, floorName, buildingName, houseName, maxVolume, comName, projectLogo
       // 门锁信号 // 网关信号 // 当前租客 // 门锁型号 // 公司型号
     } = lockDetail
+
+    console.log('lock detail -->', this.state)
 
 
     const lockData = [{
@@ -484,12 +488,12 @@ class LockDetail extends React.Component {
 
 const mapDispatchToProps = dispatch => ({
   fetchLockDetail: params => dispatch(fetchLockDetail(params)),
-    fetchLockKeyList: params => dispatch(fetchLockKeyList(params)),
-    fetchLockAppKeyList: params => dispatch(fetchLockAppKeyList(params)),
-    updateLockFunction: params => dispatch(updateLockFunctionConfig(params)),
-    fetchLockLogList: params => dispatch(fetchLockLogList(params)),
-    unbindDevice: params => dispatch(unbindDevice(params)),
-    releaseAlarm: params => dispatch(releaseAlarm(params))
+  fetchLockKeyList: params => dispatch(fetchLockKeyList(params)),
+  fetchLockAppKeyList: params => dispatch(fetchLockAppKeyList(params)),
+  updateLockFunction: params => dispatch(updateLockFunctionConfig(params)),
+  fetchLockLogList: params => dispatch(fetchLockLogList(params)),
+  unbindDevice: params => dispatch(unbindDevice(params)),
+  releaseAlarm: params => dispatch(releaseAlarm(params))
 })
 
 export default withRouter(connect(null, mapDispatchToProps)(LockDetail))
