@@ -2,8 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Modal, Row, Col, Form, Select, Button, Input, Icon, Checkbox } from 'antd'
 
-import { fetchHouseList, fetchBuildingList, fetchFloorList, fetchRoomList } from '../../../actions/property'
-import isRequestSuccess from '../../../utils/isRequestSuccess'
+import { fetchHouseList, fetchBuildingList, fetchFloorList, fetchRoomList } from '../../actions/property'
+import isRequestSuccess from '../../utils/isRequestSuccess'
 
 const FormItem = Form.Item
 
@@ -124,7 +124,9 @@ class ModalBindDeviceWithRoom extends React.Component {
       return
     }
 
-    let { selectedHouseName, selectedBuildingName, selectedFloorName, selectedRoomName, options } = this.state
+    let { selectedHouseName, selectedBuildingName, selectedFloorName, selectedRoomName } = this.state
+
+    var { options } = this.props
 
 
     let installationSite = `${selectedHouseName || ''}${selectedBuildingName ? selectedBuildingName + '栋' : ''}${selectedFloorName ? selectedFloorName + '层' : ''}${selectedRoomName || ''}：${deviceTypeRefers[options.deviceType]}`

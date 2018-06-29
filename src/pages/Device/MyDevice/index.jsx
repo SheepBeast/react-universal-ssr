@@ -5,7 +5,7 @@ import { Form, Table, Button, Input, Radio, Icon, Row, Col, Tooltip, message } f
 import { fetchDeviceList, deleteDevice, batchDeleteDevice, bindDevice } from '../../../actions/device';
 import { roomAddDevice } from '../../../actions/property'
 import isRequestSuccess from '../../../utils/isRequestSuccess';
-import ModalBindDeviceWithRoom from './Modal_Bind_Device_With_Room'
+import Modal_Bind_Device_With_Room from '../../../components/Modal_Bind_Device_With_Room.jsx'
 import './index.less'
 
 const FormItem = Form.Item

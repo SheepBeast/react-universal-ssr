@@ -6,7 +6,7 @@ import moment from 'moment'
 import { fetchLockDetail, fetchLockKeyList, fetchLockAppKeyList, updateLockFunctionConfig, fetchLockLogList, unbindDevice, releaseAlarm } from '../../../actions/device';
 import parseQueryToParams from '../../../utils/parseQueryToParams.js'
 import isRequestSuccess from '../../../utils/isRequestSuccess';
-import Modal_Bind_Device_With_Room from './Modal_Bind_Device_With_Room'
+import Modal_Bind_Device_With_Room from '../../../components/Modal_Bind_Device_With_Room.jsx'
 import './index.less'
 import { roomAddDevice } from '../../../actions/property';
 
@@ -271,7 +271,7 @@ class LockDetail extends React.Component {
     var { lockDetail, lockKeyList, lockAppKeyList, lockLogList } = this.state
 
     let { lockState, electricNum, lockId, lockMac, lockType, lockName, gatewayMac, gatewayType, roomId, roomName, floorName, buildingName, houseName, maxVolume, comName, projectLogo, projectPhone, alarm, tenantNum = 0
-      // 门锁信号 // 网关信号 // 当前租客 // 门锁型号 // 公司型号
+      // 门锁信号 // 网关信号 // 门锁型号 // 公司型号
     } = lockDetail
 
     const lockData = [{

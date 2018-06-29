@@ -239,7 +239,7 @@ server.post('/upload', upload.array('avatar'), function (req, res) {
         data = {
           resultCode: 0,
           msg: '上传成功',
-          picUrl: `https://file.wisbetter.com/${key}`
+          picUrl: `http://file.wisbetter.com/${key}`
         }
       } else {
         console.log('respInfo.statusCode -->', respInfo.statusCode)

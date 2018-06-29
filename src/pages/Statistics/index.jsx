@@ -117,7 +117,7 @@ class Statistics extends Component {
         title = (
           <span>
             <a>{eventSponsorName}</a>&nbsp;
-            <span>对<a>{eventObjName}</a></span>&nbsp;
+            <span>对<a>{elementName}</a></span>&nbsp;
             <span>办理{eventTypeRefers[eventType]}</span>
           </span>
         )

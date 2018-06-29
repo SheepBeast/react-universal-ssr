@@ -149,7 +149,7 @@ class AudittingNews extends React.Component {
     return (
       <div id="AudittingNews" className="container">
         <h3>
-          <b>消息列表</b>
+          <b>消息审核</b>
         </h3>
 
         <Form className="mb-20">
