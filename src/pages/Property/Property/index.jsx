@@ -60,7 +60,10 @@ class Property extends Component {
       selectedHouseIndex: 0,
       selectedBuildingIndex: 0,
       selectedFloorIndex: 0,
-      selectedRoomIndex: 0
+      selectedRoomIndex: 0,
+
+      checkInRoomNum: '--',
+      spareRoomNum: '--'
     }
 
     this.modal = {}
@@ -208,13 +211,21 @@ class Property extends Component {
       })
     } else {
       this.props.fetchRoomList(params).then(ret => {
-        var roomList = isRequestSuccess(ret) && ret.data.data.list || []
+        var roomList, checkInRoomNum, spareRoomNum
+
+        if (isRequestSuccess(ret)) {
+          roomList = ret.data.data.list || []
+          checkInRoomNum = ret.data.data.checkInRoomNum || '--'
+          spareRoomNum = ret.data.data.spareRoomNum || '--'
+        }
 
         var first = roomList[0] || {}
         var { roomId, roomName } = first
 
         this.setState({
           roomList,
+          checkInRoomNum,
+          spareRoomNum,
           selectedRoomId: roomId,
           selectedRoomName: roomName
         }, callback)
@@ -571,9 +582,9 @@ class Property extends Component {
     })
   }
 
-  delRoom() {
+  delRoom(options) {
     var params = {
-      id: [this.state.selectedRoomId],
+      id: [options.roomId],
       level: 4
     }
 
@@ -591,7 +602,9 @@ class Property extends Component {
     let {
       houseList, buildingList, floorList, roomList,
       selectedHouseId, selectedBuildingId, selectedFloorId, selectedRoomId,
-      selectedHouseName, selectedBuildingName, selectedFloorName, selectedRoomName
+      selectedHouseName, selectedBuildingName, selectedFloorName, selectedRoomName,
+
+      checkInRoomNum, spareRoomNum
     } = this.state
 
     return (
@@ -699,7 +712,7 @@ class Property extends Component {
                 <div className="pl-20" style={{ display: 'inline-block' }}>
                   <h3>
                     <b className="mr-20">{this.state.selectedHouseName || '--'}</b>
-                    <small className="gray">已租--套&nbsp;&nbsp;闲置--套</small>
+                    <small className="gray">已租<span className="danger">{checkInRoomNum}</span>套&nbsp;&nbsp;闲置<span className="danger">{spareRoomNum}</span>套</small>
                   </h3>
                   <Button size="small" icon="plus" type="primary" onClick={() => { this.modal.addRoom.show() }}>添加房间</Button>
                 </div>
@@ -732,7 +745,13 @@ class Property extends Component {
                               <Tooltip title="关联设备">
                                 <Icon type="select" />
                               </Tooltip>
+                            </a>,
+                            <a onClick={this.delRoom.bind(this, { roomId })}>
+                              <Tooltip title="删除">
+                                <Icon type="delete" />
+                              </Tooltip>
                             </a>
+
                           ]
                         }>
                           <div className="tc">

@@ -14,6 +14,8 @@ const Option = Select.Option
 const CheckBoxGroup = Checkbox.Group
 const TextArea = Input.TextArea
 
+var currentNewsId = null
+
 class EditNews extends React.Component {
   constructor(props) {
     super(props)
@@ -28,6 +30,8 @@ class EditNews extends React.Component {
 
   componentDidMount() {
     var params = parseQueryToParams(this.props.location.search)
+
+    currentNewsId = params.newsId
 
     let p1 = this.props.fetchUserList({ state: 1 }),
       p2 = this.props.fetchNewsDetail(params)
@@ -61,7 +65,7 @@ class EditNews extends React.Component {
     this.props.form.validateFields((err, val) => {
       if (!err) {
         console.log('val -->', val)
-        var params = { ...val, ...options }
+        var params = { ...val, ...options, newsId: currentNewsId }
 
         this.props.editNews(params).then(ret => {
           if (isRequestSuccess(ret)) {
@@ -112,26 +116,6 @@ class EditNews extends React.Component {
               )
             }
           </FormItem>
-
-          {/* {
-            options.length > 0 ?
-              <FormItem label="接收人" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
-                {
-                  getFieldDecorator('userId', {
-                    rules: [{
-                      required: true,
-                      message: '必须选择至少一个接收人'
-                    }],
-                    initialValue: selectedUserId
-                  })(
-                    <CheckBoxGroup style={{ lineHeight: '32px' }} options={options} />
-                  )
-                }
-              </FormItem>
-              : null
-          } */}
-
-
 
           <FormItem label="标题" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
             {

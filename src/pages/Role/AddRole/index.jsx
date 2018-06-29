@@ -165,7 +165,7 @@ class AddRole extends React.Component {
         <Row>
           <Col span={12}>
             <h3>
-              <b>权限设置</b>
+              <b>添加角色</b>
             </h3>
           </Col>
           <Col span={12} className="tr">

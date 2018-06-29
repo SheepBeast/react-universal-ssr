@@ -156,7 +156,7 @@ class AddUser extends React.Component {
         <Row>
           <Col span={12}>
             <h3>
-              <b>添加员工</b>
+              <b>添加用户</b>
             </h3>
           </Col>
           <Col className="tr" span={12}>
@@ -167,20 +167,21 @@ class AddUser extends React.Component {
         <br />
         <Form className="form-shim" style={{ width: 620 }} onSubmit={this.onSubmit.bind(this)}>
           <FormItem label="姓名" labelCol={{ span: 3 }} wrapperCol={{ span: 15 }} >
+            <Input name="userName" style={{ display: 'none' }} />
             {
               getFieldDecorator('userName', {
                 rules: [{
                   required: true,
                   message: '姓名不能为空'
-                }],
-                initialValue: null
+                }]
               })(
-                <Input placeholder="请输入员工姓名" />
+                <Input placeholder="请输入员工姓名" autoComplete="false" />
               )
             }
           </FormItem>
 
           <FormItem label="手机号" labelCol={{ span: 3 }} wrapperCol={{ span: 15 }} >
+            <Input name="phoneNo" style={{ display: 'none' }} />
             {
               getFieldDecorator('phoneNo', {
                 rules: [{
@@ -195,15 +196,15 @@ class AddUser extends React.Component {
                     callback()
                   }
                 }],
-                initialValue: null,
                 validateFirst: true
               })(
-                <Input type="number" maxLength="11" placeholder="请输入员工手机号" />
+                <Input maxLength="11" placeholder="请输入员工手机号" autoComplete="false" />
               )
             }
           </FormItem>
 
           <FormItem label="邮箱" labelCol={{ span: 3 }} wrapperCol={{ span: 15 }} >
+            <Input name="eMail" style={{ display: 'none' }} />
             {
               getFieldDecorator('eMail', {
                 rules: [{
@@ -218,15 +219,15 @@ class AddUser extends React.Component {
                     callback()
                   }
                 }],
-                initialValue: null,
                 validateFirst: true
               })(
-                <Input placeholder="请输入员工邮箱" />
+                <Input placeholder="请输入员工邮箱" autoComplete="false" />
               )
             }
           </FormItem>
 
           <FormItem label="账号" labelCol={{ span: 3 }} wrapperCol={{ span: 15 }} >
+            <Input name="userAccount" style={{ display: 'none' }} />
             {
               getFieldDecorator('userAccount', {
                 rules: [{
@@ -235,12 +236,13 @@ class AddUser extends React.Component {
                 }],
                 initialValue: null
               })(
-                <Input placeholder="请输入员工的账号，确认后不可修改" />
+                <Input placeholder="请输入员工的账号，确认后不可修改" autoComplete="false" />
               )
             }
           </FormItem>
 
           <FormItem label="密码" labelCol={{ span: 3 }} wrapperCol={{ span: 15 }} >
+            <Input name="password" type="password" style={{ display: 'none' }} />
             {
               getFieldDecorator('password', {
                 rules: [{
@@ -251,19 +253,16 @@ class AddUser extends React.Component {
                   max: 16,
                   message: '密码为6-16位'
                 }],
-                initialValue: null,
                 validateFirst: true
               })(
-                <Input type="password" placeholder="请输入登录密码" />
+                <Input type="password" placeholder="请输入登录密码" autoComplete="false" />
               )
             }
           </FormItem>
 
           <FormItem label="角色" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} >
             {
-              getFieldDecorator('roleId', {
-                initialValue: null
-              })(
+              getFieldDecorator('roleId')(
                 <RadioGroup style={{ marginTop: 4 }}>
                   {
                     roleList.map(({ roleId, roleName }) =>
@@ -287,8 +286,7 @@ class AddUser extends React.Component {
                 rules: [{
                   required: true,
                   message: '必须选择房产权限'
-                }],
-                initialValue: null
+                }]
               })(
                 <RadioGroup onChange={this.onHouseAuthChange.bind(this)} style={{ marginTop: 4 }} >
                   <Radio value={1}>全部房产</Radio>

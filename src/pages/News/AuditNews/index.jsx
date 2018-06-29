@@ -86,7 +86,7 @@ class AuditNews extends React.Component {
   }
 
   render() {
-    let { auditName, auditUserType, newsAbstract, newsContent, newsTitle, pushType, state, auditRemark, userNames = [], newsId } = this.state.newsDetail
+    let { auditName, auditUserType, newsAbstract, newsContent, newsTitle, pushType, state, auditRemark, newsId } = this.state.newsDetail
 
     const { getFieldDecorator } = this.props.form
 
@@ -137,17 +137,6 @@ class AuditNews extends React.Component {
                 <b>接收对象：</b>
               </Col>
               <Col className="gray" span={21}>{newsPushTypeRefers[pushType]}</Col>
-            </Row>
-
-            <Row className="mb-20">
-              <Col span={3} className="tr">
-                <b>接收人：</b>
-              </Col>
-              <Col className="gray" span={21}>
-                {
-                  userNames.map((name, idx) => <Tag key={idx} className="mb-10" color="#2db7f5">{decodeURIComponent(name.replace('EMOJI_URLENCODE=', ''))}</Tag>)
-                }
-              </Col>
             </Row>
 
             <Row className="mb-20">

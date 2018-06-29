@@ -284,7 +284,9 @@ class RoomDetail extends Component {
               </Breadcrumb>
 
               <span className="mr-20">共<span className="danger">{roomTenantList.length}</span>位租客</span>
-              <span>租期时间：{beginTime} 至 {endTime}</span>
+              {
+                beginTime && endTime ? <span>租期时间：{beginTime} 至 {endTime}</span> : null
+              }
             </Col>
             <Col className="tr" span={12}>
               {
@@ -327,15 +329,12 @@ class RoomDetail extends Component {
                               <Avatar icon="user" size="middle" className="mr-20 w-text bg-w" style={{ color: "#D4EDFF" }} />
                               <span className="fs-16" style={{ lineHeight: '21px' }}>{tenantName}</span>
                             </span>
-                          }
-                          extra={
-                            <Icon type="exclamation-circle-o" className="fs-21" style={{ color: '#0084E3' }} />
                           }>
                           <h4>联系电话：{phoneNo}</h4>
                           <h4>授权方式：{credentialTypeRefers[credentialType]}</h4>
 
                           <div className="pos-r" style={{ bottom: -10 }} >
-                            <Divider className="mt-20 mb-20" ></Divider>
+                            <Divider className="mt-20 mb-20" />
 
                             <Row gutter={10}>
                               <Col span={12} />

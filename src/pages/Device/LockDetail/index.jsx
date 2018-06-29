@@ -90,9 +90,9 @@ const roomCols = [{
   dataIndex: 'roomName',
   key: 'roomName'
 }, {
-  title: '当前租客',
-  dataIndex: 'renter',
-  key: 'renter'
+  title: '租客数量',
+  dataIndex: 'tenant',
+  key: 'tenant'
 }, {
   title: '操作',
   dataIndex: 'actions',
@@ -270,7 +270,7 @@ class LockDetail extends React.Component {
   render() {
     var { lockDetail, lockKeyList, lockAppKeyList, lockLogList } = this.state
 
-    let { lockState, electricNum, lockId, lockMac, lockType, lockName, gatewayMac, gatewayType, roomId, roomName, floorName, buildingName, houseName, maxVolume, comName, projectLogo, projectPhone, alarm
+    let { lockState, electricNum, lockId, lockMac, lockType, lockName, gatewayMac, gatewayType, roomId, roomName, floorName, buildingName, houseName, maxVolume, comName, projectLogo, projectPhone, alarm, tenantNum = 0
       // 门锁信号 // 网关信号 // 当前租客 // 门锁型号 // 公司型号
     } = lockDetail
 
@@ -294,7 +294,7 @@ class LockDetail extends React.Component {
       buildingName: buildingName || '--',
       floorName: floorName || '--',
       roomName: roomName || '--',
-      renter: '--',
+      tenant: tenantNum,
       actions: {
         roomId
       }
@@ -422,49 +422,58 @@ class LockDetail extends React.Component {
 
         <div className="container" style={{ minHeight: 500 }}>
           <Tabs type="card" defaultActiveKey="1">
+            {
+              lockLogList.length > 0 ?
+                <TabPane tab="操作记录" key="1">
+                  <div className="container">
+                    <Timeline>
+                      {
+                        lockLogList.map(({
+                          logId,
+                          logAlert,
+                          relatedOperation
+                        }) => (
+                            <TimelineItem key={logId}
+                              dot={
+                                <Avatar src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526969661280&di=a5aebf85080548c16ed57e49ea9cac17&imgtype=0&src=http%3A%2F%2Fimg.1ting.com%2Fimages%2Fspecial%2F99%2Fs300_d7d69fb2354557be5178919fe6562688.jpg" />
+                              }
+                            >
+                              <div className="ml-20 tooltip-inner">
+                                <div className="tooltip-arrow" />
+                                <div className="gray">{relatedOperation}：{logAlert}</div>
+                              </div>
+                            </TimelineItem>
+                          ))
+                      }
+                    </Timeline>
+                  </div>
 
-            <TabPane tab="操作记录" key="1">
-              <div className="container">
-                <Timeline>
-                  {
-                    lockLogList.map(({
-                      logId,
-                      logAlert,
-                      relatedOperation
-                    }) => (
-                        <TimelineItem key={logId}
-                          dot={
-                            <Avatar src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526969661280&di=a5aebf85080548c16ed57e49ea9cac17&imgtype=0&src=http%3A%2F%2Fimg.1ting.com%2Fimages%2Fspecial%2F99%2Fs300_d7d69fb2354557be5178919fe6562688.jpg" />
-                          }
-                        >
-                          <div className="ml-20 tooltip-inner">
-                            <div className="tooltip-arrow" />
-                            <div className="gray">{relatedOperation}：{logAlert}</div>
-                          </div>
-                        </TimelineItem>
-                      ))
-                  }
-                </Timeline>
-              </div>
+                </TabPane> : null
+            }
+            {
+              lockKeyList.length > 0 ?
+                <TabPane tab="钥匙列表" key="2">
+                  <Table style={{ width: 1000 }} pagination={false} dataSource={keysData} columns={keysCols} />
+                </TabPane> : null
+            }
+            {
+              lockAppKeyList.length > 0 ?
+                <TabPane tab="APP用户授权" key="3">
+                  <Table style={{ width: 1000 }} pagination={false} dataSource={authData} columns={authCols} />
+                </TabPane> : null
+            }
 
-            </TabPane>
-            <TabPane tab="钥匙列表" key="2">
-              <Table style={{ width: 1000 }} pagination={false} dataSource={keysData} columns={keysCols} />
-            </TabPane>
-            <TabPane tab="APP用户授权" key="3">
-              <Table style={{ width: 1000 }} pagination={false} dataSource={authData} columns={authCols} />
-            </TabPane>
             <TabPane tab="高级功能设置" key="4">
               <Form className="form-shim" style={{ width: 400 }}>
                 <Row>
                   <Col span={12}>
                     <FormItem label="组合开锁" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
-                      <Switch defaultChecked></Switch>
+                      <Switch defaultChecked />
                     </FormItem>
                   </Col>
                   <Col span={12}>
                     <FormItem label="锁芯报警" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
-                      <Switch defaultChecked></Switch>
+                      <Switch defaultChecked />
                     </FormItem>
                   </Col>
                 </Row>
@@ -472,12 +481,12 @@ class LockDetail extends React.Component {
                 <Row>
                   <Col span={12}>
                     <FormItem label="常开模式" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
-                      <Switch defaultChecked></Switch>
+                      <Switch defaultChecked />
                     </FormItem>
                   </Col>
                   <Col span={12}>
                     <FormItem label="反锁功能" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
-                      <Switch defaultChecked></Switch>
+                      <Switch defaultChecked />
                     </FormItem>
                   </Col>
                 </Row>
@@ -485,12 +494,12 @@ class LockDetail extends React.Component {
                 <Row>
                   <Col span={12}>
                     <FormItem label="开门语音" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
-                      <Switch defaultChecked></Switch>
+                      <Switch defaultChecked />
                     </FormItem>
                   </Col>
                   <Col span={12}>
                     <FormItem label="防撬报警" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
-                      <Switch defaultChecked></Switch>
+                      <Switch defaultChecked />
                     </FormItem>
                   </Col>
                 </Row>

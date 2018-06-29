@@ -167,7 +167,7 @@ class EditRole extends React.Component {
         <Row>
           <Col span={12}>
             <h3>
-              <b>权限设置</b>
+              <b>编辑角色</b>
             </h3>
           </Col>
           <Col span={12} className="tr">
@@ -277,7 +277,7 @@ class EditRole extends React.Component {
           <Row>
             <Col span={8} offset={2}>
               <Button type="primary" className="mr-20" htmlType="submit">保存</Button>
-              <Button>取消</Button>
+              <Button onClick={this.goBack.bind(this)}>取消</Button>
             </Col>
           </Row>
         </Form>

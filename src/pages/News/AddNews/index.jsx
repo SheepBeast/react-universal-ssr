@@ -82,25 +82,6 @@ class AddNews extends React.Component {
             }
           </FormItem>
 
-          {/* {
-            options.length > 0 ?
-              <FormItem label="接收人" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
-                {
-                  getFieldDecorator('userId', {
-                    rules: [{
-                      required: true,
-                      message: '必须选择至少一个接收人'
-                    }]
-                  })(
-                    <CheckBoxGroup style={{ lineHeight: '32px' }} options={options} />
-                  )
-                }
-              </FormItem>
-              : null
-          } */}
-
-
-
           <FormItem label="标题" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
             {
               getFieldDecorator('newsTitle', {

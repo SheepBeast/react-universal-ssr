@@ -31,6 +31,8 @@ class EditUser extends Component {
     }
   }
   componentWillMount() {
+
+
     let p1 = this.props.fetchRoleList({ state: 1 }),
       p2 = this.props.fetchApartmentList()
 
@@ -48,8 +50,6 @@ class EditUser extends Component {
   componentDidMount() {
     var params = parseQueryToParams(this.props.location.search)
 
-
-
     this.props.fetchUserDetail(params).then(ret => {
       var userDetail = isRequestSuccess(ret) && ret.data.data || {}
 
@@ -60,16 +60,16 @@ class EditUser extends Component {
         userAccount,
         userName,
         userId
-      } =
+      } = userDetail
 
-        this.props.form.setFieldsValue({
-          eMail,
-          phoneNo,
-          roleId,
-          userAccount,
-          userName,
-          userId
-        })
+      this.props.form.setFieldsValue({
+        eMail,
+        phoneNo,
+        roleId,
+        userAccount,
+        userName,
+        userId
+      })
     })
   }
 
@@ -217,7 +217,7 @@ class EditUser extends Component {
                 }],
                 validateFirst: true
               })(
-                <Input type="number" maxLength="11" placeholder="请输入员工手机号" />
+                <Input maxLength="11" placeholder="请输入员工手机号" />
               )
             }
           </FormItem>
@@ -257,24 +257,6 @@ class EditUser extends Component {
             }
           </FormItem>
 
-          {/* <FormItem label="密码" labelCol={{ span: 3 }} wrapperCol={{ span: 15 }} >
-            {
-              getFieldDecorator('password', {
-                rules: [{
-                  required: true,
-                  message: '密码不能为空'
-                }, {
-                  min: 6,
-                  max: 16,
-                  message: '密码为6-16位'
-                }],
-                validateFirst: true
-              })(
-                <Input placeholder="请输入登录密码" />
-              )
-            }
-          </FormItem> */}
-
           <FormItem label="角色" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} >
             {
               getFieldDecorator('roleId')(
@@ -307,7 +289,7 @@ class EditUser extends Component {
                   required: true,
                   message: '必须选择房产权限'
                 }],
-                initialValue: 1
+                // initialValue: 1
               })(
                 <RadioGroup onChange={this.onHouseAuthChange.bind(this)} style={{ marginTop: 4 }} >
                   <Radio value={1}>全部房产</Radio>

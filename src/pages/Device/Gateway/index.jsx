@@ -17,10 +17,7 @@ const gatewayTypeRefers = {
 }
 
 const stateRefers = {
-  0: '异常',
-  1: '正常',
-  2: '低电量',
-  3: '挟持告警',
+  3: '在线',
   4: '离线'
 }
 
@@ -162,7 +159,7 @@ class Gateway extends React.Component {
       dataIndex: 'state',
       key: 'state',
       render: (state) => {
-        return <span style={state === 1 ? {} : { color: 'red' }}>{stateRefers[state]}</span>
+        return <span className={state == 3 ? 'health' : 'danger'}>{stateRefers[state]}</span>
       }
     },
     {

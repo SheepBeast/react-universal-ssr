@@ -29,7 +29,9 @@ class ModifyMobile extends React.Component {
   }
 
   fetchCaptcha(type = 'old') {
-
+    if(this.state[`${type}TargetTime`]) {
+      return
+    }
 
     var fieldMobile = `${type}Mobile`
 

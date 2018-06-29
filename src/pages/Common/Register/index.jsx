@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import { Form, Input, Button, Row, Col, Select, message } from 'antd'
 
+import CountDown from 'ant-design-pro/lib/CountDown'
+
 import { fetchCaptcha, register, login, setCommonPage, setUserInfo, setTokenID } from '../../../actions/common';
 import isRequestSuccess from '../../../utils/isRequestSuccess';
 import { isMobile } from '../../../constants/regexp'
@@ -20,13 +22,17 @@ class Register extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      captcha: null
+      captcha: null,
+      targetTime: null
     }
   }
 
 
 
   fetchCaptcha() {
+    if (this.state.targetTime) {
+      return
+    }
     this.props.form.validateFields(['accountName', 'password', 'rePassword', 'phoneNo'], (err, val) => {
 
       if (!err) {
@@ -35,7 +41,10 @@ class Register extends React.Component {
           phoneNo: val.phoneNo
         }).then(ret => {
           if (isRequestSuccess(ret)) {
-           message.success('验证码已发送')
+            message.success('验证码已发送')
+            this.setState({
+              targetTime: Date.now() + 60000
+            })
           } else {
             message.error(`验证码发送失败，${ret.data.reason}`)
           }
@@ -84,15 +93,8 @@ class Register extends React.Component {
               }
             })
           } else {
-            this.props.form.setFields({
-              result: {
-                errors: [
-                  new Error(ret.data.reason)
-                ]
-              }
-            })
+            message.error(`注册失败，${ret.data.reason}`)
           }
-
         })
       }
     })
@@ -102,8 +104,19 @@ class Register extends React.Component {
     this.props.setCommonPage(page)
   }
 
+  onCountDownEnd(type) {
+    this.setState({
+      targetTime: null
+    })
+  }
+
+  timeFormat(time) {
+    return parseInt(time / 1000) + 's'
+  }
+
   render() {
     let { getFieldDecorator, getFieldValue, validateFields } = this.props.form
+    var { targetTime } = this.state
 
     return (
       <div id="Register">
@@ -140,7 +153,7 @@ class Register extends React.Component {
                   }],
                   validateFirst: true
                 })(
-                  <Input type="password" placeholder="6 - 16 位密码，区分大小写" />
+                  <Input type="password" autoComplete="false" placeholder="6 - 16 位密码，区分大小写" />
                 )
               }
             </FormItem>
@@ -159,7 +172,7 @@ class Register extends React.Component {
                     }
                   }]
                 })(
-                  <Input type="password" placeholder="确认密码" />
+                  <Input type="password" autoComplete="false" placeholder="确认密码" />
                 )
               }
             </FormItem>
@@ -207,7 +220,11 @@ class Register extends React.Component {
 
                 </Col>
                 <Col span={7}>
-                  <Button onClick={this.fetchCaptcha.bind(this)}>获取验证码</Button>
+                  <Button className="w-100" onClick={this.fetchCaptcha.bind(this)}>
+                    {
+                      targetTime ? <CountDown format={this.timeFormat} target={targetTime} onEnd={this.onCountDownEnd.bind(this)} /> : <span>获取验证码</span>
+                    }
+                  </Button>
                 </Col>
               </Row>
             </FormItem>

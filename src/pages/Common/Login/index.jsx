@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter, Link } from 'react-router-dom'
-import { Form, Icon, Input, Button, Checkbox, Row, Col } from 'antd';
+import { Form, Icon, Input, Button, Checkbox, Row, Col, message } from 'antd';
 import PropTypes from 'prop-types'
 
 import { login, setUserInfo, setTokenID, setCommonPage } from '../../../actions/common'
@@ -39,11 +39,7 @@ class Login extends React.Component {
         this.props.history.push('/')
 
       } else {
-        this.props.form.setFields({
-          result: {
-            errors: [new Error(`登陆失败，${ret.data.reason}`)]
-          }
-        })
+        message.error(`登陆失败，${ret.data.reason}`)
       }
     })
   }
@@ -133,15 +129,7 @@ class Login extends React.Component {
               </Row>
 
             </FormItem>
-
-            <FormItem>
-              <Button type="primary" htmlType="submit" style={{ width: '100%' }} >登陆</Button>
-              {
-                getFieldDecorator('result')(
-                  <Input type="hidden" />
-                )
-              }
-            </FormItem>
+            <Button type="primary" htmlType="submit" style={{ width: '100%' }} >登陆</Button>
           </Form>
         </div>
 

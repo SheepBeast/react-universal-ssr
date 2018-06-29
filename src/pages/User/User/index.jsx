@@ -25,7 +25,7 @@ class User extends Component {
     this.state = {
       selectedRowKeys: [],
 
-      selectedRoleId: null,
+      selectedRoleId: -1,
       selectedState: -1,
 
       userList: [],
@@ -104,7 +104,7 @@ class User extends Component {
       params.state = selectedState
     }
 
-    if (selectedRoleId) {
+    if (selectedRoleId != -1) {
       params.roleId = selectedRoleId
     }
 
@@ -151,8 +151,8 @@ class User extends Component {
       title: '操作',
       key: 'actions',
       dataIndex: 'actions',
-      render: ({ userId, roleId, state, userName }) => {
-        if (state == 2) {
+      render: ({ userId, roleId, state, userName, userType }) => {
+        if (state == 2 || userType == 3) {
           return null
         } else {
           let opposite = state == 1 ? { text: '停用', state: 0 } : { text: '启用', state: 1 }
@@ -173,7 +173,7 @@ class User extends Component {
     }]
 
 
-    var dataSource = userList.map(({ userId, roleId, userAccount, userName, state, phoneNo, roleName, createTime }) => ({
+    var dataSource = userList.map(({ userId, roleId, userAccount, userName, state, phoneNo, roleName, userType, createTime }) => ({
       key: userId,
       roleName,
       userName,
@@ -185,8 +185,8 @@ class User extends Component {
         userId,
         roleId,
         state,
-        userName
-
+        userName,
+        userType
       }
     }))
 
@@ -226,8 +226,11 @@ class User extends Component {
                 <Col span={8}>
                   <FormItem className="form-shim" label="角色" labelCol={{ span: 3 }} wrapperCol={{ span: 10 }}>
                     {
-                      getFieldDecorator('roleId')(
-                        <Select placeholder="全部角色" onChange={this.onSelectChange.bind(this)}>
+                      getFieldDecorator('roleId', {
+                        initialValue: '-1'
+                      })(
+                        <Select onChange={this.onSelectChange.bind(this)}>
+                          <Option value="-1">全部</Option>
                           {
                             roleList.map(({ roleId, roleName }) => (
                               <Option key={roleId} value={roleId}>{roleName}</Option>

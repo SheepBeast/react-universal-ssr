@@ -117,8 +117,6 @@ class News extends React.Component {
   }
 
   onPeriodChange(e, selectedDate) {
-    console.log('selected date -->', selectedDate)
-
     var [beginDate, endDate] = selectedDate
 
     var date = {}
@@ -141,7 +139,6 @@ class News extends React.Component {
     let dataSource = this.state.newsList.map(({
       newsTitle,
       pushType,
-      userNames,
       state,
       createTime,
       userName,
@@ -150,7 +147,6 @@ class News extends React.Component {
     }) => ({
       newsTitle,
       pushType: newsPushTypeRefers[pushType],
-      userNames,
       userName,
       state,
       auditName,
@@ -173,11 +169,7 @@ class News extends React.Component {
       title: '接受对象',
       key: 'pushType',
       dataIndex: 'pushType'
-    }, {
-      title: '接收人',
-      key: 'userNames',
-      dataIndex: 'userNames'
-    }, {
+    },  {
       title: '创建人',
       key: 'userName',
       dataIndex: 'userName'
@@ -205,7 +197,7 @@ class News extends React.Component {
         // 1 不可修改 不可删除
         // 2 不可修改 可删除 可发送
         // 3 可修改 可提审 可删除
-        // 4 不可发送 不可修改 可删除 不可审核
+        // 4 不可发送 不可修改 不可删除 不可审核
         // 5 不可显示
 
         // 查看 0 1 2 3 4
@@ -218,7 +210,7 @@ class News extends React.Component {
             <Link className="mr-20" to={`/news-check?newsId=${encodeURIComponent(newsId)}`}>查看</Link>
             {state == 0 || state == 3 ? <Link className="mr-20" to={`/news-edit?newsId=${encodeURIComponent(newsId)}`}>编辑</Link> : null}
             {state == 2 ? <a className="mr-20" onClick={this.sendNews.bind(this, { newsId })}>发送</a> : null}
-            {state != 1 && state == 4 ? <a onClick={this.deleteNews.bind(this, { newsId: [newsId] })}>删除</a> : null}
+            {state == 0 || state == 2 || state == 3 ? <a onClick={this.deleteNews.bind(this, { newsId: [newsId] })}>删除</a> : null}
           </span> : null
 
       }

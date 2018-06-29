@@ -38,11 +38,7 @@ let columns = [{
   title: '接受对象',
   key: 'pushType',
   dataIndex: 'pushType'
-}, {
-  title: '接收人',
-  key: 'userNames',
-  dataIndex: 'userNames'
-}, {
+},  {
   title: '创建人',
   key: 'userName',
   dataIndex: 'userName'
@@ -130,7 +126,6 @@ class AudittingNews extends React.Component {
     let dataSource = this.state.newsList.map(({
       newsTitle,
       pushType,
-      userNames,
       state,
       createTime,
       userName,
@@ -139,7 +134,6 @@ class AudittingNews extends React.Component {
     }) => ({
       newsTitle,
       pushType: newsPushTypeRefers[pushType],
-      userNames,
       userName,
       state,
       auditName,
@@ -174,11 +168,6 @@ class AudittingNews extends React.Component {
               <FormItem label="日期" labelCol={{ span: 3 }} wrapperCol={{ span: 18 }}>
                 <RangePicker onChange={this.onDateChange.bind(this)} placeholder={['开始日期', '结束日期']} />
               </FormItem>
-            </Col>
-            <Col offset={1} span={6} className="tr">
-              <Link to="/news-add">
-                <Button type="primary" onClick={() => { this.props.history.goBack() }}>返回</Button>
-              </Link>
             </Col>
           </Row>
         </Form>

@@ -2,11 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import { Form, Input, Button, Row, Col, Select, message } from 'antd'
-
-import './index.less'
+import CountDown from 'ant-design-pro/lib/CountDown'
 import { forgetPassword, fetchCaptcha, setCommonPage } from '../../../actions/common'
 import isRequestSuccess from '../../../utils/isRequestSuccess';
 import { isMobile } from '../../../constants/regexp'
+
+import './index.less'
+
 
 const FormItem = Form.Item
 const InputGroup = Input.Group
@@ -16,33 +18,29 @@ class ForgetPassword extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      captcha: null
+      captcha: null,
+      targetTime: null
     }
   }
 
   fetchCaptcha() {
+    if (this.state.targetTime) {
+      return
+    }
     this.props.form.validateFields(['accountName', 'password', 'rePassword', 'phoneNo'], (err, val) => {
-      console.log('captcha err -->', err)
-      console.log('captcha val -->', val)
-
       if (!err) {
         this.props.fetchCaptcha({
           flag: 7,
           phoneNo: val.phoneNo
         }).then(ret => {
           if (isRequestSuccess(ret)) {
-
-          } else {
-            this.props.form.setFields({
-              captcha: {
-                value: '',
-                errors: [
-                  new Error(ret.data.reason)
-                ]
-              }
+            message.success('验证码已发送')
+            this.setState({
+              targetTime: Date.now() + 60000
             })
+          } else {
+            message.error(`验证码发送失败，${ret.data.reason}`)
           }
-
         })
       }
     })
@@ -52,9 +50,6 @@ class ForgetPassword extends React.Component {
     e.preventDefault()
 
     this.props.form.validateFields((err, val) => {
-      console.log('submit err -->', err)
-      console.log('submit val -->', val)
-
       if (!err) {
         let { accountName, password, phoneNo, captcha } = val
         this.props.forgetPassword({
@@ -68,24 +63,26 @@ class ForgetPassword extends React.Component {
             message.success('重置密码成功')
             this.props.setCommonPage('Login')
           } else {
-            this.props.form.setFields({
-              result: {
-                // value: '',
-                errors: [
-                  new Error(ret.data.reason)
-                ]
-              }
-            })
+            message.error(`重置密码失败，${ret.data.reason}`)
           }
-
         })
       }
     })
   }
 
+  timeFormat(time) {
+    return parseInt(time / 1000) + 's'
+  }
+
+  onCountDownEnd(type) {
+    this.setState({
+      targetTime: null
+    })
+  }
 
   render() {
     let { getFieldDecorator, getFieldValue, validateFields } = this.props.form
+    var { targetTime } = this.state
 
     return (
       <div id="ForgetPassword">
@@ -188,7 +185,9 @@ class ForgetPassword extends React.Component {
 
                 </Col>
                 <Col span={7}>
-                  <Button onClick={this.fetchCaptcha.bind(this)}>获取验证码</Button>
+                  <Button className="w-100" onClick={this.fetchCaptcha.bind(this)}>
+                    {targetTime ? <CountDown format={this.timeFormat} onEnd={this.onCountDownEnd.bind(this)} target={targetTime} /> : <span>获取验证码</span>}
+                  </Button>
                 </Col>
               </Row>
             </FormItem>

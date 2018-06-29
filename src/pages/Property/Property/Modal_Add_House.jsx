@@ -65,12 +65,11 @@ class Modal_Add_House extends React.Component {
                 }]
               })(
                 <Select placeholder="请选择房产类型" className="w-100">
-                  <Option value="1">经济型酒店</Option>
-                  <Option value="2">主题酒店</Option>
-                  <Option value="3">商务酒店</Option>
-                  <Option value="4">公寓豪华酒店</Option>
-                  <Option value="5">客栈</Option>
-                  <Option value="6">青年旅社</Option>
+                  <Option value="1">公寓/小区/住宅</Option>
+                  <Option value="2">酒店/旅社</Option>
+                  <Option value="3">写字楼/办公室</Option>
+                  <Option value="4">商铺/门市房</Option>
+                  <Option value="5">厂房/车间</Option>
                 </Select>
               )
             }
