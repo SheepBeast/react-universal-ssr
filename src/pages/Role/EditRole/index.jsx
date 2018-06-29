@@ -45,26 +45,24 @@ class EditRole extends React.Component {
       p3 = this.props.fetchRoleDetail({ roleId: [roleId] })
 
     Promise.all([p1, p2, p3]).then(ret => {
-      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1]) && isRequestSuccess(ret[2])) {
-        let roleList = ret[0].data.data.list || [],
-          menuPermissionList = ret[1].data.data.actions || [],
-          roleDetail = ret[2].data.data || {}
+      let roleList = isRequestSuccess(ret[0]) && ret[0].data.data.list || [],
+        menuPermissionList = isRequestSuccess(ret[1]) && ret[1].data.data.actions || [],
+        roleDetail = isRequestSuccess(ret[2]) && ret[2].data.data || {}
 
-        menuPermissionList.forEach(({ actionId, lowerActions = [] }) => {
-          initialKeys[actionId] = lowerActions.map(({ actionId }) => actionId)
-        })
+      menuPermissionList.forEach(({ actionId, lowerActions = [] }) => {
+        initialKeys[actionId] = lowerActions.map(({ actionId }) => actionId)
+      })
 
-        let checkedKeys = this.parseActionsToState(roleDetail.actions || [])
+      let checkedKeys = this.parseActionsToState(roleDetail.actions || [])
 
-        this.setState({
-          roleList,
-          menuPermissionList,
-          roleDetail,
+      this.setState({
+        roleList,
+        menuPermissionList,
+        roleDetail,
 
-          selectedRadioValue: roleList[0].roleId,
-          checkedKeys
-        })
-      }
+        selectedRadioValue: roleList[0].roleId,
+        checkedKeys
+      })
     })
   }
 
@@ -114,16 +112,14 @@ class EditRole extends React.Component {
     this.props.fetchRoleDetail({
       roleId: [value]
     }).then(ret => {
-      if (isRequestSuccess(ret)) {
-        let actions = ret.data.data.actions
+      let actions = isRequestSuccess(ret) && ret.data.data.actions || []
 
-        let checkedKeys = this.parseActionsToState(actions)
+      let checkedKeys = this.parseActionsToState(actions)
 
-        this.setState({
-          checkedKeys,
-          selectedRadioValue: value
-        })
-      }
+      this.setState({
+        checkedKeys,
+        selectedRadioValue: value
+      })
     })
   }
 

@@ -35,15 +35,13 @@ class EditUser extends Component {
       p2 = this.props.fetchApartmentList()
 
     Promise.all([p1, p2]).then(ret => {
-      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1])) {
-        let roleList = ret[0].data.data.list || [],
-          apartmentList = ret[1].data.data.houses || []
+      let roleList = isRequestSuccess(ret[0]) && ret[0].data.data.list || [],
+        apartmentList = isRequestSuccess(ret[1]) && ret[1].data.data.houses || []
 
-        this.setState({
-          roleList,
-          apartmentList
-        })
-      }
+      this.setState({
+        roleList,
+        apartmentList
+      })
     })
   }
 
@@ -53,15 +51,16 @@ class EditUser extends Component {
 
 
     this.props.fetchUserDetail(params).then(ret => {
-      if (isRequestSuccess(ret)) {
-        var {
-          eMail,
-          phoneNo,
-          roleId,
-          userAccount,
-          userName,
-          userId
-        } = ret.data.data
+      var userDetail = isRequestSuccess(ret) && ret.data.data || {}
+
+      var {
+        eMail,
+        phoneNo,
+        roleId,
+        userAccount,
+        userName,
+        userId
+      } =
 
         this.props.form.setFieldsValue({
           eMail,
@@ -71,8 +70,6 @@ class EditUser extends Component {
           userName,
           userId
         })
-      }
-
     })
   }
 
@@ -166,7 +163,7 @@ class EditUser extends Component {
     })
   }
 
-  goBack(){
+  goBack() {
     this.props.history.goBack()
   }
 
@@ -298,8 +295,8 @@ class EditUser extends Component {
           </FormItem>
 
           {
-              getFieldDecorator('userId')(<Input type="hidden" />)
-            }
+            getFieldDecorator('userId')(<Input type="hidden" />)
+          }
 
 
           <FormItem label="房产权限" labelCol={{ span: 3 }} wrapperCol={{ span: 20 }} >

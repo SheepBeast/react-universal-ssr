@@ -35,18 +35,9 @@ class Register extends React.Component {
           phoneNo: val.phoneNo
         }).then(ret => {
           if (isRequestSuccess(ret)) {
-            console.log('register ret -->', ret)
-            // this.setState({
-            //   captcha: ret.data.data.code
-            // })
+           message.success('验证码已发送')
           } else {
-            this.props.form.setFields({
-              captcha: {
-                errors: [
-                  new Error(ret.data.reason)
-                ]
-              }
-            })
+            message.error(`验证码发送失败，${ret.data.reason}`)
           }
 
         })

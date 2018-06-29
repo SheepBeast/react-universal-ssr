@@ -84,19 +84,17 @@ class ModalBindDeviceWithRoom extends React.Component {
       p4 = this.props.fetchRoomList({ state: [1, 2, 3, 4, 5] })
 
     Promise.all([p1, p2, p3, p4]).then(ret => {
-      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1]) && isRequestSuccess(ret[2]) && isRequestSuccess(ret[3])) {
-        let houseList = ret[0].data.data.list || [],
-          buildingList = ret[1].data.data.list || [],
-          floorList = ret[2].data.data.list || [],
-          roomList = ret[3].data.data.list || []
+      let houseList = isRequestSuccess(ret[0]) && ret[0].data.data.list || [],
+        buildingList = isRequestSuccess(ret[1]) && ret[1].data.data.list || [],
+        floorList = isRequestSuccess(ret[2]) && ret[2].data.data.list || [],
+        roomList = isRequestSuccess(ret[3]) && ret[3].data.data.list || []
 
-        this.setState({
-          houseList,
-          buildingList,
-          floorList,
-          roomList
-        })
-      }
+      this.setState({
+        houseList,
+        buildingList,
+        floorList,
+        roomList
+      })
     })
   }
 
@@ -124,7 +122,8 @@ class ModalBindDeviceWithRoom extends React.Component {
       return
     }
 
-    let { selectedHouseName, selectedBuildingName, selectedFloorName, selectedRoomName, options } = this.state
+    let { selectedHouseName, selectedBuildingName, selectedFloorName, selectedRoomName } = this.state
+    var { options } = this.props
 
 
     let installationSite = `${selectedHouseName || ''}${selectedBuildingName ? selectedBuildingName + '栋' : ''}${selectedFloorName ? selectedFloorName + '层' : ''}${selectedRoomName || ''}：${deviceTypeRefers[options.deviceType]}`
@@ -200,53 +199,74 @@ class ModalBindDeviceWithRoom extends React.Component {
 
 
   linkedFetchBuildingList(params) {
-    this.props.fetchBuildingList(params).then(ret => {
-      var buildingList = isRequestSuccess(ret) && ret.data.data.list || []
-
-      var first = buildingList[0]
-
-      var { buildingId, buildingName } = first
-
+    if (!params || !params.houseId) {
       this.setState({
-        buildingList
-      }, () => {
-        var params = {
-          buildingId,
-          state: 1
-        }
+        buildingList: []
+      }, this.linkedFetchFloorList)
+    } else {
+      this.props.fetchBuildingList(params).then(ret => {
+        var buildingList = isRequestSuccess(ret) && ret.data.data.list || []
 
-        this.linkedFetchFloorList(params)
+        var first = buildingList[0] || {}
+        var { buildingId, buildingName } = first
+
+        this.setState({
+          buildingList
+        }, () => {
+          var params = {
+            buildingId,
+            state: 1
+          }
+
+          this.linkedFetchFloorList(params)
+        })
       })
-    })
+    }
   }
 
   linkedFetchFloorList(params) {
-    this.props.fetchFloorList(params).then(ret => {
-      var floorList = isRequestSuccess(ret) && ret.data.data.list || []
-
-      var first = floorList[0]
-
-      var { floorId, floorName } = first
-
+    if (!params || !params.buildingId) {
       this.setState({
-        floorList
-      }, () => {
-        var params = {
-          floorId,
-          state: [1, 2, 3, 4, 5]
-        }
+        floorList: []
+      }, this.linkedFetchRoomList)
+    } else {
+      this.props.fetchFloorList(params).then(ret => {
+        var floorList = isRequestSuccess(ret) && ret.data.data.list || []
 
-        this.linkedFetchRoomList(params)
+        var first = floorList[0] || {}
+        var { floorId, floorName } = first
+
+        this.setState({
+          floorList
+        }, () => {
+          var params = {
+            floorId,
+            state: [1, 2, 3, 4, 5]
+          }
+
+          this.linkedFetchRoomList(params)
+        })
       })
-    })
+    }
   }
 
-  linkedFetchRoomList(params) {
-    this.props.fetchRoomList(params).then(ret => {
-      var roomList = isRequestSuccess(ret) && ret.data.data.list || []
+  linkedFetchRoomList(params, callback) {
+    if (!params || !params.floorId) {
+      this.setState({
+        roomList: []
+      })
+    } else {
+      this.props.fetchRoomList(params).then(ret => {
+        var roomList = isRequestSuccess(ret) && ret.data.data.list || []
 
-      this.setState({ roomList })
-    })
+        var first = roomList[0] || {}
+        var { roomId, roomName } = first
+
+        this.setState({
+          roomList
+        }, callback)
+      })
+    }
   }
 
   render() {
@@ -257,7 +277,7 @@ class ModalBindDeviceWithRoom extends React.Component {
       visible, disabled
     } = this.state
 
-    let { deviceId, deviceName, mac, deviceType } = this.props.options
+    let { deviceName, mac, deviceType } = this.props.options
 
     return (
       <Modal title="设备关联房间" visible={visible} destroyOnClose={true} okText="保存" cancelText="取消" onOk={this.onOk.bind(this)} onCancel={this.hide.bind(this)}>

@@ -38,15 +38,14 @@ class User extends Component {
       p2 = this.props.fetchRoleList()
 
     Promise.all([p1, p2]).then(ret => {
-      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1])) {
-        let userList = ret[0].data.data.list,
-          roleList = ret[1].data.data.list
+      let userList = isRequestSuccess(ret[0]) && ret[0].data.data.list || [],
+        roleList = isRequestSuccess(ret[1]) && ret[1].data.data.list || []
 
-        this.setState({
-          userList,
-          roleList
-        })
-      }
+      this.setState({
+        userList,
+        roleList
+      })
+
     })
   }
 
@@ -110,11 +109,9 @@ class User extends Component {
     }
 
     this.props.fetchUserList(params).then(ret => {
-      if (isRequestSuccess(ret)) {
-        let userList = ret.data.data.list || []
+      let userList = isRequestSuccess(ret) && ret.data.data.list || []
 
-        this.setState({ userList })
-      }
+      this.setState({ userList })
     })
   }
 

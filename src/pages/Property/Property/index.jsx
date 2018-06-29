@@ -120,24 +120,22 @@ class Property extends Component {
   ///////////////////////////////////
   linkedFetchHouseList(params) {
     this.props.fetchHouseList(params).then(ret => {
-      if (isRequestSuccess(ret)) {
-        let houseList = ret.data.data.list || []
+      let houseList = isRequestSuccess(ret) && ret.data.data.list || []
 
-        var first = houseList[0] || {}
-        var { houseId, houseName } = first
+      var first = houseList[0] || {}
+      var { houseId, houseName } = first
 
-        this.setState({
-          houseList,
-          selectedHouseId: houseId,
-          selectedHouseName: houseName
-        }, () => {
-          var params = {
-            houseId,
-            state: 1
-          }
-          this.linkedFetchBuildingList(params)
-        })
-      }
+      this.setState({
+        houseList,
+        selectedHouseId: houseId,
+        selectedHouseName: houseName
+      }, () => {
+        var params = {
+          houseId,
+          state: 1
+        }
+        this.linkedFetchBuildingList(params)
+      })
     })
   }
 

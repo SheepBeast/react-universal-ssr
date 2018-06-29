@@ -87,7 +87,7 @@ class Tenant extends React.Component {
     return (
       <div id="Tenant" className="container">
         <Form className="mb-20">
-          <FormItem label="房间状态" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
+          <FormItem label="状态" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
             <RadioGroup className="custom-radio-button-group" defaultValue="0">
               <RadioButton value="0">全部</RadioButton>
               <RadioButton value="1">已入住</RadioButton>

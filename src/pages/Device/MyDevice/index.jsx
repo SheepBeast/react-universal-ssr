@@ -44,11 +44,9 @@ class MyDevice extends React.Component {
 
   componentWillMount() {
     this.props.fetchDeviceList().then(ret => {
-      if (isRequestSuccess(ret)) {
-        let deviceList = ret.data.data.list || []
+      let deviceList = isRequestSuccess(ret) && ret.data.data.list || []
 
-        this.setState({ deviceList })
-      }
+      this.setState({ deviceList })
     })
   }
 
@@ -81,13 +79,9 @@ class MyDevice extends React.Component {
     console.log('params -->', params)
 
     this.props.fetchDeviceList(params).then(ret => {
-      if (isRequestSuccess(ret)) {
-        let deviceList = ret.data.data.list || []
+      let deviceList = isRequestSuccess(ret) && ret.data.data.list || []
 
-        this.setState({
-          deviceList
-        })
-      }
+      this.setState({ deviceList })
     })
   }
 
@@ -245,7 +239,7 @@ class MyDevice extends React.Component {
       dataIndex: 'state',
       key: 'state',
       render: (state) => {
-        return <span style={state === 1 ? {} : { color: 'red' }}>{stateRefers[state]}</span>
+        return <span className={state == 3 ? 'health' : 'danger'}>{stateRefers[state]}</span>
       }
     },
     {
@@ -282,7 +276,7 @@ class MyDevice extends React.Component {
     return (
       <div id="MyDevice" className="container">
         <Form className="mb-20">
-          <FormItem label="房间状态" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
+          <FormItem label="状态" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
             <RadioGroup defaultValue="-1" className="custom-radio-button-group" onChange={this.onRadioGroupChange.bind(this)}>
               <RadioButton value="-1">全部</RadioButton>
               <RadioButton value="1">正常</RadioButton>

@@ -38,11 +38,10 @@ class Gateway extends React.Component {
 
   componentWillMount() {
     this.props.fetchGatewayList().then(ret => {
-      if (isRequestSuccess(ret)) {
-        let gatewayList = ret.data.data.list || []
+      let gatewayList = isRequestSuccess(ret) && ret.data.data.list || []
 
-        this.setState({ gatewayList })
-      }
+      this.setState({ gatewayList })
+
     })
   }
 
@@ -63,13 +62,10 @@ class Gateway extends React.Component {
     console.log('params -->', params)
 
     this.props.fetchGatewayList(params).then(ret => {
-      if (isRequestSuccess(ret)) {
-        let gatewayList = ret.data.data.list || []
+      var gatewayList = isRequestSuccess(ret) && ret.data.data.list || []
 
-        this.setState({
-          gatewayList
-        })
-      }
+      this.setState({ gatewayList })
+
     })
   }
 
@@ -193,7 +189,7 @@ class Gateway extends React.Component {
     return (
       <div id="Gateway" className="container">
         <Form className="mb-20">
-          <FormItem label="房间状态" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
+          <FormItem label="状态" labelCol={{ span: 1 }} wrapperCol={{ span: 23 }}>
             <RadioGroup defaultValue="-1" className="custom-radio-button-group" onChange={this.onRadioGroupChange.bind(this)}>
               <RadioButton value="-1">全部</RadioButton>
               <RadioButton value="1">正常</RadioButton>

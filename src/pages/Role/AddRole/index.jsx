@@ -38,19 +38,17 @@ class AddRole extends React.Component {
       p2 = this.props.fetchMenuPermissionList()
 
     Promise.all([p1, p2]).then(ret => {
-      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1])) {
-        let roleList = ret[0].data.data.list || [],
-          menuPermissionList = ret[1].data.data.actions || []
+      let roleList = isRequestSuccess(ret[0]) && ret[0].data.data.list || [],
+        menuPermissionList = isRequestSuccess(ret[1]) && ret[1].data.data.actions || []
 
-        menuPermissionList.forEach(({ actionId, lowerActions = [] }) => {
-          initialKeys[actionId] = lowerActions.map(({ actionId }) => actionId)
-        })
+      menuPermissionList.forEach(({ actionId, lowerActions = [] }) => {
+        initialKeys[actionId] = lowerActions.map(({ actionId }) => actionId)
+      })
 
-        this.setState({
-          roleList,
-          menuPermissionList
-        })
-      }
+      this.setState({
+        roleList,
+        menuPermissionList
+      })
     })
   }
 
@@ -89,17 +87,16 @@ class AddRole extends React.Component {
 
   reset() {
     this.props.fetchRoleList({ state: 1 }).then(ret => {
-      if (isRequestSuccess(ret)) {
-        this.setState({
-          roleList: ret.data.data.list,
-          checkedKeys: {
-            checked: [],
-            halfChecked: []
-          }
-        }, () => {
-          this.props.form.resetFields()
-        })
-      }
+      var roleList = isRequestSuccess(ret) && ret.data.data.list || []
+      this.setState({
+        roleList,
+        checkedKeys: {
+          checked: [],
+          halfChecked: []
+        }
+      }, () => {
+        this.props.form.resetFields()
+      })
     })
   }
 

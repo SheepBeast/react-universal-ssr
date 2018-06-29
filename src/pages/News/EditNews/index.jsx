@@ -33,25 +33,23 @@ class EditNews extends React.Component {
       p2 = this.props.fetchNewsDetail(params)
 
     Promise.all([p1, p2]).then(ret => {
-      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1])) {
-        var userList = ret[0].data.data.list || {},
-          newsDetail = ret[1].data.data || {}
+      var userList = isRequestSuccess(ret[0]) && ret[0].data.data.list || {},
+        newsDetail = isRequestSuccess(ret[1]) && ret[1].data.data || {}
 
-        // console.log('news detail -->', newsDetail)
+      // console.log('news detail -->', newsDetail)
 
-        this.setState({ userList }, () => {
-          var { pushType, newsTitle, newsAbstract, newsContent } = newsDetail
+      this.setState({ userList }, () => {
+        var { pushType, newsTitle, newsAbstract, newsContent } = newsDetail
 
-          this.props.form.setFieldsValue({
-            pushType,
-            newsTitle,
-            newsAbstract,
-            newsContent
-          })
-
-          this.editor && this.editor.setValue(newsContent)
+        this.props.form.setFieldsValue({
+          pushType,
+          newsTitle,
+          newsAbstract,
+          newsContent
         })
-      }
+
+        this.editor && this.editor.setValue(newsContent)
+      })
     })
   }
 

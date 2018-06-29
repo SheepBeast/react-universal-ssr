@@ -120,11 +120,9 @@ class AudittingNews extends React.Component {
     console.log('params -->', params)
 
     this.props.fetchNewsList(params).then(ret => {
-      if (isRequestSuccess(ret)) {
-        let newsList = ret.data.data.list || []
+      let newsList = isRequestSuccess(ret) && ret.data.data.list || []
 
-        this.setState({ newsList })
-      }
+      this.setState({ newsList })
     })
   }
 

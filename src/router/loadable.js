@@ -122,7 +122,10 @@ var loadable = __TERMINAL__ === 'browser' ? {
     loader: () => import('../pages/Account/Account/index'),
     loading
   }),
-
+  LoadableModifyMobile: Loadable({
+    loader: () => import('../pages/Account/ModifyMobile/index'),
+    loading
+  })
 } : {
     // statistic
     LoadableStatistics: require('../pages/Statistics/index').default,
@@ -166,7 +169,8 @@ var loadable = __TERMINAL__ === 'browser' ? {
     LoadableCheckNews: require('../pages/News/CheckNews/index').default,
 
     // account
-    LoadableAccount: require('../pages/Account/Account/index').default
+    LoadableAccount: require('../pages/Account/Account/index').default,
+    LoadableModifyMobile: require('../pages/Account/ModifyMobile/index').default
   }
 
 module.exports = loadable

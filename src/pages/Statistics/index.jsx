@@ -66,14 +66,13 @@ class Statistics extends Component {
       p4 = this.props.fetchTenantStatistics()
 
     Promise.all([p1, p2, p3, p4]).then(ret => {
-      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1]) && isRequestSuccess(ret[2]) && isRequestSuccess(ret[3])) {
-        let rentStatistics = ret[0].data.data || {},
-          deviceStatistics = ret[1].data.data || {},
-          tanantStatistics = ret[3].data.data || {},
-          dynamicInfoList = ret[2].data.data.list || []
+      let rentStatistics = isRequestSuccess(ret[0]) && ret[0].data.data || {},
+        deviceStatistics = isRequestSuccess(ret[1]) && ret[1].data.data || {},
+        tanantStatistics = isRequestSuccess(ret[2]) && ret[3].data.data || {},
+        dynamicInfoList = isRequestSuccess(ret[3]) && ret[2].data.data.list || []
 
-        this.setState({ rentStatistics, deviceStatistics, tanantStatistics, dynamicInfoList })
-      }
+      this.setState({ rentStatistics, deviceStatistics, tanantStatistics, dynamicInfoList })
+
     })
   }
 
@@ -104,7 +103,7 @@ class Statistics extends Component {
     }) => {
       var title = '', description = createTime
 
-      if (eventType >= 1 && eventType <= 4) {
+      if (eventType == 2 || eventType == 4) {
         title = (
           <span>
             <a>{eventSponsorName}</a>&nbsp;
@@ -114,7 +113,16 @@ class Statistics extends Component {
             <a>{elementName}</a>
           </span>
         )
-      } else if (eventType >= 5 && eventType <= 7) {
+      } else if (eventType == 1 || eventType == 3) {
+        title = (
+          <span>
+            <a>{eventSponsorName}</a>&nbsp;
+            <span>对<a>{eventObjName}</a></span>&nbsp;
+            <span>办理{eventTypeRefers[eventType]}</span>
+          </span>
+        )
+      }
+      else if (eventType >= 5 && eventType <= 7) {
         title = (
           <span>
             <a>{eventSponsorName}</a>&nbsp;

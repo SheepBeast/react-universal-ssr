@@ -48,12 +48,9 @@ class AuditNews extends React.Component {
     console.log('params -->', params)
 
     this.props.fetchNewsDetail(params).then(ret => {
-      console.log('ret -->', ret)
-      if (isRequestSuccess(ret)) {
-        var newsDetail = ret.data.data || {}
+      var newsDetail = isRequestSuccess(ret) && ret.data.data || {}
 
-        this.setState({ newsDetail })
-      }
+      this.setState({ newsDetail })
     })
   }
 
@@ -61,7 +58,7 @@ class AuditNews extends React.Component {
   auditNews(state) {
     var auditRemark = this.props.form.getFieldValue('auditRemark')
 
-    if(auditRemark){
+    if (auditRemark) {
       console.log('audit remark -->', auditRemark)
       auditRemark = auditRemark.trim()
     }

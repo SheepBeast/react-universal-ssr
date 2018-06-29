@@ -36,15 +36,13 @@ class AddUser extends React.Component {
       p2 = this.props.fetchApartmentList()
 
     Promise.all([p1, p2]).then(ret => {
-      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1])) {
-        let roleList = ret[0].data.data.list || [],
-          apartmentList = ret[1].data.data.houses || []
+      let roleList = isRequestSuccess(ret[0]) && ret[0].data.data.list || [],
+        apartmentList = isRequestSuccess(ret[1]) && ret[1].data.data.houses || []
 
-        this.setState({
-          roleList,
-          apartmentList
-        })
-      }
+      this.setState({
+        roleList,
+        apartmentList
+      })
     })
   }
 

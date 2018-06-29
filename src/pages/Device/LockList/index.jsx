@@ -50,16 +50,11 @@ class LockList extends React.Component {
       p2 = this.props.fetchLockList()
 
     Promise.all([p1, p2]).then(ret => {
-      console.log('ret -->', ret)
-      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1])) {
-        let lockStatistics = ret[0].data.data || { onlineNum: 0, exceptionNum: 0 },
-          lockList = ret[1].data.data.list || []
+      let lockStatistics = isRequestSuccess(ret[0]) && ret[0].data.data || { onlineNum: 0, exceptionNum: 0 },
+        lockList = isRequestSuccess(ret[1]) && ret[1].data.data.list || []
 
-        this.setState({
-          lockStatistics,
-          lockList
-        })
-      }
+      this.setState({ lockStatistics, lockList })
+
     })
   }
 
@@ -80,13 +75,10 @@ class LockList extends React.Component {
     console.log('params -->', params)
 
     this.props.fetchLockList(params).then(ret => {
-      if (isRequestSuccess(ret)) {
-        let lockList = ret.data.data.list || []
+      let lockList = isRequestSuccess(ret) && ret.data.data.list || []
 
-        this.setState({
-          lockList
-        })
-      }
+      this.setState({ lockList })
+
     })
   }
 

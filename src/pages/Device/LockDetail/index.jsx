@@ -6,7 +6,9 @@ import moment from 'moment'
 import { fetchLockDetail, fetchLockKeyList, fetchLockAppKeyList, updateLockFunctionConfig, fetchLockLogList, unbindDevice, releaseAlarm } from '../../../actions/device';
 import parseQueryToParams from '../../../utils/parseQueryToParams.js'
 import isRequestSuccess from '../../../utils/isRequestSuccess';
+import Modal_Bind_Device_With_Room from './Modal_Bind_Device_With_Room'
 import './index.less'
+import { roomAddDevice } from '../../../actions/property';
 
 const TabPane = Tabs.TabPane
 const TimelineItem = Timeline.Item
@@ -27,10 +29,7 @@ const gatewayTypeRefers = {
 }
 
 const stateRefers = {
-  0: '异常',
-  1: '正常',
-  2: '低电量',
-  3: '挟持告警',
+  3: '在线',
   4: '离线'
 }
 
@@ -148,6 +147,8 @@ class LockDetail extends React.Component {
       lockAppKeyList: [],
       lockLogList: []
     }
+
+    this.modal = {}
   }
 
   componentWillMount() {
@@ -159,23 +160,19 @@ class LockDetail extends React.Component {
       p4 = this.props.fetchLockAppKeyList(params)
 
     Promise.all([p1, p2, p3, p4]).then(ret => {
-      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1]) && isRequestSuccess(ret[2]) && isRequestSuccess(ret[3])) {
-        let lockDetail = ret[0].data.data.lockInfo || {},
-          lockLogList = ret[1].data.data.doorLockLog || [],
-          lockKeyList = ret[2].data.data.list || [],
-          lockAppKeyList = ret[3].data.data.list || []
+      console.log('key -->', ret)
+      let lockDetail = isRequestSuccess(ret[0]) && ret[0].data.data.lockInfo || {},
+        lockLogList = isRequestSuccess(ret[1]) && ret[1].data.data.doorLockLog || [],
+        lockKeyList = isRequestSuccess(ret[2]) && ret[2].data.data.list || [],
+        lockAppKeyList = isRequestSuccess(ret[3]) && ret[3].data.data.list || []
 
-        console.log('ret -->', ret)
-
-        this.setState({
-          lockDetail,
-          lockLogList,
-          lockKeyList,
-          lockAppKeyList
-        })
-      }
+      this.setState({
+        lockDetail,
+        lockLogList,
+        lockKeyList,
+        lockAppKeyList
+      })
     })
-
     // this.props.updateLockFunction(params)
   }
 
@@ -215,10 +212,8 @@ class LockDetail extends React.Component {
 
   fetchLockDetail() {
     this.props.fetchLockDetail().then(ret => {
-      if (isRequestSuccess(ret)) {
-        let lockDetail = ret.data.data.lockInfo
-        this.setState({ lockDetail })
-      }
+      var lockDetail = isRequestSuccess(ret) && ret.data.data.lockInfo || {}
+      this.setState({ lockDetail })
     })
   }
 
@@ -226,15 +221,58 @@ class LockDetail extends React.Component {
     this.props.history.goBack()
   }
 
+  onModalBindDeviceWithRoomInit(modal) {
+    this.modal.bindDeviceWithRoom = modal
+  }
+
+  onModalBindDeviceWithRoomOk(form) {
+    console.log('form -->', form)
+
+    let { houseId, buildingId, floorId, roomId, rename: deviceName } = form
+    var { lockType: deviceType, lockId: deviceId } = this.state.lockDetail
+    let params = {
+      deviceType,
+      deviceId,
+      deviceName
+    }
+
+    if (roomId) {
+      params.level = 4
+      params.id = roomId
+    } else if (floorId) {
+      params.level = 3
+      params.id = floorId
+    } else if (buildingId) {
+      params.level = 2
+      params.id = buildingId
+    } else if (houseId) {
+      params.level = 1
+      params.id = houseId
+    } else {
+      message.error('设备关联失败，id值不能为空')
+      return
+    }
+
+    this.props.bindDevice(params).then(ret => {
+      if (isRequestSuccess(ret)) {
+        message.success('设备关联成功').then(ret => {
+          var lockDetail = isRequestSuccess(ret) && ret.data.data.lockInfo || {}
+
+          this.setState({ lockDetail })
+        })
+      } else {
+        message.error(`设备关联失败，${ret.data.reason}`)
+      }
+    })
+
+  }
+
   render() {
     var { lockDetail, lockKeyList, lockAppKeyList, lockLogList } = this.state
 
-    let { lockState, electricNum, lockId, lockMac, lockType, lockName, gatewayMac, gatewayType, roomId, roomName, floorName, buildingName, houseName, maxVolume, comName, projectLogo
+    let { lockState, electricNum, lockId, lockMac, lockType, lockName, gatewayMac, gatewayType, roomId, roomName, floorName, buildingName, houseName, maxVolume, comName, projectLogo, projectPhone, alarm
       // 门锁信号 // 网关信号 // 当前租客 // 门锁型号 // 公司型号
     } = lockDetail
-
-    console.log('lock detail -->', this.state)
-
 
     const lockData = [{
       key: 1,
@@ -261,7 +299,6 @@ class LockDetail extends React.Component {
         roomId
       }
     }]
-
 
     const keysData = lockKeyList.map(({
       lockKeyId,
@@ -293,6 +330,8 @@ class LockDetail extends React.Component {
       }
     })
 
+
+
     return (
       <div id="LockDetail">
         <div className="container">
@@ -306,12 +345,11 @@ class LockDetail extends React.Component {
               <div className="fr">
                 <ButtonGroup className="mr-20">
                   {
-                    lockState == 3 ? <Button type="primary" onClick={this.releaseAlarm.bind(this, { lockId, releaseType: 255 })} ghost>解除报警</Button> : null
+                    alarm ? <Button type="primary" onClick={this.releaseAlarm.bind(this, { lockId, releaseType: 255 })} ghost>解除报警</Button> : null
                   }
                   {
-                    roomId
-                      ? <Button type="primary" onClick={this.unbindDevice.bind(this, { deviceType: 2, deviceId: [lockId] })} ghost>解除关联</Button>
-                      : <Button type="primary" onClick={this.bindDevice.bind(this, { id: roomId, level: 4, deviceType: 2, deviceId: lockId, deviceName: lockName })}>关联房间</Button>
+                    roomId ? <Button type="primary" onClick={this.unbindDevice.bind(this, { deviceType: 2, deviceId: [lockId] })} ghost>解除关联</Button>
+                      : <Button type="primary" onClick={() => { this.modal.bindDeviceWithRoom.show() }} ghost>关联房间</Button>
 
                   }
                 </ButtonGroup>
@@ -327,7 +365,7 @@ class LockDetail extends React.Component {
             <Col span={6}>
               <span className="fs-14 gray">当前状态</span>
               <br />
-              <span className={`fs-24 ${lockState == 1 ? 'health' : 'danger'}`}>{stateRefers[lockState]}</span>
+              <span className={`fs-24 ${lockState == 3 ? 'health' : 'danger'}`}>{stateRefers[lockState]}</span>
             </Col>
             <Col span={6}>
               <span className="fs-14 gray">电量</span>
@@ -376,7 +414,7 @@ class LockDetail extends React.Component {
               </h3>
               <div className="tc">
                 <p className="gray">未关联房间，请进行关联操作</p>
-                <Button type="primary" onClick={this.bindDevice.bind(this, { id: roomId, level: 4, deviceType: 2, deviceId: lockId, deviceName: lockName })}>关联房间</Button>
+                <Button type="primary" onClick={() => { this.modal.bindDeviceWithRoom.show() }}>关联房间</Button>
               </div>
             </div>
         }
@@ -470,7 +508,7 @@ class LockDetail extends React.Component {
               <Row>
                 <Col span={12}>
                   <p>公司名称：{comName}</p>
-                  <p>售后电话：</p>
+                  <p>售后电话：{projectPhone}</p>
                   <p>门锁型号：</p>
                   <p>公司简介：</p>
                 </Col>
@@ -481,6 +519,8 @@ class LockDetail extends React.Component {
             </TabPane>
           </Tabs>
         </div>
+
+        <Modal_Bind_Device_With_Room onInit={this.onModalBindDeviceWithRoomInit.bind(this)} onOk={this.onModalBindDeviceWithRoomOk.bind(this)} options={{ deviceName: lockName, mac: lockMac, deviceType: lockType }} />
       </div>
     )
   }
@@ -492,6 +532,7 @@ const mapDispatchToProps = dispatch => ({
   fetchLockAppKeyList: params => dispatch(fetchLockAppKeyList(params)),
   updateLockFunction: params => dispatch(updateLockFunctionConfig(params)),
   fetchLockLogList: params => dispatch(fetchLockLogList(params)),
+  bindDevice: params => dispatch(roomAddDevice(params)),
   unbindDevice: params => dispatch(unbindDevice(params)),
   releaseAlarm: params => dispatch(releaseAlarm(params))
 })

@@ -87,19 +87,17 @@ class ModalBindDeviceWithRoom extends React.Component {
       p4 = this.props.fetchRoomList({ state: [1, 2, 3, 4, 5] })
 
     Promise.all([p1, p2, p3, p4]).then(ret => {
-      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1]) && isRequestSuccess(ret[2]) && isRequestSuccess(ret[3])) {
-        let houseList = ret[0].data.data.list || [],
-          buildingList = ret[1].data.data.list || [],
-          floorList = ret[2].data.data.list || [],
-          roomList = ret[3].data.data.list || []
+      let houseList = isRequestSuccess(ret[0]) && ret[0].data.data.list || [],
+        buildingList = isRequestSuccess(ret[1]) && ret[1].data.data.list || [],
+        floorList = isRequestSuccess(ret[2]) && ret[2].data.data.list || [],
+        roomList = isRequestSuccess(ret[3]) && ret[3].data.data.list || []
 
-        this.setState({
-          houseList,
-          buildingList,
-          floorList,
-          roomList
-        })
-      }
+      this.setState({
+        houseList,
+        buildingList,
+        floorList,
+        roomList
+      })
     })
   }
 
@@ -248,9 +246,7 @@ class ModalBindDeviceWithRoom extends React.Component {
     this.props.fetchRoomList(params).then(ret => {
       var roomList = isRequestSuccess(ret) && ret.data.data.list || []
 
-      this.setState({
-        roomList
-      })
+      this.setState({ roomList })
     })
   }
 

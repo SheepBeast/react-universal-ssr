@@ -94,13 +94,9 @@ class News extends React.Component {
     }
 
     this.props.fetchNewsList(params).then(ret => {
-      if (isRequestSuccess(ret)) {
-        let newsList = ret.data.data.list || []
+      let newsList = isRequestSuccess(ret) && ret.data.data.list || []
 
-        this.setState({
-          newsList
-        })
-      }
+      this.setState({ newsList })
     })
   }
 
@@ -237,7 +233,7 @@ class News extends React.Component {
         <Form className="mb-20">
           <Row>
             <Col span={9}>
-              <FormItem label="房间状态" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
+              <FormItem label="状态" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
                 <RadioGroup className="custom-radio-button-group" defaultValue="-1" onChange={this.onStateChange.bind(this)}>
                   <RadioButton value="-1">全部</RadioButton>
                   <RadioButton value="0">草稿</RadioButton>

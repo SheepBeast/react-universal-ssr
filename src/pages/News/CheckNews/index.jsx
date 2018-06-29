@@ -47,13 +47,9 @@ class CheckNews extends React.Component {
     console.log('params -->', params)
 
     this.props.fetchNewsDetail(params).then(ret => {
-      if (isRequestSuccess(ret)) {
-        var newsDetail = ret.data.data
+      var newsDetail = isRequestSuccess(ret) && ret.data.data || {}
 
-        this.setState({
-          newsDetail
-        })
-      }
+      this.setState({ newsDetail })
     })
   }
 

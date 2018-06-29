@@ -90,11 +90,10 @@ class Role extends Component {
     params = Object.assign({ state: this.state.state }, params)
 
     this.props.fetchRoleList(params).then(ret => {
-      if (isRequestSuccess(ret)) {
-        this.setState({
-          roleList: ret.data.data.list || []
-        })
-      }
+      var roleList = isRequestSuccess(ret) && ret.data.data.list || []
+      this.setState({
+        roleList
+      })
     })
   }
 

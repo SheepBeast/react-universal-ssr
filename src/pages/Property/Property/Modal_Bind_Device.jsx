@@ -44,12 +44,11 @@ class Modal_Bind_Device extends React.Component {
     this.props.fetchLockList({
       getNum: 100
     }).then(ret => {
-      console.log('modif bind device lock list -->', ret)
-      if (isRequestSuccess(ret)) {
-        this.setState({
-          lockList: ret.data.data.list || []
-        })
-      }
+      console.log(' bind device lock list -->', ret)
+      var lockList=isRequestSuccess(ret)&&ret.data.data.list || []
+      this.setState({
+        lockList
+      })
     })
   }
 

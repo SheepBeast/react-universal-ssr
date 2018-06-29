@@ -64,19 +64,17 @@ class RoomDetail extends Component {
       p3 = this.props.fetchRoomDeviceList(params)
 
     Promise.all([p1, p2, p3]).then(ret => {
-      if (isRequestSuccess(ret[0]) && isRequestSuccess(ret[1]) && isRequestSuccess(ret[2])) {
-        let roomDetail = ret[0].data.data || {},
-          roomTenantList = ret[1].data.data.tenantList || [],
-          roomDeviceList = ret[2].data.data.lockInfo || {}
+      let roomDetail = isRequestSuccess(ret[0]) && ret[0].data.data || {},
+        roomTenantList = isRequestSuccess(ret[1]) && ret[1].data.data.tenantList || [],
+        roomDeviceList = isRequestSuccess(ret[2]) && ret[2].data.data.lockInfo || {}
 
-        this.setState({
-          roomDetail,
-          roomTenantList,
-          roomDeviceList,
+      this.setState({
+        roomDetail,
+        roomTenantList,
+        roomDeviceList,
 
-          currentRoomId: params.roomId
-        })
-      }
+        currentRoomId: params.roomId
+      })
     })
   }
 
@@ -119,10 +117,8 @@ class RoomDetail extends Component {
           roomId: this.state.currentRoomId
         }
         this.props.fetchRoomDetail(params).then(ret => {
-          if (isRequestSuccess(ret)) {
-            let roomDetail = ret.data.data
-            this.setState({ roomDetail })
-          }
+          let roomDetail = isRequestSuccess(ret) && ret.data.data || {}
+          this.setState({ roomDetail })
         })
       } else {
         message.error(`续租失败，${ret.data.reason}`)
@@ -168,10 +164,8 @@ class RoomDetail extends Component {
     }
 
     this.props.fetchRoomTenantList(params).then(ret => {
-      if (isRequestSuccess(ret)) {
-        let roomTenantList = ret.data.data.tenantList || []
-        this.setState({ roomTenantList })
-      }
+      let roomTenantList = isRequestSuccess(ret) && ret.data.data.tenantList || []
+      this.setState({ roomTenantList })
     })
   }
 
@@ -204,11 +198,10 @@ class RoomDetail extends Component {
         }
 
         this.props.fetchRoomDeviceList(params).then(ret => {
-          if (isRequestSuccess(ret)) {
-            let roomDeviceList = ret.data.data.lockInfo
+          let roomDeviceList = isRequestSuccess(ret) && ret.data.data.lockInfo || {}
 
-            this.setState({ roomDeviceList })
-          }
+          this.setState({ roomDeviceList })
+
         })
       }
     })

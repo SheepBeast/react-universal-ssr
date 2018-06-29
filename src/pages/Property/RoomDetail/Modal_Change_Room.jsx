@@ -36,11 +36,10 @@ class ModalChangeRoom extends React.Component {
     this.props.fetchRoomList({
       state: [1, 2, 3, 4, 5]
     }).then(ret => {
-      if (isRequestSuccess(ret)) {
-        this.setState({
-          roomList: ret.data.data.list
-        })
-      }
+      var roomList = isRequestSuccess(ret) && ret.data.data.list || []
+      this.setState({
+        roomList
+      })
     })
   }
 
