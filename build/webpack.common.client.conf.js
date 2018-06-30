@@ -29,7 +29,9 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      '__TERMINAL__': '"browser"'
+      '__TERMINAL__': '"browser"',
+      '__DEV_UPLOAD_URL__': '"http://localhost:8081/upload"',
+      '__PROD_UPLOAD_URL__': '"http://112.74.162.225:8081/upload"'
     })
   ]
 }

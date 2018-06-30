@@ -1,4 +1,4 @@
-var uploadURL = process.env.NODE_ENV == 'production' ? '"http://112.74.162.225:8081/upload"' : '"http://localhost:8081/upload"'
+var uploadURL = process.env.NODE_ENV == 'production' ? __PROD_UPLOAD_URL__ : __DEV_UPLOAD_URL__
 
 console.log('upload url -->', uploadURL)
 
