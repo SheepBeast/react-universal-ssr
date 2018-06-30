@@ -29,10 +29,7 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      '__TERMINAL__': '"browser"',
-      '__IS_SERVER_SITE__': process.argv[process.argv.length - 1] == '--server',
-      '__DEV_UPLOAD_URL__': '"http://localhost:8081/upload"',
-      '__PROD_UPLOAD_URL__': '"http://112.74.162.225:8081/upload"'
+      '__TERMINAL__': '"browser"'
     })
   ]
 }

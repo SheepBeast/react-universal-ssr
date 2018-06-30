@@ -44,7 +44,7 @@ module.exports = WebpackMerge(COMMON_CLIENT_CONFIG, {
       '__REMOTE_SERVER__': '"https://t.server.wisbetter.com"',
       '__PROXY_SERVER__': '"/api"',
       '__MIDDLEWAVE_SERVER__': '"/local"',
-      '__UPLOAD_URL__': '"http://localhost:8081/upload"'
+      '__UPLOAD_URL__': '"http://112.74.162.225:8081/upload"'
     }),
     new HtmlWebpackPlugin({
       inject: true,
