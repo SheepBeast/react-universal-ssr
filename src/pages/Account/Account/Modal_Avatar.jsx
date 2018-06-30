@@ -2,7 +2,9 @@ import React from 'react'
 import { Modal, Upload, Row, Col, Button, Avatar, message } from 'antd'
 import isRequestSuccess from '../../../utils/isRequestSuccess';
 import './Modal_Avatar.less'
+import uploadURL from './uploadURL'
 
+console.log('upload -->', uploadURL)
 
 export default class Modal_Avatar extends React.Component {
   constructor(props) {
@@ -85,7 +87,7 @@ export default class Modal_Avatar extends React.Component {
           <Col span={13} style={{ border: '1px dashed #eee', height: 340 }}>
             <div className="pos-center">
               <div className="tc">
-                <Upload action="http://localhost:8081/upload" onChange={this.onUploadChange.bind(this)} beforeUpload={this.onUploadBeforeUpload.bind(this)} showUploadList={false} multiple={false} name="avatar" accept="image/*">
+                <Upload action={uploadURL} onChange={this.onUploadChange.bind(this)} beforeUpload={this.onUploadBeforeUpload.bind(this)} showUploadList={false} multiple={false} name="avatar" accept="image/*">
                   <Button icon={uploading ? 'loading' : ''} type="primary">上传图片</Button>
                 </Upload>
               </div>
