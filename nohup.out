@@ -1,0 +1,181 @@
+
+> react-universal-ssr@1.0.0 dev:client:server C:\github\react-universal-ssr
+> nodemon ./bin/dev-client --server
+
+[33m[nodemon] 1.17.2[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching: *.*[39m
+[32m[nodemon] starting `node ./bin/dev-client --server`[39m
+events.js:160
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: EPERM: operation not permitted, read
+    at Error (native)
+
+npm ERR! Windows_NT 10.0.17134
+npm ERR! argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "run" "dev:client:server"
+npm ERR! node v6.14.0
+npm ERR! npm  v3.10.10
+npm ERR! code ELIFECYCLE
+npm ERR! react-universal-ssr@1.0.0 dev:client:server: `nodemon ./bin/dev-client --server`
+npm ERR! Exit status 1
+npm ERR! 
+npm ERR! Failed at the react-universal-ssr@1.0.0 dev:client:server script 'nodemon ./bin/dev-client --server'.
+npm ERR! Make sure you have the latest version of node.js and npm installed.
+npm ERR! If you do, this is most likely a problem with the react-universal-ssr package,
+npm ERR! not with npm itself.
+npm ERR! Tell the author that this fails on your system:
+npm ERR!     nodemon ./bin/dev-client --server
+npm ERR! You can get information on how to open an issue for this project with:
+npm ERR!     npm bugs react-universal-ssr
+npm ERR! Or if that isn't available, you can get their info via:
+npm ERR!     npm owner ls react-universal-ssr
+npm ERR! There is likely additional logging output above.
+
+npm ERR! Please include the following file with any support request:
+npm ERR!     C:\github\react-universal-ssr\npm-debug.log
+[HPM] Proxy created: /  ->  https://t.server.wisbetter.com
+[HPM] Proxy rewrite rule created: "^/api" ~> ""
+[HPM] Proxy created: /  ->  http://localhost:8081
+[HPM] Proxy rewrite rule created: "^/local" ~> ""
+Listening at http://localhost:1501
+ℹ ｢wdm｣: wait until bundle finished: /
+ℹ ｢wdm｣: wait until bundle finished: /
+webpack built ea9c6ebbefbb8ec82ac6 in 17592ms
+ℹ ｢wdm｣: Hash: [1mea9c6ebbefbb8ec82ac6[39m[22m
+Version: webpack [1m4.8.3[39m[22m
+Time: [1m17592[39m[22mms
+Built at: 06/30/2018 [1m11:15:42 AM[39m[22m
+           [1mAsset[39m[22m      [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
+ [1m[32massets/js/16.js[39m[22m  25.1 KiB      [1m16[39m[22m  [1m[32m[emitted][39m[22m  
+  [1m[32massets/js/0.js[39m[22m  20.4 KiB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  
+  [1m[32massets/js/2.js[39m[22m  25.9 KiB       [1m2[39m[22m  [1m[32m[emitted][39m[22m  
+  [1m[32massets/js/3.js[39m[22m  23.8 KiB       [1m3[39m[22m  [1m[32m[emitted][39m[22m  
+  [1m[32massets/js/4.js[39m[22m   198 KiB       [1m4[39m[22m  [1m[32m[emitted][39m[22m  
+  [1m[32massets/js/5.js[39m[22m   503 KiB       [1m5[39m[22m  [1m[32m[emitted][39m[22m  
+  [1m[32massets/js/6.js[39m[22m  4.48 MiB       [1m6[39m[22m  [1m[32m[emitted][39m[22m  
+  [1m[32massets/js/7.js[39m[22m  22.9 KiB       [1m7[39m[22m  [1m[32m[emitted][39m[22m  
+  [1m[32massets/js/8.js[39m[22m    37 KiB       [1m8[39m[22m  [1m[32m[emitted][39m[22m  
+  [1m[32massets/js/9.js[39m[22m  21.3 KiB       [1m9[39m[22m  [1m[32m[emitted][39m[22m  
+ [1m[32massets/js/10.js[39m[22m    21 KiB      [1m10[39m[22m  [1m[32m[emitted][39m[22m  
+ [1m[32massets/js/11.js[39m[22m  12.1 KiB      [1m11[39m[22m  [1m[32m[emitted][39m[22m  
+ [1m[32massets/js/12.js[39m[22m  9.19 KiB      [1m12[39m[22m  [1m[32m[emitted][39m[22m  
+ [1m[32massets/js/13.js[39m[22m  17.8 KiB      [1m13[39m[22m  [1m[32m[emitted][39m[22m  
+ [1m[32massets/js/14.js[39m[22m  30.4 KiB      [1m14[39m[22m  [1m[32m[emitted][39m[22m  
+  [1m[32massets/js/1.js[39m[22m    15 KiB       [1m1[39m[22m  [1m[32m[emitted][39m[22m  
+[1m[32massets/js/app.js[39m[22m   661 KiB     [1mapp[39m[22m  [1m[32m[emitted][39m[22m  app
+ [1m[32massets/js/17.js[39m[22m  18.8 KiB      [1m17[39m[22m  [1m[32m[emitted][39m[22m  
+ [1m[32massets/js/18.js[39m[22m  45.7 KiB      [1m18[39m[22m  [1m[32m[emitted][39m[22m  
+ [1m[32massets/js/19.js[39m[22m  44.6 KiB      [1m19[39m[22m  [1m[32m[emitted][39m[22m  
+ [1m[32massets/js/20.js[39m[22m  28.5 KiB      [1m20[39m[22m  [1m[32m[emitted][39m[22m  
+ [1m[32massets/js/21.js[39m[22m  36.4 KiB      [1m21[39m[22m  [1m[32m[emitted][39m[22m  
+ [1m[32massets/js/22.js[39m[22m  15.6 KiB      [1m22[39m[22m  [1m[32m[emitted][39m[22m  
+ [1m[32massets/js/23.js[39m[22m  10.6 KiB      [1m23[39m[22m  [1m[32m[emitted][39m[22m  
+ [1m[32massets/js/24.js[39m[22m  18.4 KiB      [1m24[39m[22m  [1m[32m[emitted][39m[22m  
+ [1m[32massets/js/25.js[39m[22m  18.6 KiB      [1m25[39m[22m  [1m[32m[emitted][39m[22m  
+ [1m[32massets/js/26.js[39m[22m  14.2 KiB      [1m26[39m[22m  [1m[32m[emitted][39m[22m  
+ [1m[32massets/js/27.js[39m[22m  55.9 KiB      [1m27[39m[22m  [1m[32m[emitted][39m[22m  
+ [1m[32massets/js/28.js[39m[22m   100 KiB      [1m28[39m[22m  [1m[32m[emitted][39m[22m  
+ [1m[32massets/js/29.js[39m[22m  27.8 KiB      [1m29[39m[22m  [1m[32m[emitted][39m[22m  
+ [1m[32massets/js/15.js[39m[22m  27.3 KiB      [1m15[39m[22m  [1m[32m[emitted][39m[22m  
+       [1m[32mbaidu.ico[39m[22m  3.28 KiB        [1m[39m[22m  [1m[32m[emitted][39m[22m  
+      [1m[32mindex.html[39m[22m  2.47 KiB        [1m[39m[22m  [1m[32m[emitted][39m[22m  
+Entrypoint [1mapp[39m[22m = [1m[32massets/js/app.js[39m[22m
+[[1m./node_modules/ant-design-pro/dist/ant-design-pro.min.css[39m[22m] 1.05 KiB {[1m[33mapp[39m[22m}[1m[32m [built][39m[22m
+[[1m./node_modules/querystring-es3/index.js[39m[22m] 127 bytes {[1m[33mapp[39m[22m}[1m[32m [built][39m[22m
+[[1m./src/store/index.js[39m[22m] 1.15 KiB {[1m[33mapp[39m[22m}[1m[32m [built][39m[22m
+[0] [1mmulti webpack-hot-middleware/client?path=/__webpack_hmr&timeout=2000 ./src/index.js[39m[22m 40 bytes {[1m[33mapp[39m[22m}[1m[32m [built][39m[22m
+[[1m./node_modules/strip-ansi/index.js[39m[22m] 161 bytes {[1m[33mapp[39m[22m}[1m[32m [built][39m[22m
+[./node_modules/webpack-hot-middleware/client-overlay.js] [1m(webpack)-hot-middleware/client-overlay.js[39m[22m 2.16 KiB {[1m[33mapp[39m[22m}[1m[32m [built][39m[22m
+[./node_modules/webpack-hot-middleware/client.js?path=/__webpack_hmr&timeout=2000] [1m(webpack)-hot-middleware/client.js?path=/__webpack_hmr&timeout=2000[39m[22m 7.54 KiB {[1m[33mapp[39m[22m}[1m[32m [built][39m[22m
+[./node_modules/webpack-hot-middleware/process-update.js] [1m(webpack)-hot-middleware/process-update.js[39m[22m 4.23 KiB {[1m[33mapp[39m[22m}[1m[32m [built][39m[22m
+[./node_modules/webpack/buildin/module.js] [1m(webpack)/buildin/module.js[39m[22m 519 bytes {[1m[33mapp[39m[22m}[1m[32m [built][39m[22m
+[[1m./src/App.jsx[39m[22m] 2.25 KiB {[1m[33mapp[39m[22m}[1m[32m [built][39m[22m
+[[1m./src/index.js[39m[22m] 941 bytes {[1m[33mapp[39m[22m}[1m[32m [built][39m[22m
+[react] [1mexternal "React"[39m[22m 42 bytes {[1m[33mapp[39m[22m}[1m[32m [built][39m[22m
+[react-dom] [1mexternal "ReactDOM"[39m[22m 42 bytes {[1m[33mapp[39m[22m}[1m[32m [built][39m[22m
+[react-redux] [1mexternal "ReactRedux"[39m[22m 42 bytes {[1m[33mapp[39m[22m}[1m[32m [built][39m[22m
+[react-router-dom] [1mexternal "ReactRouterDOM"[39m[22m 42 bytes {[1m[33mapp[39m[22m}[1m[32m [built][39m[22m
+    + 656 hidden modules
+Child [1mhtml-webpack-plugin for "index.html"[39m[22m:
+         [1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m[1m[39m[22m[1mChunk Names[39m[22m
+    [1m[32mindex.html[39m[22m  576 KiB       [1m0[39m[22m  [1m[32m[39m[22m
+    Entrypoint [1mundefined[39m[22m = [1m[32mindex.html[39m[22m
+    [[1m./node_modules/html-webpack-plugin/lib/loader.js!./src/server/views/index.html[39m[22m] 2.64 KiB {[1m[33m0[39m[22m}[1m[32m [built][39m[22m
+    [[1m./node_modules/lodash/lodash.js[39m[22m] 527 KiB {[1m[33m0[39m[22m}[1m[32m [built][39m[22m
+    [./node_modules/webpack/buildin/global.js] [1m(webpack)/buildin/global.js[39m[22m 509 bytes {[1m[33m0[39m[22m}[1m[32m [built][39m[22m
+    [./node_modules/webpack/buildin/module.js] [1m(webpack)/buildin/module.js[39m[22m 519 bytes {[1m[33m0[39m[22m}[1m[32m [built][39m[22m
+ℹ ｢wdm｣: Compiled successfully.
+ℹ ｢wdm｣: Compiling...
+webpack building...
+webpack built 94b4c37fa20ac7b69600 in 1800ms
+ℹ ｢wdm｣: Hash: [1m94b4c37fa20ac7b69600[39m[22m
+Version: webpack [1m4.8.3[39m[22m
+Time: [1m1800[39m[22mms
+Built at: 06/30/2018 [1m11:32:53 AM[39m[22m
+                                [1mAsset[39m[22m      [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
+                      [1m[32massets/js/17.js[39m[22m  18.8 KiB      [1m17[39m[22m  [1m[32m[39m[22m           
+ [1m[32m5a83e85a5ebb44b0c076.hot-update.json[39m[22m  44 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m  
+                     [1m[32massets/js/app.js[39m[22m   661 KiB     [1mapp[39m[22m  [1m[32m[emitted][39m[22m  app
+                       [1m[32massets/js/2.js[39m[22m  25.9 KiB       [1m2[39m[22m  [1m[32m[39m[22m           
+                       [1m[32massets/js/3.js[39m[22m  23.8 KiB       [1m3[39m[22m  [1m[32m[39m[22m           
+                       [1m[32massets/js/4.js[39m[22m   198 KiB       [1m4[39m[22m  [1m[32m[39m[22m           
+                       [1m[32massets/js/5.js[39m[22m   503 KiB       [1m5[39m[22m  [1m[32m[39m[22m           
+                       [1m[32massets/js/6.js[39m[22m  4.48 MiB       [1m6[39m[22m  [1m[32m[39m[22m           
+                       [1m[32massets/js/7.js[39m[22m  22.9 KiB       [1m7[39m[22m  [1m[32m[39m[22m           
+                       [1m[32massets/js/8.js[39m[22m    37 KiB       [1m8[39m[22m  [1m[32m[39m[22m           
+                       [1m[32massets/js/9.js[39m[22m  21.3 KiB       [1m9[39m[22m  [1m[32m[39m[22m           
+                      [1m[32massets/js/10.js[39m[22m    21 KiB      [1m10[39m[22m  [1m[32m[39m[22m           
+                      [1m[32massets/js/11.js[39m[22m  12.1 KiB      [1m11[39m[22m  [1m[32m[39m[22m           
+                      [1m[32massets/js/12.js[39m[22m  9.19 KiB      [1m12[39m[22m  [1m[32m[39m[22m           
+                      [1m[32massets/js/13.js[39m[22m  17.8 KiB      [1m13[39m[22m  [1m[32m[39m[22m           
+                      [1m[32massets/js/14.js[39m[22m  30.4 KiB      [1m14[39m[22m  [1m[32m[39m[22m           
+                       [1m[32massets/js/1.js[39m[22m    15 KiB       [1m1[39m[22m  [1m[32m[39m[22m           
+                      [1m[32massets/js/16.js[39m[22m  25.1 KiB      [1m16[39m[22m  [1m[32m[39m[22m           
+                       [1m[32massets/js/0.js[39m[22m  20.4 KiB       [1m0[39m[22m  [1m[32m[39m[22m           
+                      [1m[32massets/js/18.js[39m[22m  45.7 KiB      [1m18[39m[22m  [1m[32m[39m[22m           
+                      [1m[32massets/js/19.js[39m[22m  44.6 KiB      [1m19[39m[22m  [1m[32m[39m[22m           
+                      [1m[32massets/js/20.js[39m[22m  28.5 KiB      [1m20[39m[22m  [1m[32m[39m[22m           
+                      [1m[32massets/js/21.js[39m[22m  36.4 KiB      [1m21[39m[22m  [1m[32m[39m[22m           
+                      [1m[32massets/js/22.js[39m[22m  15.6 KiB      [1m22[39m[22m  [1m[32m[emitted][39m[22m  
+                      [1m[32massets/js/23.js[39m[22m  10.6 KiB      [1m23[39m[22m  [1m[32m[39m[22m           
+                      [1m[32massets/js/24.js[39m[22m  18.4 KiB      [1m24[39m[22m  [1m[32m[emitted][39m[22m  
+                      [1m[32massets/js/25.js[39m[22m  18.6 KiB      [1m25[39m[22m  [1m[32m[39m[22m           
+                      [1m[32massets/js/26.js[39m[22m  14.2 KiB      [1m26[39m[22m  [1m[32m[39m[22m           
+                      [1m[32massets/js/27.js[39m[22m  55.9 KiB      [1m27[39m[22m  [1m[32m[39m[22m           
+                      [1m[32massets/js/28.js[39m[22m   100 KiB      [1m28[39m[22m  [1m[32m[39m[22m           
+                      [1m[32massets/js/29.js[39m[22m  27.8 KiB      [1m29[39m[22m  [1m[32m[39m[22m           
+                      [1m[32massets/js/15.js[39m[22m  27.3 KiB      [1m15[39m[22m  [1m[32m[39m[22m           
+[1m[32m22.ea9c6ebbefbb8ec82ac6.hot-update.js[39m[22m  15.5 KiB      [1m22[39m[22m  [1m[32m[emitted][39m[22m  
+[1m[32m24.ea9c6ebbefbb8ec82ac6.hot-update.js[39m[22m  14.9 KiB      [1m24[39m[22m  [1m[32m[emitted][39m[22m  
+ [1m[32mea9c6ebbefbb8ec82ac6.hot-update.json[39m[22m  54 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m  
+                            [1m[32mbaidu.ico[39m[22m  3.28 KiB        [1m[39m[22m  [1m[32m[emitted][39m[22m  
+                           [1m[32mindex.html[39m[22m  2.47 KiB        [1m[39m[22m  [1m[32m[emitted][39m[22m  
+Entrypoint [1mapp[39m[22m = [1m[32massets/js/app.js[39m[22m
+[[1m./node_modules/ant-design-pro/dist/ant-design-pro.min.css[39m[22m] 1.05 KiB {[1m[33mapp[39m[22m}
+[[1m./node_modules/querystring-es3/index.js[39m[22m] 127 bytes {[1m[33mapp[39m[22m}
+[[1m./src/store/index.js[39m[22m] 1.15 KiB {[1m[33mapp[39m[22m}
+[0] [1mmulti webpack-hot-middleware/client?path=/__webpack_hmr&timeout=2000 ./src/index.js[39m[22m 40 bytes {[1m[33mapp[39m[22m}
+[[1m./node_modules/strip-ansi/index.js[39m[22m] 161 bytes {[1m[33mapp[39m[22m}
+[./node_modules/webpack-hot-middleware/client-overlay.js] [1m(webpack)-hot-middleware/client-overlay.js[39m[22m 2.16 KiB {[1m[33mapp[39m[22m}
+[./node_modules/webpack-hot-middleware/client.js?path=/__webpack_hmr&timeout=2000] [1m(webpack)-hot-middleware/client.js?path=/__webpack_hmr&timeout=2000[39m[22m 7.54 KiB {[1m[33mapp[39m[22m}
+[./node_modules/webpack-hot-middleware/process-update.js] [1m(webpack)-hot-middleware/process-update.js[39m[22m 4.23 KiB {[1m[33mapp[39m[22m}
+[./node_modules/webpack/buildin/module.js] [1m(webpack)/buildin/module.js[39m[22m 519 bytes {[1m[33mapp[39m[22m}
+[[1m./src/App.jsx[39m[22m] 2.25 KiB {[1m[33mapp[39m[22m}
+[[1m./src/index.js[39m[22m] 941 bytes {[1m[33mapp[39m[22m}
+[react] [1mexternal "React"[39m[22m 42 bytes {[1m[33mapp[39m[22m}
+[react-dom] [1mexternal "ReactDOM"[39m[22m 42 bytes {[1m[33mapp[39m[22m}
+[react-redux] [1mexternal "ReactRedux"[39m[22m 42 bytes {[1m[33mapp[39m[22m}
+[react-router-dom] [1mexternal "ReactRouterDOM"[39m[22m 42 bytes {[1m[33mapp[39m[22m}
+    + 656 hidden modules
+Child [1mhtml-webpack-plugin for "index.html"[39m[22m:
+                                   [1mAsset[39m[22m      [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
+                              [1m[32mindex.html[39m[22m   576 KiB       [1m1[39m[22m  [1m[32m[39m[22m           
+    [1m[32m5a83e85a5ebb44b0c076.hot-update.json[39m[22m  44 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m  
+    Entrypoint [1mundefined[39m[22m = [1m[32mindex.html[39m[22m
+    [[1m./node_modules/html-webpack-plugin/lib/loader.js!./src/server/views/index.html[39m[22m] 2.64 KiB {[1m[33m1[39m[22m}
+    [[1m./node_modules/lodash/lodash.js[39m[22m] 527 KiB {[1m[33m1[39m[22m}
+    [./node_modules/webpack/buildin/global.js] [1m(webpack)/buildin/global.js[39m[22m 509 bytes {[1m[33m1[39m[22m}
+    [./node_modules/webpack/buildin/module.js] [1m(webpack)/buildin/module.js[39m[22m 519 bytes {[1m[33m1[39m[22m}
+ℹ ｢wdm｣: Compiled successfully.

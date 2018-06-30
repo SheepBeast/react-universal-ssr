@@ -303,7 +303,7 @@ class MyDevice extends React.Component {
 
         <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} pagination={false} />
 
-        <ModalBindDeviceWithRoom onInit={this.onModalBindDeviceWithRoomInit.bind(this)} onOk={this.onModalBindDeviceWithRoomOk.bind(this)} options={this.state.options} />
+        <Modal_Bind_Device_With_Room onInit={this.onModalBindDeviceWithRoomInit.bind(this)} onOk={this.onModalBindDeviceWithRoomOk.bind(this)} options={this.state.options} />
       </div>
     )
   }
