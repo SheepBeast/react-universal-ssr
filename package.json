@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev:client:local": "nodemon ./bin/dev-client --local",
-    "dev:client:server": "nodemon ./bin/dev-client --server",
+    "dev:client:server": "nohup nodemon ./bin/dev-client --server",
     "dev:server": "nodemon ./cache/index.js",
     "dev:server:watch": "webpack -w --config ./build/webpack.dev.server.conf.js",
     "prod:release": "webpack --config ./build/webpack.prod.release.conf.js",
