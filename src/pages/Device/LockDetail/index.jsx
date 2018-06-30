@@ -274,6 +274,8 @@ class LockDetail extends React.Component {
       // 门锁信号 // 网关信号 // 门锁型号 // 公司型号
     } = lockDetail
 
+    var pageRolesRefer = this.props.pageRolesRefer
+
     const lockData = [{
       key: 1,
       lockMac,
@@ -345,7 +347,7 @@ class LockDetail extends React.Component {
               <div className="fr">
                 <ButtonGroup className="mr-20">
                   {
-                    alarm ? <Button type="primary" onClick={this.releaseAlarm.bind(this, { lockId, releaseType: 255 })} ghost>解除报警</Button> : null
+                    pageRolesRefer['deviceManage-removeAlarm'] && alarm ? <Button type="primary" onClick={this.releaseAlarm.bind(this, { lockId, releaseType: 255 })} ghost>解除报警</Button> : null
                   }
                   {
                     roomId ? <Button type="primary" onClick={this.unbindDevice.bind(this, { deviceType: 2, deviceId: [lockId] })} ghost>解除关联</Button>
@@ -423,7 +425,7 @@ class LockDetail extends React.Component {
         <div className="container" style={{ minHeight: 500 }}>
           <Tabs type="card" defaultActiveKey="1">
             {
-              lockLogList.length > 0 ?
+              pageRolesRefer['deviceManage-log'] ?
                 <TabPane tab="操作记录" key="1">
                   <div className="container">
                     <Timeline>
@@ -451,64 +453,67 @@ class LockDetail extends React.Component {
                 </TabPane> : null
             }
             {
-              lockKeyList.length > 0 ?
+              pageRolesRefer['deviceManage-keyList'] ?
                 <TabPane tab="钥匙列表" key="2">
                   <Table style={{ width: 1000 }} pagination={false} dataSource={keysData} columns={keysCols} />
                 </TabPane> : null
             }
             {
-              lockAppKeyList.length > 0 ?
+              pageRolesRefer['deviceManage-appAuthList'] ?
                 <TabPane tab="APP用户授权" key="3">
                   <Table style={{ width: 1000 }} pagination={false} dataSource={authData} columns={authCols} />
                 </TabPane> : null
             }
 
-            <TabPane tab="高级功能设置" key="4">
-              <Form className="form-shim" style={{ width: 400 }}>
-                <Row>
-                  <Col span={12}>
-                    <FormItem label="组合开锁" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
-                      <Switch defaultChecked />
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem label="锁芯报警" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
-                      <Switch defaultChecked />
-                    </FormItem>
-                  </Col>
-                </Row>
+            {
+              pageRolesRefer['deviceManage-AFSet'] ? <TabPane tab="高级功能设置" key="4">
+                <Form className="form-shim" style={{ width: 400 }}>
+                  <Row>
+                    <Col span={12}>
+                      <FormItem label="组合开锁" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
+                        <Switch defaultChecked />
+                      </FormItem>
+                    </Col>
+                    <Col span={12}>
+                      <FormItem label="锁芯报警" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
+                        <Switch defaultChecked />
+                      </FormItem>
+                    </Col>
+                  </Row>
 
-                <Row>
-                  <Col span={12}>
-                    <FormItem label="常开模式" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
-                      <Switch defaultChecked />
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem label="反锁功能" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
-                      <Switch defaultChecked />
-                    </FormItem>
-                  </Col>
-                </Row>
+                  <Row>
+                    <Col span={12}>
+                      <FormItem label="常开模式" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
+                        <Switch defaultChecked />
+                      </FormItem>
+                    </Col>
+                    <Col span={12}>
+                      <FormItem label="反锁功能" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
+                        <Switch defaultChecked />
+                      </FormItem>
+                    </Col>
+                  </Row>
 
-                <Row>
-                  <Col span={12}>
-                    <FormItem label="开门语音" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
-                      <Switch defaultChecked />
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem label="防撬报警" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
-                      <Switch defaultChecked />
-                    </FormItem>
-                  </Col>
-                </Row>
+                  <Row>
+                    <Col span={12}>
+                      <FormItem label="开门语音" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
+                        <Switch defaultChecked />
+                      </FormItem>
+                    </Col>
+                    <Col span={12}>
+                      <FormItem label="防撬报警" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
+                        <Switch defaultChecked />
+                      </FormItem>
+                    </Col>
+                  </Row>
 
-                <FormItem label="门锁音量" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-                  <Slider defaultValue={30} />
-                </FormItem>
-              </Form>
-            </TabPane>
+                  <FormItem label="门锁音量" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+                    <Slider defaultValue={30} />
+                  </FormItem>
+                </Form>
+              </TabPane> : null
+            }
+
             <TabPane tab="门锁资料与售后" key="5">
               <div className="mb-20">
                 <Button className="mr-20" type="primary" ghost>厂家信息</Button>
@@ -535,6 +540,9 @@ class LockDetail extends React.Component {
   }
 }
 
+const mapStateToProps = state => ({
+  pageRolesRefer: state.pageRolesRefer || {}
+})
 const mapDispatchToProps = dispatch => ({
   fetchLockDetail: params => dispatch(fetchLockDetail(params)),
   fetchLockKeyList: params => dispatch(fetchLockKeyList(params)),
@@ -546,4 +554,4 @@ const mapDispatchToProps = dispatch => ({
   releaseAlarm: params => dispatch(releaseAlarm(params))
 })
 
-export default withRouter(connect(null, mapDispatchToProps)(LockDetail))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(LockDetail))

@@ -120,6 +120,8 @@ class User extends Component {
 
     const { roleList, userList } = this.state
 
+    var pageRolesRefer = this.props.pageRolesRefer
+
     var columns = [{
       title: '姓名',
       key: 'userName',
@@ -155,17 +157,26 @@ class User extends Component {
         if (state == 2 || userType == 3) {
           return null
         } else {
-          let opposite = state == 1 ? { text: '停用', state: 0 } : { text: '启用', state: 1 }
 
-          const url = `/user-edit?userId=${encodeURIComponent(userId)}&roleId=${encodeURIComponent(roleId)}`
+          var enableBtn = null
+          if (pageRolesRefer['staffManage-enable']) {
+            let opposite = state == 1 ? { text: '停用', state: 0 } : { text: '启用', state: 1 }
+            enableBtn = <a className="mr-20" onClick={this.enableUser.bind(this, { userId: [userId], state: opposite.state })}>{opposite.text}</a>
+          }
+
+          var editBtn = null
+          if (pageRolesRefer['staffManage-modify']) {
+            var url = `/user-edit?userId=${encodeURIComponent(userId)}&roleId=${encodeURIComponent(roleId)}`
+            editBtn = <Link to={url} className="mr-20">编辑</Link>
+          }
+
+          var delBtn = pageRolesRefer['staffManage-delete'] ? <a onClick={this.deleteUser.bind(this, { userId: [userId] })}>删除</a> : null
 
           return (
             <span>
-              <a className="mr-20" onClick={this.enableUser.bind(this, { userId: [userId], state: opposite.state })}>{opposite.text}</a>
-
-              <Link to={url} className="mr-20">编辑</Link>
-
-              <a onClick={this.deleteUser.bind(this, { userId: [userId] })}>删除</a>
+              {enableBtn}
+              {editBtn}
+              {delBtn}
             </span>
           )
         }
@@ -246,9 +257,12 @@ class User extends Component {
             </Form>
           </Col>
           <Col className="tr" span={4}>
-            <Link to="/user-add">
-              <Button type="primary">添加用户</Button>
-            </Link>
+            {
+              pageRolesRefer['staffManage-add'] ? <Link to="/user-add">
+                <Button type="primary">添加用户</Button>
+              </Link> : null
+            }
+
           </Col>
         </Row >
 
@@ -258,6 +272,9 @@ class User extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  pageRolesRefer: state.pageRolesRefer || {}
+})
 const mapDispatchToProps = dispatch => ({
   fetchUserList: params => dispatch(fetchUserList(params)),
   enableUser: params => dispatch(enableUser(params)),
@@ -265,4 +282,4 @@ const mapDispatchToProps = dispatch => ({
   fetchRoleList: params => dispatch(fetchRoleList(params))
 })
 
-export default connect(null, mapDispatchToProps)(Form.create()(User))
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(User))

@@ -26,47 +26,7 @@ const newsPushTypeRefers = {
   2: '租客'
 }
 
-let columns = [{
-  title: '创建时间',
-  key: 'createTime',
-  dataIndex: 'createTime'
-}, {
-  title: '标题',
-  key: 'newsTitle',
-  dataIndex: 'newsTitle'
-}, {
-  title: '接受对象',
-  key: 'pushType',
-  dataIndex: 'pushType'
-},  {
-  title: '创建人',
-  key: 'userName',
-  dataIndex: 'userName'
-}, {
-  title: '审核单位',
-  key: 'auditName',
-  dataIndex: 'auditName'
-},
-{
-  title: '状态',
-  key: 'state',
-  dataIndex: 'state',
-  render: state => <span>{newsStateRefers[state]}</span>
-}, {
-  title: '操作',
-  key: 'actions',
-  dataIndex: 'actions',
-  render: ({ newsId, state }) =>
-    <span>
-      {
-        state != 5 ?
-          state == 1 ?
-            <Link to={`/news-audit?newsId=${encodeURIComponent(newsId)}`}>审核</Link> :
-            <Link to={`/news-check?newsId=${encodeURIComponent(newsId)}`}>查看</Link>
-          : null
-      }
-    </span>
-}]
+
 
 class AudittingNews extends React.Component {
   constructor(props) {
@@ -123,6 +83,8 @@ class AudittingNews extends React.Component {
   }
 
   render() {
+    var pageRolesRefer = this.props.pageRolesRefer
+
     let dataSource = this.state.newsList.map(({
       newsTitle,
       pushType,
@@ -144,7 +106,61 @@ class AudittingNews extends React.Component {
       }
     }))
 
+    let columns = [{
+      title: '创建时间',
+      key: 'createTime',
+      dataIndex: 'createTime'
+    }, {
+      title: '标题',
+      key: 'newsTitle',
+      dataIndex: 'newsTitle'
+    }, {
+      title: '接受对象',
+      key: 'pushType',
+      dataIndex: 'pushType'
+    }, {
+      title: '创建人',
+      key: 'userName',
+      dataIndex: 'userName'
+    }, {
+      title: '审核单位',
+      key: 'auditName',
+      dataIndex: 'auditName'
+    },
+    {
+      title: '状态',
+      key: 'state',
+      dataIndex: 'state',
+      render: state => <span>{newsStateRefers[state]}</span>
+    }, {
+      title: '操作',
+      key: 'actions',
+      dataIndex: 'actions',
+      render: ({ newsId, state }) => {
+        if (state == 5) {
+          return null
+        }
 
+        var auditBtn = null
+        var checkBtn = null
+
+        if (state == 1) {
+          if (pageRolesRefer['msgManage-audit']) {
+            auditBtn = <Link to={`/news-audit?newsId=${encodeURIComponent(newsId)}`}>审核</Link>
+          }
+
+        } else {
+          if (pageRolesRefer['msgManage-auditDetail']) {
+            checkBtn = <Link to={`/news-check?newsId=${encodeURIComponent(newsId)}`}>查看</Link>
+          }
+        }
+
+        return <span>
+          {auditBtn}
+          {checkBtn}
+        </span>
+      }
+    }]
 
     return (
       <div id="AudittingNews" className="container">
@@ -178,8 +194,11 @@ class AudittingNews extends React.Component {
   }
 }
 
+const mapStateToProps = state => ({
+  pageRolesRefer: state.pageRolesRefer || {}
+})
 const mapDispatchToProps = dispatch => ({
   fetchNewsList: params => dispatch(fetchNewsList(params))
 })
 
-export default withRouter(connect(null, mapDispatchToProps)(AudittingNews))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AudittingNews))

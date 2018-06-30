@@ -135,6 +135,7 @@ class News extends React.Component {
   }
 
   render() {
+    var pageRolesRefer = this.props.pageRolesRefer
 
     let dataSource = this.state.newsList.map(({
       newsTitle,
@@ -169,7 +170,7 @@ class News extends React.Component {
       title: '接受对象',
       key: 'pushType',
       dataIndex: 'pushType'
-    },  {
+    }, {
       title: '创建人',
       key: 'userName',
       dataIndex: 'userName'
@@ -193,26 +194,33 @@ class News extends React.Component {
       key: 'actions',
       dataIndex: 'actions',
       render: ({ newsId, state }) => {
-        // 0 修改、删除、提交
-        // 1 不可修改 不可删除
-        // 2 不可修改 可删除 可发送
-        // 3 可修改 可提审 可删除
-        // 4 不可发送 不可修改 不可删除 不可审核
-        // 5 不可显示
+        if (state == 5) {
+          return null
+        }
 
-        // 查看 0 1 2 3 4
-        // 编辑 0 3
-        // 发送 2
-        // 删除 0 2 3
+        var checkBtn = <Link className="mr-20" to={`/news-check?newsId=${encodeURIComponent(newsId)}`}>查看</Link>
 
-        return state != 5 ?
-          <span>
-            <Link className="mr-20" to={`/news-check?newsId=${encodeURIComponent(newsId)}`}>查看</Link>
-            {state == 0 || state == 3 ? <Link className="mr-20" to={`/news-edit?newsId=${encodeURIComponent(newsId)}`}>编辑</Link> : null}
-            {state == 2 ? <a className="mr-20" onClick={this.sendNews.bind(this, { newsId })}>发送</a> : null}
-            {state == 0 || state == 2 || state == 3 ? <a onClick={this.deleteNews.bind(this, { newsId: [newsId] })}>删除</a> : null}
-          </span> : null
+        var editBtn = null
+        if (pageRolesRefer['msgManage-modify'] && (state == 0 || state == 3)) {
+          var editBtn = <Link className="mr-20" to={`/news-edit?newsId=${encodeURIComponent(newsId)}`}>编辑</Link>
+        }
 
+        var sendBtn = null
+        if (pageRolesRefer['msgManage-send'] && state == 2) {
+          sendBtn = <a className="mr-20" onClick={this.sendNews.bind(this, { newsId })}>发送</a>
+        }
+
+        var delBtn = null
+        if (pageRolesRefer['msgManage-delete'] && (state == 0 || state == 2 || state == 3)) {
+          delBtn = <a onClick={this.deleteNews.bind(this, { newsId: [newsId] })}>删除</a>
+        }
+
+        return <span>
+          {checkBtn}
+          {editBtn}
+          {sendBtn}
+          {delBtn}
+        </span>
       }
     }]
 
@@ -252,9 +260,12 @@ class News extends React.Component {
               </FormItem>
             </Col>
             <Col span={4} className="tr">
-              <Link to="/news-add">
-                <Button type="primary">新建</Button>
-              </Link>
+              {
+                pageRolesRefer['msgManage-add'] ?
+                  <Link to="/news-add">
+                    <Button type="primary">添加消息</Button>
+                  </Link> : null
+              }
             </Col>
           </Row>
         </Form>
@@ -265,10 +276,14 @@ class News extends React.Component {
   }
 }
 
+const mapStateToProps = state => ({
+  pageRolesRefer: state.pageRolesRefer || {}
+})
+
 const mapDispatchToProps = dispatch => ({
   fetchNewsList: params => dispatch(fetchNewsList(params)),
   deleteNews: params => dispatch(deleteNews(params)),
   sendNews: params => dispatch(sendNews(params))
 })
 
-export default connect(null, mapDispatchToProps)(News)
+export default connect(mapStateToProps, mapDispatchToProps)(News)

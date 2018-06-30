@@ -102,6 +102,7 @@ class Gateway extends React.Component {
   }
 
   render() {
+    var pageRolesRefer = this.props.pageRolesRefer
 
     const dataSource = this.state.gatewayList.map(({ gatewayId, gatewayType, gatewayName, hardwareVersion, mac, roomName, floorName, buildingName, houseName, state, softwareVersion }) => {
       let installationSite = `${houseName || ''}${buildingName ? buildingName + '栋' : ''}${floorName ? floorName + '层' : ''}${roomName || ''}`
@@ -167,9 +168,7 @@ class Gateway extends React.Component {
       key: 'actions',
       dataIndex: 'actions',
       render: ({ gatewayId }) => {
-        return (
-          <a className="mr-20" onClick={this.deleteGateway.bind(this, { gatewayId: [gatewayId] })}>删除</a>
-        )
+        return pageRolesRefer['deviceManage-delete'] ? <a className="mr-20" onClick={this.deleteGateway.bind(this, { gatewayId: [gatewayId] })}>删除</a> : null
       }
     }]
 
@@ -200,7 +199,10 @@ class Gateway extends React.Component {
                 <Search style={{ height: 32 }} enterButton="搜索" placeholder="请输入设备名称/设备MAC/安装关联位置" onSearch={this.filteredFetchGatewayList.bind(this)} />
               </Col>
               <Col className="tr">
-                <Button type="primary" onClick={this.batchDelete.bind(this)}>批量删除</Button>
+                {
+                  pageRolesRefer['deviceManage-delete'] ? <Button type="primary" onClick={this.batchDelete.bind(this)}>批量删除</Button> : null
+                }
+
               </Col>
             </Row>
 
@@ -213,9 +215,12 @@ class Gateway extends React.Component {
   }
 }
 
+const mapStateToProps = state => ({
+  pageRolesRefer: state.pageRolesRefer || {}
+})
 const mapDispatchToProps = dispatch => ({
   fetchGatewayList: params => dispatch(fetchGatewayList(params)),
   deleteGateway: params => dispatch(deleteGateway(params))
 })
 
-export default connect(null, mapDispatchToProps)(Form.create()(Gateway))
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(Gateway))

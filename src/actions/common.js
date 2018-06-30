@@ -1,6 +1,6 @@
 import { api } from "../api";
 import { APP_SMS_INFO, BUSSINESS_REGISTER, BUSINESS_WEB_LOGIN, BUSINESS_FORGET_PASSWORD, BUSINESS_PROVINCE_CITIES_AREAS_LIST, BUSINESS_LOGOUT } from "../constants/method-types";
-import { SET_USER_INFO, SET_TOKEN_ID, ON_LOGIN_ERROR, SET_COMMON_PAGE } from '../constants/action-types'
+import { SET_USER_INFO, SET_TOKEN_ID, ON_LOGIN_ERROR, SET_COMMON_PAGE, TRANSFORM_SIDEBAR_ROLES_REFER, TRANSFORM_PAGE_ROLES_REFER } from '../constants/action-types'
 import isRequestSuccess from "../utils/isRequestSuccess";
 
 export const fetchCaptcha = params => async dispatch => {
@@ -32,11 +32,31 @@ export const setCommonPage = page => ({
   page
 })
 
+export const transformSidebarRolesToRefer = roles => ({
+  type: TRANSFORM_SIDEBAR_ROLES_REFER,
+  roles
+})
+
+export const transformPageRolesToRefer = roles => ({
+  type: TRANSFORM_PAGE_ROLES_REFER,
+  roles
+})
+
 // 登陆
 export const login = params => async dispatch => {
   let ret = await api.fetch(BUSINESS_WEB_LOGIN, params, { url: '/local/login' })
 
   console.log('login ret -->', ret)
+
+  var { businessUserInfo, tokenId } = isRequestSuccess(ret) && ret.data.data || {}
+  var { actions = [] } = businessUserInfo
+
+  api.tokenId = tokenId
+
+  dispatch(setUserInfo(businessUserInfo))
+  dispatch(setTokenID(tokenId))
+  dispatch(transformSidebarRolesToRefer(actions))
+  dispatch(transformPageRolesToRefer(actions))
 
   return ret
 }

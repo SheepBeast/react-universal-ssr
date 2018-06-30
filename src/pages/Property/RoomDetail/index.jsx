@@ -208,6 +208,8 @@ class RoomDetail extends Component {
   }
 
   render() {
+    var pageRolesRefer = this.props.pageRolesRefer
+
     let { roomDetail, roomTenantList, roomDeviceList } = this.state
 
     let { houseName, buildingName, floorName, roomName, createTime, beginTime, endTime } = roomDetail
@@ -292,8 +294,13 @@ class RoomDetail extends Component {
               {
                 roomTenantList.length > 0 ?
                   <ButtonGroup className="mr-20">
-                    <Button type="primary" ghost onClick={() => { this.modal.relet.show() }}>续租</Button>
-                    <Button type="primary" ghost onClick={this.checkoutRoom.bind(this)}>退租</Button>
+                    {
+                      pageRolesRefer['propertyManage-relet'] ? <Button type="primary" ghost onClick={() => { this.modal.relet.show() }}>续租</Button> : null
+                    }
+                    {
+                      pageRolesRefer['propertyManage-checkOut'] ? <Button type="primary" ghost onClick={this.checkoutRoom.bind(this)}>退租</Button> : null
+                    }
+
                   </ButtonGroup> : null
               }
 
@@ -379,6 +386,9 @@ class RoomDetail extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  pageRolesRefer: state.pageRolesRefer || {}
+})
 const mapDispatchToProps = dispatch => ({
   fetchRoomDetail: params => dispatch(fetchRoomDetail(params)),
   fetchRoomTenantList: params => dispatch(fetchRoomTenantList(params)),
@@ -389,4 +399,4 @@ const mapDispatchToProps = dispatch => ({
   unbindDevice: params => dispatch(unbindDevice(params))
 })
 
-export default withRouter(connect(null, mapDispatchToProps)(RoomDetail))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(RoomDetail))

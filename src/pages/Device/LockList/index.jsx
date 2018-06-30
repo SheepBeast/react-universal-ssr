@@ -159,7 +159,7 @@ class LockList extends React.Component {
 
   render() {
     var { lockStatistics, lockList } = this.state
-
+    var pageRolesRefer = this.props.pageRolesRefer
 
     const dataSource = lockList.map(({
       deviceId,
@@ -228,12 +228,24 @@ class LockList extends React.Component {
       key: 'actions',
       dataIndex: 'actions',
       render: ({ deviceId, deviceName, deviceType, mac }) => {
-        const url = `/device-lock-detail?lockId=${encodeURIComponent(deviceId)}`
+        var url = `/device-lock-detail?lockId=${encodeURIComponent(deviceId)}`
+        var detailBtn = <Link to={url} className="mr-20">详情</Link>
+
+        var relateBtn = null
+        if (pageRolesRefer['propertyManage-relateDevice']) {
+          relateBtn = <a className="mr-20" onClick={this.bindDevice.bind(this, { deviceId, deviceName, deviceType, mac })}>关联</a>
+        }
+
+        var delBtn = null
+        if (pageRolesRefer['deviceManage-delete']) {
+          <a onClick={this.deleteLock.bind(this, { deviceId: [deviceId], deviceType })}>删除</a>
+        }
+
         return (
           <span>
-            <Link to={url} className="mr-20">详情</Link>
-            <a className="mr-20" onClick={this.bindDevice.bind(this, { deviceId, deviceName, deviceType, mac })}>关联</a>
-            <a onClick={this.deleteLock.bind(this, { deviceId: [deviceId], deviceType })}>删除</a>
+            {detailBtn}
+            {relateBtn}
+            {delBtn}
           </span>
         )
       }
@@ -292,7 +304,10 @@ class LockList extends React.Component {
                   }
                 </Col>
                 <Col className="tr">
-                  <Button type="primary" onClick={this.batchDelete.bind(this)}>批量删除</Button>
+                  {
+                    pageRolesRefer['deviceManage-delete'] ? <Button type="primary" onClick={this.batchDelete.bind(this)}>批量删除</Button> : null
+                  }
+
                 </Col>
               </Row>
             </FormItem>
@@ -308,10 +323,13 @@ class LockList extends React.Component {
   }
 }
 
+const mapStateToProps = state => ({
+  pageRolesRefer: state.pageRolesRefer || {}
+})
 const mapDispatchToProps = dispatch => ({
   fetchLockList: params => dispatch(fetchLockList(params)),
   fetchLockStatistics: params => dispatch(fetchLockStatistics(params)),
   deleteLock: params => dispatch(deleteDevice(params))
 })
 
-export default connect(null, mapDispatchToProps)(Form.create()(LockList))
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(LockList))

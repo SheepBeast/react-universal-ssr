@@ -599,6 +599,8 @@ class Property extends Component {
   }
 
   render() {
+    var pageRolesRefer = this.props.pageRolesRefer
+
     let {
       houseList, buildingList, floorList, roomList,
       selectedHouseId, selectedBuildingId, selectedFloorId, selectedRoomId,
@@ -655,12 +657,19 @@ class Property extends Component {
             <Col span={4}>
               <Form className="tr">
                 <FormItem className="mb-0">
-                  <a onClick={() => { this.modal.addHouse.show() }}>添加房产</a>
+                  {
+                    pageRolesRefer['propertyManage-add'] ? <a onClick={() => { this.modal.addHouse.show() }}>添加房产</a> : null
+                  }
+
                   {
                     selectedHouseId ?
                       <span>
-                        <a className="ml-20" onClick={() => { this.modal.editHouse.show() }}>编辑房产</a>
-                        <a className="ml-20" onClick={this.delHouse.bind(this)}>删除房产</a>
+                        {
+                          pageRolesRefer['propertyManage-update'] ? <a className="ml-20" onClick={() => { this.modal.editHouse.show() }}>编辑房产</a> : null
+                        }
+                        {
+                          pageRolesRefer['propertyManage-delete'] ? <a className="ml-20" onClick={this.delHouse.bind(this)}>删除房产</a> : null
+                        }
                       </span>
 
                       : null
@@ -741,11 +750,12 @@ class Property extends Component {
                               </Tooltip>
                             </a>,
 
-                            <a onClick={this.callModalBindDevice.bind(this, { roomId })}>
-                              <Tooltip title="关联设备">
-                                <Icon type="select" />
-                              </Tooltip>
-                            </a>,
+                            pageRolesRefer['propertyManage-relateDevice'] ?
+                              <a onClick={this.callModalBindDevice.bind(this, { roomId })}>
+                                <Tooltip title="关联设备">
+                                  <Icon type="select" />
+                                </Tooltip>
+                              </a> : null,
                             <a onClick={this.delRoom.bind(this, { roomId })}>
                               <Tooltip title="删除">
                                 <Icon type="delete" />
@@ -787,6 +797,10 @@ class Property extends Component {
     )
   }
 }
+
+const mapStateToProps = state => ({
+  pageRolesRefer: state.pageRolesRefer || {}
+})
 const mapDispatchToProps = dispatch => ({
   fetchHouseList: params => dispatch(fetchHouseList(params)),
   fetchBuildingList: params => dispatch(fetchBuildingList(params)),
@@ -804,4 +818,4 @@ const mapDispatchToProps = dispatch => ({
   bindDevice: params => dispatch(roomAddDevice(params))
 })
 
-export default connect(null, mapDispatchToProps)(Property)
+export default connect(mapStateToProps, mapDispatchToProps)(Property)

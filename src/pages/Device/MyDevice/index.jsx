@@ -177,6 +177,7 @@ class MyDevice extends React.Component {
 
   render() {
     let { deviceList } = this.state
+    var pageRolesRefer = this.props.pageRolesRefer
 
     const dataSource = deviceList.map(({
       deviceId,
@@ -257,7 +258,10 @@ class MyDevice extends React.Component {
                   <a className="mr-20" onClick={this.bindDevice.bind(this, { deviceId, deviceName, deviceType, mac })}>关联</a>
                 </span> : null
             }
-            <a onClick={this.deleteDevice.bind(this, { deviceId: [deviceId], deviceType })}>删除</a>
+            {
+              pageRolesRefer['deviceManage-delete'] ? <a onClick={this.deleteDevice.bind(this, { deviceId: [deviceId], deviceType })}>删除</a> : null
+            }
+
           </span>
         )
       }
@@ -294,7 +298,10 @@ class MyDevice extends React.Component {
                 }
               </Col>
               <Col className="tr">
-                <Button type="primary" onClick={this.batchDeleteDevice.bind(this)}>批量删除</Button>
+                {
+                  pageRolesRefer['deviceManage-delete'] ? <Button type="primary" onClick={this.batchDeleteDevice.bind(this)}>批量删除</Button> : null
+                }
+
               </Col>
             </Row>
 
@@ -309,6 +316,9 @@ class MyDevice extends React.Component {
   }
 }
 
+const mapStateToProps = state => ({
+  pageRolesRefer: state.pageRolesRefer || {}
+})
 const mapDispatchToProps = dispatch => ({
   fetchDeviceList: params => dispatch(fetchDeviceList(params)),
   deleteDevice: params => dispatch(deleteDevice(params)),
@@ -316,4 +326,4 @@ const mapDispatchToProps = dispatch => ({
   bindDevice: params => dispatch(roomAddDevice(params))
 })
 
-export default connect(null, mapDispatchToProps)(Form.create()(MyDevice))
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(MyDevice))

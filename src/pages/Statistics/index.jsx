@@ -76,11 +76,6 @@ class Statistics extends Component {
     })
   }
 
-  componentDidMount() {
-
-  }
-
-
   render() {
 
     const { rentStatistics, deviceStatistics, tanantStatistics, dynamicInfoList } = this.state

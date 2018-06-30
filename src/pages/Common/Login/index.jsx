@@ -4,9 +4,8 @@ import { withRouter, Link } from 'react-router-dom'
 import { Form, Icon, Input, Button, Checkbox, Row, Col, message } from 'antd';
 import PropTypes from 'prop-types'
 
-import { login, setUserInfo, setTokenID, setCommonPage } from '../../../actions/common'
+import { login, setCommonPage } from '../../../actions/common'
 import isRequestSuccess from '../../../utils/isRequestSuccess';
-import { api } from '../../../api'
 
 const FormItem = Form.Item;
 
@@ -26,13 +25,6 @@ class Login extends React.Component {
     this.props.login(params).then((ret) => {
       console.log('ret -->', ret)
       if (isRequestSuccess(ret)) {
-        const { businessUserInfo, tokenId } = ret.data.data
-
-        this.props.setUserInfo(businessUserInfo)
-        this.props.setTokenID(tokenId)
-
-
-        api.tokenId = tokenId
 
         callback && callback()
 
@@ -141,8 +133,6 @@ class Login extends React.Component {
 const mapDispatchToProps = dispatch => {
   return {
     login: params => dispatch(login(params)),
-    setUserInfo: params => dispatch(setUserInfo(params)),
-    setTokenID: params => dispatch(setTokenID(params)),
     setCommonPage: params => dispatch(setCommonPage(params))
   }
 }

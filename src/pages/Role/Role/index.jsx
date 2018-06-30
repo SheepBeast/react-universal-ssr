@@ -98,6 +98,8 @@ class Role extends Component {
   }
 
   render() {
+    var pageRolesRefer = this.props.pageRolesRefer
+
     var columns = [{
       title: '角色名称',
       key: 'roleName',
@@ -121,16 +123,25 @@ class Role extends Component {
         if (state == 2) {
           return null
         } else {
-          let opposite = state == 1 ? { text: '停用', state: 0 } : { text: '启用', state: 1 }
-          const url = `/role-edit?roleId=${encodeURIComponent(roleId)}`
+
+          var enableBtn = null
+
+          if (pageRolesRefer['roleManage-enable']) {
+            var opposite = state == 1 ? { text: '停用', state: 0 } : { text: '启用', state: 1 }
+            var url = `/role-edit?roleId=${encodeURIComponent(roleId)}`
+
+            enableBtn = <a className="mr-20" onClick={this.enableRole.bind(this, { roleId: [roleId], enableType: opposite.state })}>{opposite.text}</a>
+          }
+
+          var editBtn = pageRolesRefer['roleManage-update'] ? <Link to={url} className="mr-20">编辑</Link> : null
+
+          var delBtn = pageRolesRefer['roleManage-delete'] ? <a onClick={this.deleteRole.bind(this, { roleId: [roleId] })}>删除</a> : null
 
           return (
             <span>
-              <a className="mr-20" onClick={this.enableRole.bind(this, { roleId: [roleId], enableType: opposite.state })}>{opposite.text}</a>
-
-              <Link to={url} className="mr-20">编辑</Link>
-
-              <a onClick={this.deleteRole.bind(this, { roleId: [roleId] })}>删除</a>
+              {enableBtn}
+              {editBtn}
+              {delBtn}
             </span>
           )
         }
@@ -182,10 +193,15 @@ class Role extends Component {
             </Form>
           </Col>
           <Col offset={4} span={12} className="tr">
-            <Link to="/role-add" className="mr-20">
-              <Button icon="plus" type="primary">添加</Button>
-            </Link>
-            <Button type="primary" onClick={this.batchDelete.bind(this)}>批量删除</Button>
+            {
+              pageRolesRefer['roleManage-add'] ? <Link to="/role-add" className="mr-20">
+                <Button icon="plus" type="primary">添加角色</Button>
+              </Link> : null
+            }
+            {
+              pageRolesRefer['roleManage-delete'] ? <Button type="primary" onClick={this.batchDelete.bind(this)}>批量删除</Button> : null
+            }
+
           </Col>
         </Row >
 
@@ -196,10 +212,13 @@ class Role extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  pageRolesRefer: state.pageRolesRefer || {}
+})
 const mapDispatchToProps = dispatch => ({
   fetchRoleList: params => dispatch(fetchRoleList(params)),
   deleteRole: params => dispatch(deleteRole(params)),
   enableRole: params => dispatch(enableRole(params))
 })
 
-export default connect(null, mapDispatchToProps)(Role)
+export default connect(mapStateToProps, mapDispatchToProps)(Role)
